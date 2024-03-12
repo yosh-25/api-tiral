@@ -12,8 +12,6 @@ export default function Home() {
     <p>test</p>
     <button 
     type="button"
-   
-    
     >button</button>
     </>
   );
