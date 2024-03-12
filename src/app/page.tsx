@@ -1,18 +1,26 @@
-'use client'
-import Image from "next/image";
-import { YoutubeTranscript } from 'youtube-transcript';
+"use client";
+import { useRouter } from "next/navigation";
+import { Button, Stack, TextField, Typography } from "@mui/material";
 
 export default function Home() {
-
-  YoutubeTranscript.fetchTranscript('k4-tFEo3_LU').then(console.log);  
-
+  const router = useRouter();
 
   return (
     <>
-    <p>test</p>
-    <button 
-    type="button"
-    >button</button>
+      <Stack
+        height="100vh"
+        justifyContent="center"
+        alignItems="center"
+        gap="32px"
+      >
+        <Typography variant="h1" fontSize="2rem" fontWeight="750">
+          English Learning Made Easy
+        </Typography>
+        <Button variant="contained" onClick={() => router.push(`/login`)}>
+          ログイン
+        </Button>
+        <Button variant="contained">初めての方はこちら</Button>
+      </Stack>
     </>
   );
 }
