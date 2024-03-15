@@ -73,6 +73,10 @@ export default function Learn() {
           <Typography>{textFromAPI} </Typography>
         </Box>
       </Box>
+      <Box width="30%">
+        <Typography>The selectec word</Typography>
+        <Typography>The Definition</Typography>
+      </Box>
     </Box>
   );
 }
