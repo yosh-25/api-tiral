@@ -13,7 +13,7 @@ import {
 export default function Learn() {
   const [textFromAPI, setTextFromAPI] = useState("");
   const [searchWord, setSearchWord] = useState("");
-  const [dictionaryWord, setDictionaryWord] = useState("");
+  const [selectedWord, setSelectedWord] = useState("");
   const [wordDefinition, setWordDefinition] = useState("");
 
   const handleWikipediaSearch = () => {
@@ -36,8 +36,19 @@ export default function Learn() {
       });
   };
 
+  // 記事内の単語をクリックして選択状態にする。
+  const handleTextSelection = () => {
+    const text = window.getSelection()?.toString();
+    if (text) {
+      setSelectedWord(text);
+    }
+  };
+
+  // 選択した単語を辞書で調べる。
   const handleDictionarySearch = () => {
-    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${dictionaryWord}`)
+    if (!selectedWord) return;
+
+    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${selectedWord}`)
       .then((response) => response.json())
       .then((data) => {
         const definition =
@@ -94,21 +105,18 @@ export default function Learn() {
           pl={1.5}
         >
           {/* 検索したワードのテキストを表示 */}
-          <Typography>{textFromAPI} </Typography>
+          <Typography
+            onMouseUp={handleTextSelection}
+            onClick={handleDictionarySearch}
+          >
+            {textFromAPI}{" "}
+          </Typography>
         </Box>
       </Box>
-      <Box>
-        <Typography>辞書検索</Typography>
-        <Input 
-          type="text"
-          value={dictionaryWord}
-          onChange={(e) => setDictionaryWord(e.target.value)}
-          placeholder='辞書で検索するワード'
-        />
-        <Button
-         onClick={handleDictionarySearch}
-        >辞書検索</Button>
-        <Typography>{wordDefinition}</Typography>
+      <Box display="flex" flexDirection="column" alignItems="center" mt={4}>
+        <Typography sx={{ mt: 2 }}>Selected Word: {selectedWord}</Typography>
+
+        <Typography sx={{ mt: 2 }}>Definition: {wordDefinition}</Typography>
       </Box>
     </Box>
   );
