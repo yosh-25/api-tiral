@@ -13,8 +13,10 @@ import {
 export default function Learn() {
   const [textFromAPI, setTextFromAPI] = useState("");
   const [searchWord, setSearchWord] = useState("");
+  const [dictionaryWord, setDictionaryWord] = useState("");
+  const [wordDefinition, setWordDefinition] = useState("");
 
-  const handleSearch = () => {
+  const handleWikipediaSearch = () => {
     fetch(
       `/api/proxy/w/api.php?action=query&format=json&prop=extracts&titles=${searchWord}&formatversion=2&exchars=1000&explaintext`
     )
@@ -31,6 +33,27 @@ export default function Learn() {
       })
       .catch((error) => {
         console.error("Fetch error:", error); // エラーがあれば出力
+      });
+  };
+
+  const handleDictionarySearch = () => {
+    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${dictionaryWord}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const definition =
+          data[0] &&
+          data[0].meanings[0] &&
+          data[0].meanings[0].definitions[0] &&
+          data[0].meanings[0].definitions[0].definition;
+        if (definition) {
+          setWordDefinition(definition);
+        } else {
+          setWordDefinition("Definition not found");
+        }
+      })
+      .catch((error) => {
+        console.error("Dictionary API error", error);
+        setWordDefinition("Error fetching definition.");
       });
   };
 
@@ -51,6 +74,7 @@ export default function Learn() {
           justifyContent="center"
           alignItems="flex-start"
         >
+          {/* Wikipedia検索用のフィールド */}
           <Box mb={2}>
             <Typography>検索</Typography>
             <Input
@@ -61,7 +85,7 @@ export default function Learn() {
             />
           </Box>
         </Box>
-        <Button onClick={handleSearch}>Press</Button>
+        <Button onClick={handleWikipediaSearch}>Press</Button>
         <Box
           width="50%"
           border={2}
@@ -72,6 +96,19 @@ export default function Learn() {
           {/* 検索したワードのテキストを表示 */}
           <Typography>{textFromAPI} </Typography>
         </Box>
+      </Box>
+      <Box>
+        <Typography>辞書検索</Typography>
+        <Input 
+          type="text"
+          value={dictionaryWord}
+          onChange={(e) => setDictionaryWord(e.target.value)}
+          placeholder='辞書で検索するワード'
+        />
+        <Button
+         onClick={handleDictionarySearch}
+        >辞書検索</Button>
+        <Typography>{wordDefinition}</Typography>
       </Box>
     </Box>
   );
