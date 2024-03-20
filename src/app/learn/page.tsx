@@ -9,6 +9,7 @@ import {
   Typography,
   Input,
 } from "@mui/material";
+import * as deepl from 'deepl-node';
 
 export default function Learn() {
   const [textFromAPI, setTextFromAPI] = useState("");
@@ -68,6 +69,22 @@ export default function Learn() {
       });
   };
 
+  // 選択した箇所の日本語訳をDeepLで表示
+  const authKey: any = process.env.DEEPL_API_KEY
+  const translator = new deepl.Translator(authKey);
+
+  const handleDeeplSearch = async () => {
+    const targetLang: deepl.TargetLanguageCode = 'ja';
+    const results = await translator.translateText(
+      ['Hello, world!', 'How are you?'],
+      null,
+      targetLang,
+    );
+    results.map((result: deepl.TextResult) => {
+      console.log(result.text);
+    });
+  };
+
   return (
     <Box display="flex" justifyContent="center" alignItems="center">
       <Box
@@ -113,10 +130,14 @@ export default function Learn() {
           </Typography>
         </Box>
       </Box>
-      <Box display="flex" flexDirection="column" alignItems="center" mt={4}>
+      <Box display="flex" flexDirection="column" alignItems="center" mt={4}>        
         <Typography sx={{ mt: 2 }}>Selected Word: {selectedWord}</Typography>
-
+        <Typography>Free Dictionaryの検索結果</Typography>
         <Typography sx={{ mt: 2 }}>Definition: {wordDefinition}</Typography>
+        <Typography>DeepLの検索結果</Typography>
+        <Button
+        onClick={handleDeeplSearch}
+        >DeepL Search</Button>
       </Box>
     </Box>
   );
