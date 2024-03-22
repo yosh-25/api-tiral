@@ -9,13 +9,24 @@ import {
   Typography,
   Input,
 } from "@mui/material";
-import * as deepl from 'deepl-node';
+import { Translator } from '../../../libs/Translation';
+import { DeeplLanguages } from 'deepl' 
 
 export default function Learn() {
+  // 以下2つもオブジェクト型にして1つのuseStateにまとめる予定
   const [textFromAPI, setTextFromAPI] = useState("");
   const [searchWord, setSearchWord] = useState("");
-  const [selectedWord, setSelectedWord] = useState("");
-  const [wordDefinition, setWordDefinition] = useState("");
+  // const [selectedWord, setSelectedWord] = useState("");
+  // const [wordDefinition, setWordDefinition] = useState("");
+  const [translatedText, setTranslatedText] = useState("");
+  const [wordInfo, setWordInfo] = useState({
+    id: "",
+    spelling: '',
+    meaning: '',
+    translation: '',
+    registeredDate: '',
+    status: false,
+  });
 
   const handleWikipediaSearch = () => {
     fetch(
@@ -41,15 +52,23 @@ export default function Learn() {
   const handleTextSelection = () => {
     const text = window.getSelection()?.toString();
     if (text) {
-      setSelectedWord(text);
-    }
+    const newWordInfo = {
+      ...wordInfo,
+      spelling: text
+    };
+    setWordInfo(newWordInfo)
+  }
+  console.log(wordInfo.spelling);
+    // if (text) {
+    //   setSelectedWord(text);
+    // }
   };
 
   // 選択した単語を辞書で調べる。
   const handleDictionarySearch = () => {
-    if (!selectedWord) return;
+    if (!wordInfo.spelling) return;
 
-    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${selectedWord}`)
+    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${wordInfo.spelling}`)
       .then((response) => response.json())
       .then((data) => {
         const definition =
@@ -58,32 +77,39 @@ export default function Learn() {
           data[0].meanings[0].definitions[0] &&
           data[0].meanings[0].definitions[0].definition;
         if (definition) {
-          setWordDefinition(definition);
-        } else {
-          setWordDefinition("Definition not found");
-        }
+          const newWordInfo = {
+            ...wordInfo,
+            meaning: definition
+          }
+          setWordInfo(newWordInfo);
+          console.log(wordInfo.meaning)
+        } 
       })
       .catch((error) => {
         console.error("Dictionary API error", error);
-        setWordDefinition("Error fetching definition.");
       });
   };
 
   // 選択した箇所の日本語訳をDeepLで表示
-  const authKey: any = process.env.DEEPL_API_KEY
-  const translator = new deepl.Translator(authKey);
+const handleDeeplTranslation = (text: string, target_lang: DeeplLanguages) => {
+  const translations = Translator(text, target_lang)
+  translations.then((result) => {
+    const newWordInfo = {
+      ...wordInfo,
+      translation: result.text
+    }  
+  setWordInfo(newWordInfo)
+  console.log(wordInfo.translation)
+}
+  )
 
-  const handleDeeplSearch = async () => {
-    const targetLang: deepl.TargetLanguageCode = 'ja';
-    const results = await translator.translateText(
-      ['Hello, world!', 'How are you?'],
-      null,
-      targetLang,
-    );
-    results.map((result: deepl.TextResult) => {
-      console.log(result.text);
-    });
-  };
+}
+
+// 選択したワードをfirestoreに保存
+const registerWord = () => {
+
+
+};
 
   return (
     <Box display="flex" justifyContent="center" alignItems="center">
@@ -131,13 +157,22 @@ export default function Learn() {
         </Box>
       </Box>
       <Box display="flex" flexDirection="column" alignItems="center" mt={4}>        
-        <Typography sx={{ mt: 2 }}>Selected Word: {selectedWord}</Typography>
+        <Typography sx={{ mt: 2 }}>Selected Word: {wordInfo.spelling}</Typography>
+
         <Typography>Free Dictionaryの検索結果</Typography>
-        <Typography sx={{ mt: 2 }}>Definition: {wordDefinition}</Typography>
+        <Typography sx={{ mt: 2 }}>Definition: {wordInfo.meaning}</Typography>
+
         <Typography>DeepLの検索結果</Typography>
         <Button
-        onClick={handleDeeplSearch}
+        onClick={() => {handleDeeplTranslation(`${wordInfo.spelling}`, 'JA')}}
         >DeepL Search</Button>
+        <Typography>→翻訳結果{wordInfo.translation}</Typography>
+        <Button
+        onClick={registerWord}
+        >お気に入りに登録</Button>
+      </Box>
+      <Box>
+       
       </Box>
     </Box>
   );
