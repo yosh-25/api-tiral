@@ -28,6 +28,9 @@ export default function Learn() {
     status: false,
   });
 
+//  TODO 次のページに進める前にコンポーネント化しておく。
+//  TODO anyを消しておく。
+
   const handleWikipediaSearch = () => {
     fetch(
       `/api/proxy/w/api.php?action=query&format=json&prop=extracts&titles=${searchWord}&formatversion=2&exchars=1000&explaintext`
