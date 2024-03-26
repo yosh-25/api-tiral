@@ -18,7 +18,6 @@ export default function Learn() {
   // 以下2つもオブジェクト型にして1つのuseStateにまとめる予定
   const [textFromAPI, setTextFromAPI] = useState("");
   const [searchWord, setSearchWord] = useState("");
-  const [translatedText, setTranslatedText] = useState("");
   const [wordInfo, setWordInfo] = useState({
     id: "",
     spelling: "",
@@ -62,10 +61,6 @@ export default function Learn() {
       };
       setWordInfo(newWordInfo);
     }
-    console.log(wordInfo.spelling);
-    // if (text) {
-    //   setSelectedWord(text);
-    // }
   };
 
   // 選択した単語を辞書で調べる。
@@ -120,9 +115,11 @@ export default function Learn() {
     const today = new Date();
     if((!wordInfo?.spelling)){
       setError('単語が未選択です。')
+      return;
     }
     if((!wordInfo?.translation)){
       setError('訳が未設定です。')
+      return;
     }
 
     await addDoc(collection(db, 'wordList'), {
@@ -195,7 +192,8 @@ export default function Learn() {
           DeepL Search
         </Button>
         <Typography>→翻訳結果{wordInfo.translation}</Typography>
-        <Button onClick={registerWord}>お気に入りに登録</Button>
+        <Button onClick={registerWord}>単語リストに登録</Button>
+        <Typography>{error}</Typography>
       </Box>
       <Box></Box>
     </Box>

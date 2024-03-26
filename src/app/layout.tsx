@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { Box } from "@mui/material";
 
 export const metadata: Metadata = {
   title: "English Learning Made Easy",
@@ -16,8 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body >
+      <body>
+      <Box sx={{display: 'flex', justifyContent: 'center', marginTop: '80px'}}>
         <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
+      </Box>
       </body>
     </html>
   );

@@ -1,8 +1,8 @@
-export type newword = {
+export type Word = {
     id: string,
-    word: string,
+    spelling: string,
     meaning: string,
     translation: string,
-    registeredDate: Date;
+    registeredDate: string;
     status: boolean,
     };
