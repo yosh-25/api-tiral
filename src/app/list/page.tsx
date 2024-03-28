@@ -5,7 +5,11 @@ import { getDocs, collection } from "firebase/firestore";
 import {
   Box,
   Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
   Stack,
+  Select,
   TextField,
   Typography,
   Input,
@@ -16,11 +20,28 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { Word } from "../../types";
+import { Word, FilterByStatus, StatusOptions } from "../../types";
 import WordComponent from "@/app/components/wordList";
 
 function showWordList() {
   const [wordList, setWordList] = useState<Word[]>([]);
+  const [filterByStatus, setFilterByStatus] = useState<FilterByStatus>();
+
+  const statusOptions: StatusOptions[] = [
+    { value: '全て', label: '全て'},
+    { value: '〇', label: '〇'},
+    { value: '×', label: '×'},
+  ]
+
+  // TODO 続きをサイト参考に作る。　https://zenn.dev/takuh/articles/b4882c87d47e72
+
+  // const menuItems: FilterByStatus[] 
+
+  // const handleSelectOption = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const selectedValue = event.target.value;
+  //   const selected = MenuItem.find((MenuItem) => MenuItem.value === selectedValue);
+  // }
+
 
   useEffect(() => {
     const fetchWordList = async () => {
@@ -29,7 +50,7 @@ function showWordList() {
         const { spelling, meaning, translation, registeredDate, status } =
           doc.data();
         const date = new Date(registeredDate.toDate());
-        const formattedDate = date.toLocaleDateString('ja-JP');
+        const formattedDate = date.toLocaleDateString("ja-JP");
         return {
           id: doc.id,
           spelling,
@@ -42,13 +63,21 @@ function showWordList() {
       setWordList(wordList);
     };
     fetchWordList();
-
   }, []);
 
   return (
-    <Box>
-      <Typography variant="h3">単語リスト一覧</Typography>
-      <TableContainer>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
+    >
+      <Typography variant="h3" sx={{ textAlign: "center" }}>
+        単語リスト一覧
+      </Typography>
+
+      <TableContainer sx={{ marginBottom: "30px" }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -56,7 +85,7 @@ function showWordList() {
               <TableCell>Meaning</TableCell>
               <TableCell>意味</TableCell>
               <TableCell>登録日</TableCell>
-              <TableCell></TableCell>
+              <TableCell>定着度</TableCell>
             </TableRow>
           </TableHead>
           {/* TODO map関数でfirebaseからデータを持ってくる */}
@@ -65,12 +94,31 @@ function showWordList() {
             <WordComponent key={word.id} word={word}/>
           ))} */}
           <TableBody>
-          {wordList.map((word: Word) => (
-            <WordComponent key={word.id} word={word}/>
-          ))}
+            {wordList.map((word: Word) => (
+              <WordComponent key={word.id} word={word} />
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
+
+      <FormControl
+        sx={{ width: "150px", marginLeft: "auto", marginRight: "auto" }}
+      >
+        <InputLabel id="statusSelect">定着度</InputLabel>
+        <Select 
+          value={filterByStatus} >
+        
+        {statusOptions.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+        
+          {/* <MenuItem value="全て"></MenuItem>
+          <MenuItem value="〇">〇</MenuItem>
+          <MenuItem value="×">×</MenuItem> */}
+        </Select>
+      </FormControl>
     </Box>
   );
 }

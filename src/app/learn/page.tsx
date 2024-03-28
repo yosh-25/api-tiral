@@ -127,6 +127,7 @@ export default function Learn() {
     meaning: wordInfo.meaning,
     translation: wordInfo.translation,
     registeredDate: today,
+    status: wordInfo.status
     });
   };
 
