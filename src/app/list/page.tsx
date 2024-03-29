@@ -20,28 +20,36 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { Word, FilterByStatus, StatusOptions } from "../../types";
+import { SelectChangeEvent } from "@mui/material/Select";
+import { Word, FilterByStatus, StatusOption } from "../../types";
 import WordComponent from "@/app/components/wordList";
 
 function showWordList() {
   const [wordList, setWordList] = useState<Word[]>([]);
   const [filterByStatus, setFilterByStatus] = useState<FilterByStatus>();
+  const [selectedOption, setSelectedOption] = useState<StatusOption>({
+    value: "全て",
+    label: "全て",
+  });
 
-  const statusOptions: StatusOptions[] = [
-    { value: '全て', label: '全て'},
-    { value: '〇', label: '〇'},
-    { value: '×', label: '×'},
-  ]
+  const statusOptions: StatusOption[] = [
+    { value: "全て", label: "全て" },
+    { value: "〇", label: "〇" },
+    { value: "×", label: "×" },
+  ];
 
-  // TODO 続きをサイト参考に作る。　https://zenn.dev/takuh/articles/b4882c87d47e72
-
-  // const menuItems: FilterByStatus[] 
-
-  // const handleSelectOption = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  //   const selectedValue = event.target.value;
-  //   const selected = MenuItem.find((MenuItem) => MenuItem.value === selectedValue);
-  // }
-
+  const handleSelectOption = (event: SelectChangeEvent<string>) => {
+    const selectedValue = event.target.value;
+    // 選んだ選択肢をselectedOptionとして保持する
+    const selected = statusOptions.find(
+      (option) => option.value === selectedValue
+    ) || {
+      value: "",
+      label: "Select an option",
+    };
+    setSelectedOption(selected);
+  };
+  // TODO: 次回ここから。selectedOptionと紐づけてフィルター機能を実装する。
 
   useEffect(() => {
     const fetchWordList = async () => {
@@ -105,18 +113,12 @@ function showWordList() {
         sx={{ width: "150px", marginLeft: "auto", marginRight: "auto" }}
       >
         <InputLabel id="statusSelect">定着度</InputLabel>
-        <Select 
-          value={filterByStatus} >
-        
-        {statusOptions.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-        
-          {/* <MenuItem value="全て"></MenuItem>
-          <MenuItem value="〇">〇</MenuItem>
-          <MenuItem value="×">×</MenuItem> */}
+        <Select value={selectedOption.value} onChange={handleSelectOption}>
+          {statusOptions.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     </Box>

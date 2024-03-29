@@ -9,7 +9,7 @@ export type Word = {
 
 export type FilterByStatus = '〇' | '×' | '全て';
 
-export type StatusOptions = {
+export type StatusOption = {
     value: string,
     label: string
 }
