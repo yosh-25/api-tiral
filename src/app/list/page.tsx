@@ -21,21 +21,26 @@ import {
   TableRow,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { Word, StatusOption } from "../../types";
+import { Word, StatusOption, SortOption } from "../../types";
 import WordComponent from "@/app/components/wordList";
+
+// TODO: filterとsortを併せたuseState作成、他の部分をこれに合わせる。
 
 function showWordList() {
   const [wordList, setWordList] = useState<Word[]>([]);
-  const [filteredWordList, setFilteredWordList] = useState<Word[]>([]);
-  const [selectedOption, setSelectedOption] = useState<StatusOption>({
+  const [filteredAndSortedWordList, setFilteredAndSortedWordList] = useState<Word[]>([]);
+  const [filteredStatus, setFilteredStatus] = useState<StatusOption>({
     value: "全て",
     label: "全て",
   });
-
   const statusOptions: StatusOption[] = [
     { value: "全て", label: "全て" },
     { value: "〇", label: "〇" },
     { value: "×", label: "×" },
+  ];
+  const [selectedSortOption, setSelectedSortOption] = useState<SortOption>('未選択');
+  const selectOptionsByDate: SortOption[] = [
+    '未選択', '降順', '昇順'
   ];
 
   useEffect(() => {
@@ -60,41 +65,73 @@ function showWordList() {
     fetchWordList();
   }, []);
 
-  const handleSelectOption = (event: SelectChangeEvent<string>) => {
+  const handleStatusOption = (event: SelectChangeEvent<string>) => {
     const selectedValue = event.target.value;
-    // 選んだ選択肢をselectedOptionとして保持する
+    // 選んだ選択肢をselectedStatusOptionとして保持する
     const selected = statusOptions.find(
       (option) => option.value === selectedValue
     ) || {
       value: "",
       label: "Select an option",
     };
-    setSelectedOption(selected);
+    setFilteredStatus(selected);
   };
-  // TODO: 次回ここから。selectedOptionと紐づけてフィルター機能を実装する。
+
+  const handleSortOption = (event: SelectChangeEvent<string>) => {
+    const selectedValue = event.target.value;
+    // 選んだ選択肢をselecteSortOptionとして保持する
+    const selected = selectOptionsByDate.find(
+      (option) => option === selectedValue
+    );
+    if (selected !== undefined) {
+      setSelectedSortOption(selected);
+    } else {
+      setSelectedSortOption('未選択')
+    }
+    };
 
   useEffect(() => {
-    const filterWordList = () => {
-      switch (selectedOption.value) {
+    // 並び替えを最初に選択時はうまく動作しなかったためuseEffect内で仮List設定
+    let tempList = [...wordList];
+
+    // フィルター機能
+      switch (filteredStatus.value) {
         case "〇":
-          setFilteredWordList(
-            wordList.filter((word) => word.status === true)
-          );
+          tempList = tempList.filter((word) => word.status === true)
+          ;
           break;
         
         case "×":
-          setFilteredWordList(
-            wordList.filter((word) => word.status === false)
-          );
+          tempList.filter((word) => word.status === false)
+          ;
+          break;
+        default:
+          break;
+      }
+
+    // ソート機能（登録日）
+      switch (selectedSortOption) {
+        case '降順':
+          tempList.sort(
+          (a, b) =>
+           new Date(b.registeredDate).getTime() - new Date(a.registeredDate).getTime());
           break;
 
+        case '昇順':
+          tempList.sort(
+            (a, b) =>
+             new Date(a.registeredDate).getTime() - new Date(b.registeredDate).getTime());
+          
+          break;
         default:
-          setFilteredWordList(wordList); 
+          break;        
       }
-    };
-    filterWordList();
-    console.log(wordList)
-  }, [wordList, selectedOption]);
+
+    // ソート機能（アルファベット順）
+    
+
+      setFilteredAndSortedWordList(tempList);
+  }, [wordList, filteredStatus, selectedSortOption]);
 
   return (
     <Box
@@ -108,7 +145,7 @@ function showWordList() {
         単語リスト一覧
       </Typography>
 
-      <TableContainer sx={{ marginBottom: "30px" }}>
+      <TableContainer sx={{ marginBottom: "50px" }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -120,18 +157,26 @@ function showWordList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredWordList.map((word: Word) => (
+            {filteredAndSortedWordList.map((word: Word) => (
               <WordComponent key={word.id} word={word} />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <FormControl
-        sx={{ width: "150px", marginLeft: "auto", marginRight: "auto" }}
+      <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",        
+        marginLeft: "auto", 
+        marginRight: "auto"
+      }}
       >
-        <InputLabel id="statusSelect">定着度</InputLabel>
-        <Select value={selectedOption.value} onChange={handleSelectOption}>
+      <FormControl
+        sx={{ width: "150px", mr: '10px'}}
+      >
+        <InputLabel id="statusSelect">絞り込み（定着度）</InputLabel>
+        <Select value={filteredStatus.value} onChange={handleStatusOption}>
           {statusOptions.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
@@ -139,6 +184,36 @@ function showWordList() {
           ))}
         </Select>
       </FormControl>
+
+      <FormControl
+        sx={{ width: "150px", mr: '10px'}}
+      >
+        <InputLabel id="sortSelect">並び替え（登録順）</InputLabel>
+        <Select value={selectedSortOption} onChange={handleSortOption}>
+          {selectOptionsByDate.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      <FormControl
+        sx={{ width: "150px", mr: '10px' }}
+      >
+        <InputLabel id="statusSelect">並び替え（登録順）</InputLabel>
+        <Select value={filteredStatus.value} onChange={handleStatusOption}>
+          {statusOptions.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+
+      </Box>
+
     </Box>
   );
 }

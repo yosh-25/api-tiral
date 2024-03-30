@@ -11,3 +11,5 @@ export type StatusOption = {
     value: string,
     label: string
 }
+
+export type SortOption = string;
