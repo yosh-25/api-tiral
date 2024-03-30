@@ -21,12 +21,12 @@ import {
   TableRow,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { Word, FilterByStatus, StatusOption } from "../../types";
+import { Word, StatusOption } from "../../types";
 import WordComponent from "@/app/components/wordList";
 
 function showWordList() {
   const [wordList, setWordList] = useState<Word[]>([]);
-  const [filterByStatus, setFilterByStatus] = useState<FilterByStatus>();
+  const [filteredWordList, setFilteredWordList] = useState<Word[]>([]);
   const [selectedOption, setSelectedOption] = useState<StatusOption>({
     value: "全て",
     label: "全て",
@@ -37,19 +37,6 @@ function showWordList() {
     { value: "〇", label: "〇" },
     { value: "×", label: "×" },
   ];
-
-  const handleSelectOption = (event: SelectChangeEvent<string>) => {
-    const selectedValue = event.target.value;
-    // 選んだ選択肢をselectedOptionとして保持する
-    const selected = statusOptions.find(
-      (option) => option.value === selectedValue
-    ) || {
-      value: "",
-      label: "Select an option",
-    };
-    setSelectedOption(selected);
-  };
-  // TODO: 次回ここから。selectedOptionと紐づけてフィルター機能を実装する。
 
   useEffect(() => {
     const fetchWordList = async () => {
@@ -72,6 +59,42 @@ function showWordList() {
     };
     fetchWordList();
   }, []);
+
+  const handleSelectOption = (event: SelectChangeEvent<string>) => {
+    const selectedValue = event.target.value;
+    // 選んだ選択肢をselectedOptionとして保持する
+    const selected = statusOptions.find(
+      (option) => option.value === selectedValue
+    ) || {
+      value: "",
+      label: "Select an option",
+    };
+    setSelectedOption(selected);
+  };
+  // TODO: 次回ここから。selectedOptionと紐づけてフィルター機能を実装する。
+
+  useEffect(() => {
+    const filterWordList = () => {
+      switch (selectedOption.value) {
+        case "〇":
+          setFilteredWordList(
+            wordList.filter((word) => word.status === true)
+          );
+          break;
+        
+        case "×":
+          setFilteredWordList(
+            wordList.filter((word) => word.status === false)
+          );
+          break;
+
+        default:
+          setFilteredWordList(wordList); 
+      }
+    };
+    filterWordList();
+    console.log(wordList)
+  }, [wordList, selectedOption]);
 
   return (
     <Box
@@ -96,13 +119,8 @@ function showWordList() {
               <TableCell>定着度</TableCell>
             </TableRow>
           </TableHead>
-          {/* TODO map関数でfirebaseからデータを持ってくる */}
-          {/* TODO  WordList Componentを作成する*/}
-          {/* {wordList.map((word: Word) => (
-            <WordComponent key={word.id} word={word}/>
-          ))} */}
           <TableBody>
-            {wordList.map((word: Word) => (
+            {filteredWordList.map((word: Word) => (
               <WordComponent key={word.id} word={word} />
             ))}
           </TableBody>

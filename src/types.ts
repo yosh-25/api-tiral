@@ -7,8 +7,6 @@ export type Word = {
     status: boolean,
     }
 
-export type FilterByStatus = '〇' | '×' | '全て';
-
 export type StatusOption = {
     value: string,
     label: string
