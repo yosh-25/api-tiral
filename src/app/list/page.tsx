@@ -28,7 +28,9 @@ import WordComponent from "@/app/components/wordList";
 
 function showWordList() {
   const [wordList, setWordList] = useState<Word[]>([]);
-  const [filteredAndSortedWordList, setFilteredAndSortedWordList] = useState<Word[]>([]);
+  const [filteredAndSortedWordList, setFilteredAndSortedWordList] = useState<
+    Word[]
+  >([]);
   const [filteredStatus, setFilteredStatus] = useState<StatusOption>({
     value: "全て",
     label: "全て",
@@ -38,10 +40,13 @@ function showWordList() {
     { value: "〇", label: "〇" },
     { value: "×", label: "×" },
   ];
-  const [selectedSortOption, setSelectedSortOption] = useState<SortOption>('未選択');
-  const selectOptionsByDate: SortOption[] = [
-    '未選択', '降順', '昇順'
-  ];
+  const [selectedSortOptionByDate, setSelectedSortOptionByDate] =
+    useState<SortOption>("未選択");
+  const sortOptionsByDate: SortOption[] = ["未選択", "降順", "昇順"];
+
+  const [selectedSortOptionBySpelling, setSelectedSortOptionBySpelling] =
+    useState<SortOption>("全て");
+  const sortOptionsBySpelling: SortOption[] = ["全て", "a→z", "z→a"];
 
   useEffect(() => {
     const fetchWordList = async () => {
@@ -77,61 +82,87 @@ function showWordList() {
     setFilteredStatus(selected);
   };
 
-  const handleSortOption = (event: SelectChangeEvent<string>) => {
+  const handleSortOptionByDate = (event: SelectChangeEvent<string>) => {
     const selectedValue = event.target.value;
     // 選んだ選択肢をselecteSortOptionとして保持する
-    const selected = selectOptionsByDate.find(
+    const selected = sortOptionsByDate.find(
       (option) => option === selectedValue
     );
     if (selected !== undefined) {
-      setSelectedSortOption(selected);
+      setSelectedSortOptionByDate(selected);
     } else {
-      setSelectedSortOption('未選択')
+      setSelectedSortOptionByDate("未選択");
     }
-    };
+  };
+
+  const handleSortOptionBySpelling = (event: SelectChangeEvent<string>) => {
+    const selectedValue = event.target.value;
+    // 選んだ選択肢をselecteSortOptionとして保持する
+    const selected = sortOptionsBySpelling.find(
+      (option) => option === selectedValue
+    );
+    if (selected !== undefined) {
+      setSelectedSortOptionBySpelling(selected);
+    } else {
+      setSelectedSortOptionBySpelling("全て");
+    }
+  };
 
   useEffect(() => {
     // 並び替えを最初に選択時はうまく動作しなかったためuseEffect内で仮List設定
     let tempList = [...wordList];
 
     // フィルター機能
-      switch (filteredStatus.value) {
-        case "〇":
-          tempList = tempList.filter((word) => word.status === true)
-          ;
-          break;
-        
-        case "×":
-          tempList.filter((word) => word.status === false)
-          ;
-          break;
-        default:
-          break;
-      }
+    switch (filteredStatus.value) {
+      case "〇":
+        tempList = tempList.filter((word) => word.status === true);
+        break;
+
+      case "×":
+        tempList.filter((word) => word.status === false);
+        break;
+      default:
+        break;
+    }
 
     // ソート機能（登録日）
-      switch (selectedSortOption) {
-        case '降順':
-          tempList.sort(
+    switch (selectedSortOptionByDate) {
+      case "降順":
+        tempList.sort(
           (a, b) =>
-           new Date(b.registeredDate).getTime() - new Date(a.registeredDate).getTime());
-          break;
+            new Date(b.registeredDate).getTime() -
+            new Date(a.registeredDate).getTime()
+        );
+        break;
 
-        case '昇順':
-          tempList.sort(
-            (a, b) =>
-             new Date(a.registeredDate).getTime() - new Date(b.registeredDate).getTime());
-          
-          break;
-        default:
-          break;        
-      }
+      case "昇順":
+        tempList.sort(
+          (a, b) =>
+            new Date(a.registeredDate).getTime() -
+            new Date(b.registeredDate).getTime()
+        );
+
+        break;
+      default:
+        break;
+    }
 
     // ソート機能（アルファベット順）
-    
+    switch (selectedSortOptionBySpelling) {
+      case "a→z":
+        tempList.sort((a, b) => a.spelling.localeCompare(b.spelling));
+        break;
 
-      setFilteredAndSortedWordList(tempList);
-  }, [wordList, filteredStatus, selectedSortOption]);
+      case "z→a":
+        tempList.sort((a, b) => b.spelling.localeCompare(a.spelling));
+        break;
+
+      default:
+        break;
+    }
+
+    setFilteredAndSortedWordList(tempList);
+  }, [wordList, filteredStatus, selectedSortOptionByDate, selectedSortOptionBySpelling]);
 
   return (
     <Box
@@ -165,55 +196,46 @@ function showWordList() {
       </TableContainer>
 
       <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",        
-        marginLeft: "auto", 
-        marginRight: "auto"
-      }}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
       >
-      <FormControl
-        sx={{ width: "150px", mr: '10px'}}
-      >
-        <InputLabel id="statusSelect">絞り込み（定着度）</InputLabel>
-        <Select value={filteredStatus.value} onChange={handleStatusOption}>
-          {statusOptions.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+        <FormControl sx={{ width: "150px", mr: "10px" }}>
+          <InputLabel id="statusSelect">絞り込み（定着度）</InputLabel>
+          <Select value={filteredStatus.value} onChange={handleStatusOption}>
+            {statusOptions.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-      <FormControl
-        sx={{ width: "150px", mr: '10px'}}
-      >
-        <InputLabel id="sortSelect">並び替え（登録順）</InputLabel>
-        <Select value={selectedSortOption} onChange={handleSortOption}>
-          {selectOptionsByDate.map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+        <FormControl sx={{ width: "150px", mr: "10px" }}>
+          <InputLabel id="sortSelect">並び替え（登録順）</InputLabel>
+          <Select value={selectedSortOptionByDate} onChange={handleSortOptionByDate}>
+            {sortOptionsByDate.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-      <FormControl
-        sx={{ width: "150px", mr: '10px' }}
-      >
-        <InputLabel id="statusSelect">並び替え（登録順）</InputLabel>
-        <Select value={filteredStatus.value} onChange={handleStatusOption}>
-          {statusOptions.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-
+        <FormControl sx={{ width: "150px", mr: "10px" }}>
+          <InputLabel id="statusSelect">並び替え（綴り順）</InputLabel>
+          <Select value={selectedSortOptionBySpelling} onChange={handleSortOptionBySpelling}>
+            {sortOptionsBySpelling.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Box>
-
     </Box>
   );
 }
