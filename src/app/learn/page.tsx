@@ -28,13 +28,14 @@ export default function Learn() {
   });
   const [ error, setError] =useState("");
 
-  //  TODO 次のページに進める前にコンポーネント化しておく。
   //  TODO anyを消しておく。
+  // TODO fetchしてくるwikipediaの参照先は要検討。できればMain PageのTop記事にアクセスしたい。または他のAPI？
 
   const handleWikipediaSearch = () => {
     fetch(
       `/api/proxy/w/api.php?action=query&format=json&prop=extracts&titles=${searchWord}&formatversion=2&exchars=1000&explaintext`
-    )
+    
+      )
       .then((response) => {
         return response.json();
       })

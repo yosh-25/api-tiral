@@ -1,4 +1,7 @@
+'use client'
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Word } from "../../types";
 import {
   Box,
@@ -19,8 +22,19 @@ type WordProps = {
   word: Word;
 };
 
-const WordList: React.FC<WordProps> = ({ word }) => {
+const WordItem: React.FC<WordProps> = ({ word }) => {
   const dateString = word.registeredDate.toString();
+
+  const [selectedId, setSelectedId] = useState<string>("");
+
+  const clickToMoveToEdit =  (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    router.push(`/list/${word.id}/edit`);
+  };
+
+  const router = useRouter();
 
   return (
     <>
@@ -31,11 +45,13 @@ const WordList: React.FC<WordProps> = ({ word }) => {
         <TableCell>{dateString}</TableCell>
         <TableCell>{word.status ? "〇" : "×"}</TableCell>
         <TableCell>
-          <Button>編集</Button>
+          <Button
+          onClick={(e)=>clickToMoveToEdit(e)}
+          >編集</Button>
         </TableCell>
       </TableRow>
     </>
   );
 };
 
-export default WordList;
+export default WordItem;

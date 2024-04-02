@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { Word, StatusOption, SortOption } from "../../types";
-import WordComponent from "@/app/components/wordList";
+import WordItem from "@/app/components/wordList";
 
 // TODO: filterとsortを併せたuseState作成、他の部分をこれに合わせる。
 
@@ -35,6 +35,8 @@ function showWordList() {
     value: "全て",
     label: "全て",
   });
+
+
   const statusOptions: StatusOption[] = [
     { value: "全て", label: "全て" },
     { value: "〇", label: "〇" },
@@ -108,6 +110,8 @@ function showWordList() {
     }
   };
 
+
+
   useEffect(() => {
     // 並び替えを最初に選択時はうまく動作しなかったためuseEffect内で仮List設定
     let tempList = [...wordList];
@@ -162,7 +166,12 @@ function showWordList() {
     }
 
     setFilteredAndSortedWordList(tempList);
-  }, [wordList, filteredStatus, selectedSortOptionByDate, selectedSortOptionBySpelling]);
+  }, [
+    wordList,
+    filteredStatus,
+    selectedSortOptionByDate,
+    selectedSortOptionBySpelling,
+  ]);
 
   return (
     <Box
@@ -189,7 +198,7 @@ function showWordList() {
           </TableHead>
           <TableBody>
             {filteredAndSortedWordList.map((word: Word) => (
-              <WordComponent key={word.id} word={word} />
+              <WordItem key={word.id} word={word} />
             ))}
           </TableBody>
         </Table>
@@ -216,7 +225,10 @@ function showWordList() {
 
         <FormControl sx={{ width: "150px", mr: "10px" }}>
           <InputLabel id="sortSelect">並び替え（登録順）</InputLabel>
-          <Select value={selectedSortOptionByDate} onChange={handleSortOptionByDate}>
+          <Select
+            value={selectedSortOptionByDate}
+            onChange={handleSortOptionByDate}
+          >
             {sortOptionsByDate.map((option) => (
               <MenuItem key={option} value={option}>
                 {option}
@@ -227,7 +239,10 @@ function showWordList() {
 
         <FormControl sx={{ width: "150px", mr: "10px" }}>
           <InputLabel id="statusSelect">並び替え（綴り順）</InputLabel>
-          <Select value={selectedSortOptionBySpelling} onChange={handleSortOptionBySpelling}>
+          <Select
+            value={selectedSortOptionBySpelling}
+            onChange={handleSortOptionBySpelling}
+          >
             {sortOptionsBySpelling.map((option) => (
               <MenuItem key={option} value={option}>
                 {option}
