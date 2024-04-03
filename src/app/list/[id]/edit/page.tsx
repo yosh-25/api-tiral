@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/../libs/firebase";
-import WordItem from "@/app/components/wordList";
+import WordItemForEdit from "@/app/components/wordListForEdit";
 import { Word } from "@/types";
 import {
   Box,
@@ -75,26 +75,7 @@ export default function wordEdit({ params }: { params: { id: string } }) {
       <Typography variant="h3" sx={{ textAlign: "center" }}>
         単語編集ページ
       </Typography>
-
-      <TableContainer sx={{ marginBottom: "50px" }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>単語</TableCell>
-              <TableCell>Meaning</TableCell>
-              <TableCell>意味</TableCell>
-              <TableCell>登録日</TableCell>
-              <TableCell>定着度</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <WordItem
-              key={wordDetails.id}
-              word={wordDetails}
-            />
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <WordItemForEdit key={wordDetails.id} word={wordDetails} />
     </Box>
   );
 }

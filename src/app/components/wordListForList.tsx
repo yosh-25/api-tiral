@@ -22,7 +22,7 @@ type WordProps = {
   word: Word;
 };
 
-const WordItem: React.FC<WordProps> = ({ word }) => {
+const WordItemForList: React.FC<WordProps> = ({ word }) => {
   const dateString = word.registeredDate.toString();
 
   const [selectedId, setSelectedId] = useState<string>("");
@@ -54,4 +54,6 @@ const WordItem: React.FC<WordProps> = ({ word }) => {
   );
 };
 
-export default WordItem;
+export default WordItemForList;
+
+

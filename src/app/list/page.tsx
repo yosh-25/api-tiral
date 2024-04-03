@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { Word, StatusOption, SortOption } from "../../types";
-import WordItem from "@/app/components/wordList";
+import WordItemForList from "@/app/components/wordListForList";
 
 // TODO: filterとsortを併せたuseState作成、他の部分をこれに合わせる。
 
@@ -35,7 +35,6 @@ function showWordList() {
     value: "全て",
     label: "全て",
   });
-
 
   const statusOptions: StatusOption[] = [
     { value: "全て", label: "全て" },
@@ -109,8 +108,6 @@ function showWordList() {
       setSelectedSortOptionBySpelling("全て");
     }
   };
-
-
 
   useEffect(() => {
     // 並び替えを最初に選択時はうまく動作しなかったためuseEffect内で仮List設定
@@ -198,7 +195,7 @@ function showWordList() {
           </TableHead>
           <TableBody>
             {filteredAndSortedWordList.map((word: Word) => (
-              <WordItem key={word.id} word={word} />
+              <WordItemForList key={word.id} word={word} />
             ))}
           </TableBody>
         </Table>
