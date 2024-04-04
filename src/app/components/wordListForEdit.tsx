@@ -28,7 +28,6 @@ type WordProps = {
 
 const WordItemForEdit: React.FC<WordProps> = ({ word }) => {
   const dateString = word.registeredDate.toString();
-  //   todo: 定着度false表示を〇か×に変換する　listのpage.tsxが参考になりそう。
   const [wordDetails, setWordDetails] = useState<Word>({
     id: word.id,
     spelling: word.spelling,
@@ -155,7 +154,6 @@ const WordItemForEdit: React.FC<WordProps> = ({ word }) => {
               <TableCell>
                 {" "}
                 <TextField
-                  // todo: dateだと表示がされていないように見える。後で修正
                   type="text"
                   value={wordDetails.registeredDate}
                   onChange={updateRegisteredDate}
