@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-      <Box sx={{display: 'flex', justifyContent: 'center', marginTop: '80px'}}>
+      <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '80px'}}>
         <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
       </Box>
       </body>

@@ -10,7 +10,9 @@ import {
   TextField,
   Typography,
   Input,
+  Grid,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import { Translator } from "../../../libs/Translation";
 import { DeeplLanguages } from "deepl";
 
@@ -26,16 +28,15 @@ export default function Learn() {
     registeredDate: "",
     status: false,
   });
-  const [ error, setError] =useState("");
+  const [error, setError] = useState("");
 
-  //  TODO anyを消しておく。
   // TODO fetchしてくるwikipediaの参照先は要検討。できればMain PageのTop記事にアクセスしたい。または他のAPI？
+// TODO learnページ、リストページ、編集ページのCSSを一旦見れるくらいに整える。
 
   const handleWikipediaSearch = () => {
     fetch(
-      `/api/proxy/w/api.php?action=query&format=json&prop=extracts&titles=${searchWord}&formatversion=2&exchars=1000&explaintext`
-    
-      )
+      `/api/proxy/w/api.php?action=query&format=json&prop=extracts&titles=${searchWord}&formatversion=2&exchars=1500&explaintext`
+    )
       .then((response) => {
         return response.json();
       })
@@ -114,69 +115,90 @@ export default function Learn() {
   ) => {
     e.preventDefault();
     const today = new Date();
-    if((!wordInfo?.spelling)){
-      setError('単語が未選択です。')
+    if (!wordInfo?.spelling) {
+      setError("単語が未選択です。");
       return;
     }
-    if((!wordInfo?.translation)){
-      setError('訳が未設定です。')
+    if (!wordInfo?.translation) {
+      setError("訳が未設定です。");
       return;
     }
 
-    await addDoc(collection(db, 'wordList'), {
-    spelling: wordInfo.spelling,
-    meaning: wordInfo.meaning,
-    translation: wordInfo.translation,
-    registeredDate: today,
-    status: wordInfo.status
+    await addDoc(collection(db, "wordList"), {
+      spelling: wordInfo.spelling,
+      meaning: wordInfo.meaning,
+      translation: wordInfo.translation,
+      registeredDate: today,
+      status: wordInfo.status,
     });
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center">
-      <Box
-        width="50%"
-        display="flex"
-        flexDirection="column"
+    <Box display="flex" justifyContent="spacebetween" alignItems="center" 
+    sx={{ width:700}}
+    >
+      {/* 記事検索、検索記事の表示 */}
+      <Grid container
+        spacing={5}
+        mr={20}
+        // display="flex"
+        // flexDirection="column"
+        direction='column'
         justifyContent="center"
-        alignItems="flex-start"
-        mt={10}
+        alignItems="center"
       >
-        <Box
-          width="100%"
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="flex-start"
-        >
-          {/* Wikipedia検索用のフィールド */}
-          <Box mb={2}>
-            <Typography>検索</Typography>
-            <Input
-              type="text"
-              value={searchWord}
-              onChange={(e) => setSearchWord(e.target.value)}
-              placeholder="検索ワードを入力"
-            />
-          </Box>
-        </Box>
-        <Button onClick={handleWikipediaSearch}>Press</Button>
-        <Box
-          width="50%"
-          border={2}
-          borderColor="grey.500"
-          borderRadius={1}
-          pl={1.5}
-        >
-          {/* 検索したワードのテキストを表示 */}
-          <Typography
-            onMouseUp={handleTextSelection}
-            onClick={handleDictionarySearch}
+        <Grid item>
+        <SearchIcon fontSize="large" />
+        <Typography variant="h3" fontSize="1.5rem" fontWeight="500">
+          読みたい記事を検索してみよう
+          <br />
+          （例:Shohei Ohtani）
+        </Typography>
+        </Grid>
+        <Grid item>
+            {/* Wikipedia検索用のフィールド */}
+              <Box
+              mb={2}
+              >
+              <Input
+                type="text"
+                value={searchWord}
+                onChange={(e) => setSearchWord(e.target.value)}
+                placeholder="検索ワードを入力"
+              />
+              </Box>
+          </Grid>
+          <Button onClick={handleWikipediaSearch}>検索</Button>
+          <Box
+            border={2}
+            borderColor="grey.500"
+            borderRadius={1}
+            pl={1.5}
+            minHeight={500}
+            minWidth={400}
           >
-            {textFromAPI}{" "}
-          </Typography>
-        </Box>
-      </Box>
+            {/* 検索したワードのテキストを表示 */}
+            <Typography
+              onMouseUp={handleTextSelection}
+              onClick={handleDictionarySearch}
+            >
+              {/* 一旦ランダムテキストを表示させています */}
+              {/* Mr. Montoya knows the way to the bakery even though he's never been there.
+He had concluded that pigs must be able to fly in Hog Heaven.
+I cheated while playing the darts tournament by using a longbow.
+The three-year-old girl ran down the beach as the kite flew behind her.
+The blue parrot drove by the hitchhiking mongoose.
+The underground bunker was filled with chips and candy.
+He dreamed of eating green apples with worms.
+I'll have you know I've written over fifty novels
+Garlic ice-cream was her favorite.
+Now I need to ponder my existence and ask myself if I'm truly real */}
+              {textFromAPI}
+            </Typography>
+          </Box>
+      </Grid>
+
+      {/* 選択したワードの辞書検索を表示 */}
       <Box display="flex" flexDirection="column" alignItems="center" mt={4}>
         <Typography sx={{ mt: 2 }}>
           Selected Word: {wordInfo.spelling}

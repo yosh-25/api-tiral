@@ -20,6 +20,8 @@ export default function Home() {
           ログイン
         </Button>
         <Button variant="contained">初めての方はこちら</Button>
+        <Button variant="contained" onClick={() => router.push(`/learn`)}>学習ページへのリンク（開発中だけ設置）</Button>
+        <Button variant="contained" onClick={() => router.push(`/list`)}>単語リストへのリンク（開発中だけ設置）</Button>
       </Stack>
     </>
   );

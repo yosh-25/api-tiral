@@ -55,14 +55,15 @@ function showWordList() {
       const wordList = await querySnapshot.docs.map((doc) => {
         const { spelling, meaning, translation, registeredDate, status } =
           doc.data();
-        const date = new Date(registeredDate.toDate());
-        const formattedDate = date.toLocaleDateString("ja-JP");
+          // dateからstringに変更したため一旦無効化
+        // const date = new Date(registeredDate.toDate());
+        // const formattedDate = date.toLocaleDateString("ja-JP");
         return {
           id: doc.id,
           spelling,
           meaning,
           translation,
-          registeredDate: formattedDate,
+          registeredDate,
           status,
         };
       });
