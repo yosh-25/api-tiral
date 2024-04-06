@@ -42,9 +42,9 @@ const WordItemForEdit: React.FC<WordProps> = ({ word }) => {
     { value: "×", label: "×" },
   ];
 
-  const [succeed, setSucceed] = useState<string>('')
-  
-  const id = word.id
+  const [succeed, setSucceed] = useState<string>("");
+
+  const id = word.id;
 
   const clickToMoveToEdit = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -97,9 +97,11 @@ const WordItemForEdit: React.FC<WordProps> = ({ word }) => {
     });
   };
 
-  const sendDataToFirestore = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const sendDataToFirestore = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
-    const docRef = doc(db, 'wordList', id);
+    const docRef = doc(db, "wordList", id);
     await updateDoc(docRef, {
       id,
       spelling: wordDetails.spelling,
@@ -107,8 +109,8 @@ const WordItemForEdit: React.FC<WordProps> = ({ word }) => {
       translation: wordDetails.translation,
       registeredDate: wordDetails.registeredDate,
       status: wordDetails.status,
-    })
-    setSucceed('保存できました！')
+    });
+    setSucceed("保存できました！");
   };
 
   const router = useRouter();
@@ -175,12 +177,36 @@ const WordItemForEdit: React.FC<WordProps> = ({ word }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Button 
-      type='button'
-      variant="contained"
-      onClick={sendDataToFirestore}
-      >保存する</Button>
-      {succeed && <Typography>{succeed}</Typography>}
+      <Box display="flex" flexDirection="column" alignItems="center">
+        <Box mb={2}>
+          <Button
+            type="button"
+            variant="contained"
+            onClick={sendDataToFirestore}
+          >
+            保存する
+          </Button>
+          {succeed && <Typography>{succeed}</Typography>}
+        </Box>
+        <Box mb={1}>
+          <Button
+            type="button"
+            variant="contained"
+            onClick={() => router.push(`/list`)}
+          >
+            単語リストへのリンク（とりあえず設置）
+          </Button>
+        </Box>
+        <Box>
+          <Button
+            type="button"
+            variant="contained"
+            onClick={() => router.push(`/`)}
+          >
+            Topページへのリンク（とりあえず設置）
+          </Button>
+        </Box>
+      </Box>
     </>
   );
 };

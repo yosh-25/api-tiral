@@ -17,6 +17,7 @@ import { Translator } from "../../../libs/Translation";
 import { DeeplLanguages } from "deepl";
 
 export default function Learn() {
+  const router = useRouter();
   // 以下2つもオブジェクト型にして1つのuseStateにまとめる予定
   const [textFromAPI, setTextFromAPI] = useState("");
   const [searchWord, setSearchWord] = useState("");
@@ -29,13 +30,14 @@ export default function Learn() {
     status: false,
   });
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState('');
 
   // TODO fetchしてくるwikipediaの参照先は要検討。できればMain PageのTop記事にアクセスしたい。または他のAPI？
 // TODO learnページ、リストページ、編集ページのCSSを一旦見れるくらいに整える。
 
   const handleWikipediaSearch = () => {
     fetch(
-      `/api/proxy/w/api.php?action=query&format=json&prop=extracts&titles=${searchWord}&formatversion=2&exchars=1500&explaintext`
+      `/api/proxy/w/api.php?action=query&format=json&prop=extracts&titles=${searchWord}&formatversion=2&exchars=2000&explaintext`
     )
       .then((response) => {
         return response.json();
@@ -66,55 +68,48 @@ export default function Learn() {
   };
 
   // 選択した単語を辞書で調べる。
-  const handleDictionarySearch = () => {
+  const handleDictionarySearch = async (text: string,
+      target_lang: DeeplLanguages) => {
     if (!wordInfo.spelling) return;
 
-    fetch(
-      `https://api.dictionaryapi.dev/api/v2/entries/en/${wordInfo.spelling}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        const definition =
-          data[0] &&
-          data[0].meanings[0] &&
-          data[0].meanings[0].definitions[0] &&
-          data[0].meanings[0].definitions[0].definition;
-        if (definition) {
-          const newWordInfo = {
-            ...wordInfo,
-            meaning: definition,
-          };
-          setWordInfo(newWordInfo);
-          console.log(wordInfo.meaning);
-        }
-      })
-      .catch((error) => {
-        console.error("Dictionary API error", error);
-      });
-  };
+    const [dictionaryResponse, translationResult] = await Promise.all([
+      // 辞書APIへのリクエスト
+      fetch(
+        `https://api.dictionaryapi.dev/api/v2/entries/en/${wordInfo.spelling}`
+      )
+        .then((response) => response.json()),
 
-  // 選択した箇所の日本語訳をDeepLで表示
-  const handleDeeplTranslation = (
-    text: string,
-    target_lang: DeeplLanguages
-  ) => {
-    const translations = Translator(text, target_lang);
-    translations.then((result) => {
+      // DeepLへのリクエスト
+      Translator(text, target_lang),
+    ]);
+
+    // 辞書からのレスポンスへの処理
+    const definition = dictionaryResponse[0]?.meanings[0]?.definitions[0]?.definition;
+
+    // DeepLからのレスポンスを処理
+    const translation = translationResult.text;
+
+    // 2つのAPIからの処理をまとめて反映
+    if ( definition || translation ) {
       const newWordInfo = {
-        ...wordInfo,
-        translation: result.text,
-      };
-      setWordInfo(newWordInfo);
-      console.log(wordInfo.translation);
-    });
-  };
+      ...wordInfo,
+      meaning: definition,
+      translation: translation,
+    };
+    setWordInfo(newWordInfo);
+    }
+};
 
   // 選択したワードをfirestoreに保存
   const registerWord = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-    const today = new Date();
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const date = now.getDate();
+    const formattedDate = `${year}年 ${month}月 ${date}日`
     if (!wordInfo?.spelling) {
       setError("単語が未選択です。");
       return;
@@ -128,24 +123,26 @@ export default function Learn() {
       spelling: wordInfo.spelling,
       meaning: wordInfo.meaning,
       translation: wordInfo.translation,
-      registeredDate: today,
+      registeredDate: formattedDate,
       status: wordInfo.status,
     });
+
+    setSuccess('登録できました！')
   };
 
   return (
     <Box display="flex" justifyContent="spacebetween" alignItems="center" 
-    sx={{ width:700}}
+    
     >
       {/* 記事検索、検索記事の表示 */}
       <Grid container
         spacing={5}
-        mr={20}
-        // display="flex"
-        // flexDirection="column"
         direction='column'
         justifyContent="center"
         alignItems="center"
+        mr={8}
+        
+
       >
         <Grid item>
         <SearchIcon fontSize="large" />
@@ -174,52 +171,62 @@ export default function Learn() {
             borderColor="grey.500"
             borderRadius={1}
             pl={1.5}
-            minHeight={500}
-            minWidth={400}
+            height={550}
+            width={500}
+            p={2}
+      
           >
             {/* 検索したワードのテキストを表示 */}
             <Typography
               onMouseUp={handleTextSelection}
-              onClick={handleDictionarySearch}
+              onClick={()=>handleDictionarySearch(wordInfo.spelling, 'JA')}
+              textAlign='left'
             >
-              {/* 一旦ランダムテキストを表示させています */}
-              {/* Mr. Montoya knows the way to the bakery even though he's never been there.
-He had concluded that pigs must be able to fly in Hog Heaven.
-I cheated while playing the darts tournament by using a longbow.
-The three-year-old girl ran down the beach as the kite flew behind her.
-The blue parrot drove by the hitchhiking mongoose.
-The underground bunker was filled with chips and candy.
-He dreamed of eating green apples with worms.
-I'll have you know I've written over fifty novels
-Garlic ice-cream was her favorite.
-Now I need to ponder my existence and ask myself if I'm truly real */}
+              {textFromAPI ? '分からない単語はダブルクリックをして、右の辞書機能で調べましょう💡' : '(検索した記事が表示されます)'}
+              <br/><br/>
               {textFromAPI}
             </Typography>
           </Box>
       </Grid>
 
       {/* 選択したワードの辞書検索を表示 */}
-      <Box display="flex" flexDirection="column" alignItems="center" mt={4}>
-        <Typography sx={{ mt: 2 }}>
-          Selected Word: {wordInfo.spelling}
-        </Typography>
-
-        <Typography>Free Dictionaryの検索結果</Typography>
-        <Typography sx={{ mt: 2 }}>Definition: {wordInfo.meaning}</Typography>
-
-        <Typography>DeepLの検索結果</Typography>
-        <Button
-          onClick={() => {
-            handleDeeplTranslation(`${wordInfo.spelling}`, "JA");
-          }}
+      <Box 
+      display="flex" 
+      flexDirection="column" 
+      alignItems="left" 
+      mt={50}
+      height={500}
+      width={500}
+      >
+        <Typography 
+        mb={2}
+        height={50}
+        width={300}
+        textAlign="left"
         >
-          DeepL Search
-        </Button>
-        <Typography>→翻訳結果{wordInfo.translation}</Typography>
-        <Button onClick={registerWord}>単語リストに登録</Button>
-        <Typography>{error}</Typography>
+        
+          調べた単語: <br/> {wordInfo.spelling}
+        </Typography>
+        {/* 英英辞書&DeepLの結果 */}
+        <Typography
+          mb={2}
+          height={250}
+          width={300}
+          >意味: <br/> {wordInfo.meaning}  <br/>{wordInfo.translation}</Typography> 
+        <Box
+        width={300}
+        >
+        <Button 
+        onClick={registerWord}>単語リストに登録</Button>
+        </Box>
+        <Typography>{error}{success}</Typography>
+        
+        <Box mb={1}>
+        <Button variant="contained" onClick={() => router.push(`/list`)}>単語リストへのリンク（とりあえず設置）</Button>
+        </Box>
+        <Button variant="contained" onClick={() => router.push(`/`)}>Topページへのリンク（とりあえず設置）</Button>
+
       </Box>
-      <Box></Box>
     </Box>
   );
 }

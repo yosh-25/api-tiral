@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { db } from "../../../libs/firebase";
 import { getDocs, collection } from "firebase/firestore";
 import {
@@ -27,6 +28,9 @@ import WordItemForList from "@/app/components/wordListForList";
 // TODO: filterとsortを併せたuseState作成、他の部分をこれに合わせる。
 
 function showWordList() {
+
+  const router = useRouter();
+
   const [wordList, setWordList] = useState<Word[]>([]);
   const [filteredAndSortedWordList, setFilteredAndSortedWordList] = useState<
     Word[]
@@ -55,9 +59,9 @@ function showWordList() {
       const wordList = await querySnapshot.docs.map((doc) => {
         const { spelling, meaning, translation, registeredDate, status } =
           doc.data();
-          // dateからstringに変更したため一旦無効化
+        // dateからstringに変更したため一旦無効化
         // const date = new Date(registeredDate.toDate());
-        // const formattedDate = date.toLocaleDateString("ja-JP");
+
         return {
           id: doc.id,
           spelling,
@@ -127,6 +131,7 @@ function showWordList() {
         break;
     }
 
+    // Todo: string表記の日付で並び替えに対応する方法調べる？
     // ソート機能（登録日）
     switch (selectedSortOptionByDate) {
       case "降順":
@@ -209,6 +214,7 @@ function showWordList() {
           marginLeft: "auto",
           marginRight: "auto",
         }}
+        mb={5}
       >
         <FormControl sx={{ width: "150px", mr: "10px" }}>
           <InputLabel id="statusSelect">絞り込み（定着度）</InputLabel>
@@ -222,7 +228,7 @@ function showWordList() {
         </FormControl>
 
         <FormControl sx={{ width: "150px", mr: "10px" }}>
-          <InputLabel id="sortSelect">並び替え（登録順）</InputLabel>
+          <InputLabel id="sortSelect">今××並び替え（登録順）</InputLabel>
           <Select
             value={selectedSortOptionByDate}
             onChange={handleSortOptionByDate}
@@ -248,6 +254,27 @@ function showWordList() {
             ))}
           </Select>
         </FormControl>
+      </Box>
+      <Box 
+      sx={{
+        display: "flex",
+        direction: "column",
+        justifyContent: "center",
+        marginLeft: "auto",
+        marginRight: "auto",
+      }}
+
+      >
+        <Box>
+        <Button variant="contained" onClick={() => router.push(`/learn`)}>
+          学習ページへのリンク（開発中だけ設置）
+        </Button>
+        </Box>
+        <Box>
+        <Button variant="contained" onClick={() => router.push(`/`)}>
+          Topページへのリンク（開発中だけ設置）
+        </Button>
+        </Box>
       </Box>
     </Box>
   );

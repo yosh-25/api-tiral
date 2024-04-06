@@ -30,7 +30,7 @@ export default function wordEdit({ params }: { params: { id: string } }) {
     spelling: "",
     meaning: "",
     translation: "",
-    registeredDate: "",
+    registeredDate: '',
     status: false,
   });
 
@@ -47,15 +47,15 @@ export default function wordEdit({ params }: { params: { id: string } }) {
         if (docSnap.exists()) {
           const { spelling, meaning, translation, registeredDate, status } =
             docSnap.data();
-          const date = new Date(registeredDate.toDate());
-          const formattedDate = date.toLocaleDateString("ja-JP");
+          // const date = new Date(registeredDate.toDate());
+          // const formattedDate = date.toLocaleDateString("ja-JP");
 
           setWordDetails({
             id,
             spelling,
             meaning,
             translation,
-            registeredDate: formattedDate,
+            registeredDate,
             status,
           });
         }
