@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -27,7 +27,7 @@ const WordItemForList: React.FC<WordProps> = ({ word }) => {
 
   const [selectedId, setSelectedId] = useState<string>("");
 
-  const clickToMoveToEdit =  (
+  const clickToMoveToEdit = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
@@ -45,9 +45,7 @@ const WordItemForList: React.FC<WordProps> = ({ word }) => {
         <TableCell>{dateString}</TableCell>
         <TableCell>{word.status ? "〇" : "×"}</TableCell>
         <TableCell>
-          <Button
-          onClick={(e)=>clickToMoveToEdit(e)}
-          >編集</Button>
+          <Button onClick={(e) => clickToMoveToEdit(e)}>編集</Button>
         </TableCell>
       </TableRow>
     </>
@@ -55,5 +53,3 @@ const WordItemForList: React.FC<WordProps> = ({ word }) => {
 };
 
 export default WordItemForList;
-
-

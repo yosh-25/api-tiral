@@ -30,10 +30,9 @@ export default function Learn() {
     status: false,
   });
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState('');
+  const [success, setSuccess] = useState("");
 
   // TODO fetchしてくるwikipediaの参照先は要検討。できればMain PageのTop記事にアクセスしたい。または他のAPI？
-// TODO learnページ、リストページ、編集ページのCSSを一旦見れるくらいに整える。
 
   const handleWikipediaSearch = () => {
     fetch(
@@ -68,37 +67,39 @@ export default function Learn() {
   };
 
   // 選択した単語を辞書で調べる。
-  const handleDictionarySearch = async (text: string,
-      target_lang: DeeplLanguages) => {
+  const handleDictionarySearch = async (
+    text: string,
+    target_lang: DeeplLanguages
+  ) => {
     if (!wordInfo.spelling) return;
 
     const [dictionaryResponse, translationResult] = await Promise.all([
       // 辞書APIへのリクエスト
       fetch(
         `https://api.dictionaryapi.dev/api/v2/entries/en/${wordInfo.spelling}`
-      )
-        .then((response) => response.json()),
+      ).then((response) => response.json()),
 
       // DeepLへのリクエスト
       Translator(text, target_lang),
     ]);
 
     // 辞書からのレスポンスへの処理
-    const definition = dictionaryResponse[0]?.meanings[0]?.definitions[0]?.definition;
+    const definition =
+      dictionaryResponse[0]?.meanings[0]?.definitions[0]?.definition;
 
     // DeepLからのレスポンスを処理
     const translation = translationResult.text;
 
     // 2つのAPIからの処理をまとめて反映
-    if ( definition || translation ) {
+    if (definition || translation) {
       const newWordInfo = {
-      ...wordInfo,
-      meaning: definition,
-      translation: translation,
-    };
-    setWordInfo(newWordInfo);
+        ...wordInfo,
+        meaning: definition,
+        translation: translation,
+      };
+      setWordInfo(newWordInfo);
     }
-};
+  };
 
   // 選択したワードをfirestoreに保存
   const registerWord = async (
@@ -109,7 +110,7 @@ export default function Learn() {
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
     const date = now.getDate();
-    const formattedDate = `${year}年 ${month}月 ${date}日`
+    const formattedDate = `${year}年 ${month}月 ${date}日`;
     if (!wordInfo?.spelling) {
       setError("単語が未選択です。");
       return;
@@ -127,105 +128,98 @@ export default function Learn() {
       status: wordInfo.status,
     });
 
-    setSuccess('登録できました！')
+    setSuccess("登録できました！");
   };
 
   return (
-    <Box display="flex" justifyContent="spacebetween" alignItems="center" 
-    
-    >
+    <Box display="flex" justifyContent="spacebetween" alignItems="center">
       {/* 記事検索、検索記事の表示 */}
-      <Grid container
+      <Grid
+        container
         spacing={5}
-        direction='column'
+        direction="column"
         justifyContent="center"
         alignItems="center"
         mr={8}
-        
-
       >
         <Grid item>
-        <SearchIcon fontSize="large" />
-        <Typography variant="h3" fontSize="1.5rem" fontWeight="500">
-          読みたい記事を検索してみよう
-          <br />
-          （例:Shohei Ohtani）
-        </Typography>
+          <SearchIcon fontSize="large" />
+          <Typography variant="h3" fontSize="1.5rem" fontWeight="500">
+            読みたい記事を検索してみよう
+            <br />
+            （例:Shohei Ohtani）
+          </Typography>
         </Grid>
         <Grid item>
-            {/* Wikipedia検索用のフィールド */}
-              <Box
-              mb={2}
-              >
-              <Input
-                type="text"
-                value={searchWord}
-                onChange={(e) => setSearchWord(e.target.value)}
-                placeholder="検索ワードを入力"
-              />
-              </Box>
-          </Grid>
-          <Button onClick={handleWikipediaSearch}>検索</Button>
-          <Box
-            border={2}
-            borderColor="grey.500"
-            borderRadius={1}
-            pl={1.5}
-            height={550}
-            width={500}
-            p={2}
-      
-          >
-            {/* 検索したワードのテキストを表示 */}
-            <Typography
-              onMouseUp={handleTextSelection}
-              onClick={()=>handleDictionarySearch(wordInfo.spelling, 'JA')}
-              textAlign='left'
-            >
-              {textFromAPI ? '分からない単語はダブルクリックをして、右の辞書機能で調べましょう💡' : '(検索した記事が表示されます)'}
-              <br/><br/>
-              {textFromAPI}
-            </Typography>
+          {/* Wikipedia検索用のフィールド */}
+          <Box mb={2}>
+            <Input
+              type="text"
+              value={searchWord}
+              onChange={(e) => setSearchWord(e.target.value)}
+              placeholder="検索ワードを入力"
+            />
           </Box>
+        </Grid>
+        <Button onClick={handleWikipediaSearch}>検索</Button>
+        <Box
+          border={2}
+          borderColor="grey.500"
+          borderRadius={1}
+          pl={1.5}
+          height={550}
+          width={500}
+          p={2}
+        >
+          {/* 検索したワードのテキストを表示 */}
+          <Typography
+            onMouseUp={handleTextSelection}
+            onClick={() => handleDictionarySearch(wordInfo.spelling, "JA")}
+            textAlign="left"
+          >
+            {textFromAPI
+              ? "分からない単語はダブルクリックをして、右の辞書機能で調べましょう💡"
+              : "(検索した記事が表示されます)"}
+            <br />
+            <br />
+            {textFromAPI}
+          </Typography>
+        </Box>
       </Grid>
 
       {/* 選択したワードの辞書検索を表示 */}
-      <Box 
-      display="flex" 
-      flexDirection="column" 
-      alignItems="left" 
-      mt={50}
-      height={500}
-      width={500}
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="left"
+        mt={50}
+        height={500}
+        width={500}
       >
-        <Typography 
-        mb={2}
-        height={50}
-        width={300}
-        textAlign="left"
-        >
-        
-          調べた単語: <br/> {wordInfo.spelling}
+        <Typography mb={2} height={50} width={300} textAlign="left">
+          調べた単語: <br /> {wordInfo.spelling}
         </Typography>
         {/* 英英辞書&DeepLの結果 */}
-        <Typography
-          mb={2}
-          height={250}
-          width={300}
-          >意味: <br/> {wordInfo.meaning}  <br/>{wordInfo.translation}</Typography> 
-        <Box
-        width={300}
-        >
-        <Button 
-        onClick={registerWord}>単語リストに登録</Button>
+        <Typography mb={2} height={250} width={300}>
+          意味: <br /> {wordInfo.meaning} <br />
+          {wordInfo.translation}
+        </Typography>
+        <Box width={300}>
+          <Button onClick={registerWord}>単語リストに登録</Button>
         </Box>
-        <Typography>{error}{success}</Typography>
-        
-        <Box mb={1}>
-        <Button variant="contained" onClick={() => router.push(`/list`)}>単語リストへのリンク（とりあえず設置）</Button>
-        </Box>
-        <Button variant="contained" onClick={() => router.push(`/`)}>Topページへのリンク（とりあえず設置）</Button>
+        <Typography>
+          {error}
+          {success}
+        </Typography>
 
+        <Box mb={1}>
+          <Button variant="contained" onClick={() => router.push(`/list`)}>
+            単語リストへのリンク（とりあえず設置）
+          </Button>
+        </Box>
+        <Button variant="contained" onClick={() => router.push(`/`)}>
+          Topページへのリンク（とりあえず設置）
+        </Button>
       </Box>
     </Box>
   );

@@ -25,10 +25,7 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import { Word, StatusOption, SortOption } from "../../types";
 import WordItemForList from "@/app/components/wordListForList";
 
-// TODO: filterとsortを併せたuseState作成、他の部分をこれに合わせる。
-
 function showWordList() {
-
   const router = useRouter();
 
   const [wordList, setWordList] = useState<Word[]>([]);
@@ -255,25 +252,24 @@ function showWordList() {
           </Select>
         </FormControl>
       </Box>
-      <Box 
-      sx={{
-        display: "flex",
-        direction: "column",
-        justifyContent: "center",
-        marginLeft: "auto",
-        marginRight: "auto",
-      }}
-
+      <Box
+        sx={{
+          display: "flex",
+          direction: "column",
+          justifyContent: "center",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
       >
         <Box>
-        <Button variant="contained" onClick={() => router.push(`/learn`)}>
-          学習ページへのリンク（開発中だけ設置）
-        </Button>
+          <Button variant="contained" onClick={() => router.push(`/learn`)}>
+            学習ページへのリンク（開発中だけ設置）
+          </Button>
         </Box>
         <Box>
-        <Button variant="contained" onClick={() => router.push(`/`)}>
-          Topページへのリンク（開発中だけ設置）
-        </Button>
+          <Button variant="contained" onClick={() => router.push(`/`)}>
+            Topページへのリンク（開発中だけ設置）
+          </Button>
         </Box>
       </Box>
     </Box>

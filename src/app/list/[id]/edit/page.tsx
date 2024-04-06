@@ -30,14 +30,11 @@ export default function wordEdit({ params }: { params: { id: string } }) {
     spelling: "",
     meaning: "",
     translation: "",
-    registeredDate: '',
+    registeredDate: "",
     status: false,
   });
 
   const id = params.id;
-
-  // TODO: asを使用しない方法を検討する。
-  //   TODO: このページ用テーブルコンポーネント作成、onChangeで編集、保存ボタン作成 4/2
   useEffect(() => {
     const fetchWordDetails = async () => {
       if (typeof id === "string") {
