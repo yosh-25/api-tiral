@@ -32,6 +32,7 @@ export default function Learn() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // TODO: 分かりやすい内容に変更を検討する。日本語から英語脳を作るアプリ？「英語脳アプリ」
   // TODO fetchしてくるwikipediaの参照先は要検討。できればMain PageのTop記事にアクセスしたい。または他のAPI？
 
   const handleWikipediaSearch = () => {
