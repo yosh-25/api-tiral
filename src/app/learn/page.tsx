@@ -34,7 +34,7 @@ export default function Learn() {
 
   // TODO: 分かりやすい内容に変更を検討する。日本語から英語脳を作るアプリ？「英語脳アプリ」
   // TODO fetchしてくるwikipediaの参照先は要検討。できればMain PageのTop記事にアクセスしたい。または他のAPI？←やはり動画？著作権切れの小説も候補にはあるが・・
-  // Todo; youtube apiの実装を試みる
+  // Todo; youtube apiの実装を試みる。アプリ内容は再整理。
 
   const handleWikipediaSearch = () => {
     fetch(
