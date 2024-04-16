@@ -29,6 +29,7 @@ export default function RootLayout({
         
         <AppBar color='default' position="static" >
           <Toolbar  sx={{display: 'flex', justifyContent: 'space-between'}}>
+            <Box display='flex' alignItems='center'>
             <IconButton
               size="large"
               edge="start"
@@ -37,7 +38,9 @@ export default function RootLayout({
               sx={{ mr: 2 }}
             >
               <MenuIcon />
-            </IconButton>
+            </IconButton>   
+            <Typography fontWeight='750'>Memotube</Typography>         
+            </Box>
             <Button color="inherit" >会員登録/ログインはこちら</Button>
           </Toolbar>
         </AppBar>
@@ -49,6 +52,9 @@ export default function RootLayout({
             justifyContent: "center",
             alignItems: "center",
             marginTop: "50px",
+            marginRight: 'auto',
+            marginLeft: 'auto',
+            width: '70%'
           }}
         >
           <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
