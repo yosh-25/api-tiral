@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { Button, Stack, TextField, Typography } from "@mui/material";
+import { Button, Stack, TextField, Typography, Box } from "@mui/material";
 
 export default function Home() {
   const router = useRouter();
@@ -9,13 +9,18 @@ export default function Home() {
     <>
       <Stack
         height="100vh"
-        justifyContent="center"
         alignItems="center"
         gap="32px"
       >
-        <Typography variant="h1" fontSize="2rem" fontWeight="750">
-          English Learning Made Easy
+        <Typography variant="h1" fontSize="3rem" fontWeight="750">
+          Memotube
         </Typography>
+        <Typography variant='h2' fontSize='2rem' fontWeight="500">
+          Youtubeで学びながら、後で見直しもできるメモ帳が作成できます。
+        </Typography>
+        <Box >
+
+        </Box>
         <Button variant="contained" onClick={() => router.push(`/login`)}>
           ログイン
         </Button>
