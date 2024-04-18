@@ -1,13 +1,18 @@
 "use client";
-import React from "react";
+import React from 'react'
+import { useRouter } from "next/navigation";
 import {
-  Box,
   Button,
   Stack,
   TextField,
   Typography,
-  Input,
-  Grid,
+  Box,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
   IconButton
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -15,16 +20,10 @@ import AddIcon from "@mui/icons-material/Add";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
 
-const Mypage = () => {
+
+const SearchResults = () => {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "start",
-        flexDirection: "column",
-      }}
-    >
-      <Stack gap="3rem">
+    <Stack gap="3rem">
       <Box>
         {/* TODO; テキスト入力後、候補がでてきて選べる仕様にしたい */}
         <TextField
@@ -54,21 +53,8 @@ const Mypage = () => {
           <Typography>ここに直近数回で見た動画を表示</Typography>
         </Box>
       </Box>
-      <Box>
-        <Typography>メモ</Typography>
-        <Box
-          height="15rem"
-          sx={{
-            width: "100%",
-            border: 1,
-          }}
-        >
-          <Typography>直近5つのメモを表示</Typography>
-        </Box>
-      </Box>
-      </Stack>
-    </Box>
-  );
-};
+    </Stack>
+  )
+}
 
-export default Mypage;
+export default SearchResults

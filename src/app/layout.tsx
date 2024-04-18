@@ -47,10 +47,6 @@ export default function RootLayout({
        
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
             marginTop: "50px",
             marginRight: 'auto',
             marginLeft: 'auto',

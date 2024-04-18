@@ -19,6 +19,14 @@ export default function Home() {
 
   return (
     <>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",    
+          }}
+        >
       <Stack alignItems="center" gap="2rem">
         <Typography variant="h1" fontSize="3rem" fontWeight="750">
           Memotube
@@ -100,6 +108,7 @@ export default function Home() {
           単語リストへのリンク（開発中だけ設置）
         </Button>
       </Stack>
+      </Box>
     </>
   );
 }
