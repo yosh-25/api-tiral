@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Button,
@@ -13,68 +13,99 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  IconButton
+  IconButton,
+  Link,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
 
-
 const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search?";
+const youtubeUrl = "https://www.youtube.com/watch?v=";
+const channelUrl = "https://www.youtube.com/channel/";
 const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 
-// todo 次回Third-party cookie will be blocked. Learn more in the Issues tab.の解決から
+const formatDate = (publishedAt: string) => {
+  const date = new Date(publishedAt);
+  return date.toLocaleString("ja-JP");
+};
+
+interface Data {
+  items?: Item[];
+}
+interface Item {
+  id: { videoId: string };
+  snippet: {
+    title: string;
+    description: string;
+    publishedAt: string;
+    thumbnails?: {
+      medium: {
+        url: string;
+      };
+    };
+
+    channelTitle: string;
+    channelId: string;
+  };
+}
 
 const SearchResults = () => {
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [data, setData] = useState<Data>();
+  // todo; 検索したitem毎に表示するところから
 
-    const [videoId, setVideoId] = useState("");
+  const fetchVideos = async () => {
+    if (!API_KEY) {
+      console.error("API_KEY is undefined");
+      return;
+    }
 
-    const searchVideos = (e:any) => {
-        e.preventDefault()
-        useEffect(() => {
-            //クエリ文字列を整理する
-        const params = {
-            key: API_KEY,
-            q: 'ヒカキン', //検索ワード
-            type: 'video',
-            maxResults: '1', //表示する動画数
-            order: 'viewCount', //結果の並び順を再生数が多い順に
-         };
-         const queryParams = new URLSearchParams(params);
+    //クエリ文字列を整理する
+    const params = {
+      key: API_KEY,
+      q: "ajax", //検索ワード
+      type: "video",
+      maxResults: "10", //表示する動画数
+      order: "viewCount", //結果の並び順を再生数が多い順に
+    };
+    const queryParams = new URLSearchParams(params);
 
-         //APIをリコール
-         fetch(YOUTUBE_SEARCH_API_URI + queryParams)
-         .then((res)=> res.json())
-         .then(
-            (result) => {
-                console.log('API success', result);
+    try {
+      const response = await fetch(YOUTUBE_SEARCH_API_URI + queryParams);
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-                if (result.items && result.items.length !== 0) {
-                    const firstItem = result.items[0];
-                    setVideoId(firstItem.id.videId);
-                }
-            },
-            (error) => {
-                console.error(error);
-            }
-         );
+  useEffect(() => {
+    const getResult = async () => {
+      const result = await fetchVideos();
+      if (result) {
+        setData(result);
+      }
+    };
 
-    }, [])};
-
+    getResult();
+  }, []);
+  // todo: エラーが消えない。再度https://takuyay.com/?p=472#toc29を参照に組みなおす。
 
   return (
     <Stack gap="3rem">
       <Box>
-        {/* TODO; テキスト入力後、候補がでてきて選べる仕様にしたい */}
         <TextField
+          // value={searchTerm}
+          // onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="検索ワードを入力"
           variant="outlined"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={searchVideos}>
-                <SearchIcon />
+                <IconButton onClick={fetchVideos}>
+                  <SearchIcon />
                 </IconButton>
               </InputAdornment>
             ),
@@ -83,7 +114,7 @@ const SearchResults = () => {
         />
       </Box>
       <Box>
-        <Typography>最近見た動画</Typography>
+        <Typography>検索結果</Typography>
         <Box
           height="15rem"
           sx={{
@@ -91,19 +122,38 @@ const SearchResults = () => {
             border: 1,
           }}
         >
-          <Typography>検索結果</Typography>
-          <iframe
-      id="player"
-      width="640"
-      height="360"
-      src={"https://www.youtube.com/embed/" + videoId}
-      frameBorder="0"
-      allowFullScreen
-    />
+          {data?.items?.map((item: Item, index: number) => (
+            <Box className="item" key={index}>
+              <Box className="thumbnail">
+                <Link href={youtubeUrl + item.id.videoId}>
+                  <img
+                    src={item.snippet.thumbnails?.medium?.url}
+                    alt={item.snippet.title}
+                  />
+                </Link>
+              </Box>
+              <Box className="right">
+                <Box className="title">
+                  <Link href={youtubeUrl + item.id.videoId}>
+                    {item.snippet.title}
+                  </Link>
+                </Box>
+                <Box className="description">{item.snippet.description}</Box>
+                <Box className="channel">
+                  <Link href={channelUrl + item.snippet.channelId}>
+                    {item.snippet.channelTitle}
+                  </Link>
+                </Box>
+                <Box className="time">
+                  {formatDate(item.snippet.publishedAt)}
+                </Box>
+              </Box>
+            </Box>
+          ))}
         </Box>
       </Box>
     </Stack>
-  )
-}
+  );
+};
 
-export default SearchResults
+export default SearchResults;
