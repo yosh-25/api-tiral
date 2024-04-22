@@ -54,9 +54,12 @@ interface Item {
 const SearchResults = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [data, setData] = useState<Data>();
+  const [triggerFetch, setTriggerFetch] = useState(false);
   // todo; 検索したitem毎に表示するところから
+  // todo: 参照する：https://developers.google.com/explorer-help/code-samples#javascript
 
-  const fetchVideos = async () => {
+  const fetchVideos = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
     if (!API_KEY) {
       console.error("API_KEY is undefined");
       return;
@@ -75,30 +78,35 @@ const SearchResults = () => {
     try {
       const response = await fetch(YOUTUBE_SEARCH_API_URI + queryParams);
       const result = await response.json();
-      return result;
+      console.log(result);
+      setData(result);
     } catch (error) {
       console.error(error);
-    }
+    }    
   };
 
-  useEffect(() => {
-    const getResult = async () => {
-      const result = await fetchVideos();
-      if (result) {
-        setData(result);
-      }
-    };
 
-    getResult();
-  }, []);
+
+
+
+  // useEffect(() => {
+  //   const getResult = async () => {
+  //     const result = await fetchVideos();
+  //     if (result) {
+  //       setData(result);
+  //     }
+  //   };
+
+  //   getResult();
+  // }, []);
   // todo: エラーが消えない。再度https://takuyay.com/?p=472#toc29を参照に組みなおす。
 
   return (
     <Stack gap="3rem">
       <Box>
         <TextField
-          // value={searchTerm}
-          // onChange={(e) => setSearchTerm(e.target.value)}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="検索ワードを入力"
           variant="outlined"
           InputProps={{
@@ -115,7 +123,7 @@ const SearchResults = () => {
       </Box>
       <Box>
         <Typography>検索結果</Typography>
-        <Box
+        {/* <Box
           height="15rem"
           sx={{
             width: "100%",
@@ -150,7 +158,7 @@ const SearchResults = () => {
               </Box>
             </Box>
           ))}
-        </Box>
+        </Box> */}
       </Box>
     </Stack>
   );
