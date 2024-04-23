@@ -55,9 +55,6 @@ interface Item {
 const SearchResults = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [data, setData] = useState<Data>();
-  const [triggerFetch, setTriggerFetch] = useState(false);
-  // todo; 検索したitem毎に表示するところから
-  // todo: 参照する：https://developers.google.com/explorer-help/code-samples#javascript
 
   const fetchVideos = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -70,10 +67,10 @@ const SearchResults = () => {
     const params = {
       key: API_KEY,
       part: 'snippet',
-      q: "ajax football", //検索ワード
+      q: searchTerm, //検索ワード
       type: "video",
       maxResults: "10", //表示する動画数
-      order: "viewCount", //結果の並び順を再生数が多い順に
+      order: "relevance", //デフォルトの並び順
       
     };
     const queryParams = new URLSearchParams(params);
@@ -89,23 +86,6 @@ const SearchResults = () => {
       console.error(error);
     }    
   };
-
-
-
-
-
-  // useEffect(() => {
-  //   const getResult = async () => {
-  //     const result = await fetchVideos();
-  //     if (result) {
-  //       setData(result);
-  //     }
-  //   };
-
-  //   getResult();
-  // }, []);
-  // todo: エラーが消えない。再度https://takuyay.com/?p=472#toc29を参照に組みなおす。
-// todo; 表示部分を消すとreloadのエラーも消えはする・・？
 
   return (
     <Stack gap="3rem">
