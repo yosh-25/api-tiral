@@ -21,7 +21,7 @@ import AddIcon from "@mui/icons-material/Add";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
 
-const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search?";
+const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search";
 const youtubeUrl = "https://www.youtube.com/watch?v=";
 const channelUrl = "https://www.youtube.com/channel/";
 const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
@@ -35,8 +35,8 @@ interface Data {
   items?: Item[];
 }
 interface Item {
-  id: { videoId: string };
-  snippet: {
+  id: { videoId: string },
+    snippet: {
     title: string;
     description: string;
     publishedAt: string;
@@ -50,6 +50,7 @@ interface Item {
     channelId: string;
   };
 }
+
 
 const SearchResults = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -68,18 +69,22 @@ const SearchResults = () => {
     //クエリ文字列を整理する
     const params = {
       key: API_KEY,
-      q: "ajax", //検索ワード
+      part: 'snippet',
+      q: "ajax football", //検索ワード
       type: "video",
       maxResults: "10", //表示する動画数
       order: "viewCount", //結果の並び順を再生数が多い順に
+      
     };
     const queryParams = new URLSearchParams(params);
 
     try {
-      const response = await fetch(YOUTUBE_SEARCH_API_URI + queryParams);
+      const response = await fetch(`${YOUTUBE_SEARCH_API_URI}?${queryParams.toString()}`);
       const result = await response.json();
-      console.log(result);
       setData(result);
+      if(data?.items){
+        data.items.forEach(item=> console.log(item.snippet))
+      }
     } catch (error) {
       console.error(error);
     }    
@@ -100,6 +105,7 @@ const SearchResults = () => {
   //   getResult();
   // }, []);
   // todo: エラーが消えない。再度https://takuyay.com/?p=472#toc29を参照に組みなおす。
+// todo; 表示部分を消すとreloadのエラーも消えはする・・？
 
   return (
     <Stack gap="3rem">
@@ -123,7 +129,7 @@ const SearchResults = () => {
       </Box>
       <Box>
         <Typography>検索結果</Typography>
-        {/* <Box
+         <Box
           height="15rem"
           sx={{
             width: "100%",
@@ -135,30 +141,30 @@ const SearchResults = () => {
               <Box className="thumbnail">
                 <Link href={youtubeUrl + item.id.videoId}>
                   <img
-                    src={item.snippet.thumbnails?.medium?.url}
-                    alt={item.snippet.title}
+                    src={item.snippet?.thumbnails?.medium?.url}
+                    alt={item.snippet?.title}
                   />
                 </Link>
               </Box>
               <Box className="right">
                 <Box className="title">
                   <Link href={youtubeUrl + item.id.videoId}>
-                    {item.snippet.title}
+                    {item.snippet?.title}
                   </Link>
                 </Box>
-                <Box className="description">{item.snippet.description}</Box>
+                <Box className="description">{item.snippet?.description}</Box>
                 <Box className="channel">
-                  <Link href={channelUrl + item.snippet.channelId}>
-                    {item.snippet.channelTitle}
+                  <Link href={channelUrl + item.snippet?.channelId}>
+                    {item.snippet?.channelTitle}
                   </Link>
                 </Box>
                 <Box className="time">
-                  {formatDate(item.snippet.publishedAt)}
+                  {formatDate(item.snippet?.publishedAt)}
                 </Box>
               </Box>
             </Box>
           ))}
-        </Box> */}
+        </Box> 
       </Box>
     </Stack>
   );
