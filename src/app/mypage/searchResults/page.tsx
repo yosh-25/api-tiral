@@ -55,6 +55,7 @@ interface Item {
 const SearchResults = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [data, setData] = useState<Data>();
+  const router= useRouter();
 
   const fetchVideos = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -86,6 +87,12 @@ const SearchResults = () => {
       console.error(error);
     }    
   };
+    // todo; 個々の編集から
+    const ClicktoWatchVideo = (item:any) => {
+      console.log(item.id);
+      // router.push(`/mypage/searchResults/${item.id.videoId}/watch`);
+    }
+
 
   return (
     <Stack gap="3rem">
@@ -119,7 +126,9 @@ const SearchResults = () => {
           {data?.items?.map((item: Item, index: number) => (
             <Box className="item" key={index}>
               <Box className="thumbnail">
-                <Link href={youtubeUrl + item.id.videoId}>
+                {/* <Link onClick={()=> ClicktoWatchVideo(item.id)}>
+                 */}
+                <Link href={'searchResults/' + item.id.videoId + '/watch'}>
                   <img
                     src={item.snippet?.thumbnails?.medium?.url}
                     alt={item.snippet?.title}
@@ -128,13 +137,13 @@ const SearchResults = () => {
               </Box>
               <Box className="right">
                 <Box className="title">
-                  <Link href={youtubeUrl + item.id.videoId}>
+                  <Link href={'searchResults/' + item.id.videoId + '/watch'}>
                     {item.snippet?.title}
                   </Link>
                 </Box>
                 <Box className="description">{item.snippet?.description}</Box>
                 <Box className="channel">
-                  <Link href={channelUrl + item.snippet?.channelId}>
+                  <Link href={'searchResults/' + item.id.videoId + '/watch'}>
                     {item.snippet?.channelTitle}
                   </Link>
                 </Box>

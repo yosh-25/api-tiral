@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
+import RecoilProvider from './recoilProvider'
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import {
@@ -25,8 +26,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        
+      <body>    
+      <RecoilProvider> 
         <AppBar color='default' position="static" >
           <Toolbar  sx={{display: 'flex', justifyContent: 'space-between'}}>
             <Box display='flex' alignItems='center'>
@@ -43,8 +44,7 @@ export default function RootLayout({
             </Box>
             <Button color="inherit" >会員登録/ログインはこちら</Button>
           </Toolbar>
-        </AppBar>
-       
+        </AppBar>       
         <Box
           sx={{
             marginTop: "50px",
@@ -55,6 +55,7 @@ export default function RootLayout({
         >
           <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
         </Box>
+        </RecoilProvider> 
       </body>
     </html>
   );
