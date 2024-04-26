@@ -1,15 +1,31 @@
-export type Word = {
-  id: string;
-  spelling: string;
-  meaning: string;
-  translation: string;
-  registeredDate: string;
-  status: boolean;
-};
+export interface Data {
+  items?: Item[];
+}
+export interface Item {
+  id: { videoId: string },
+    snippet: {
+    title: string;
+    description: string;
+    publishedAt: string;
+    thumbnails?: {
+      medium: {
+        url: string;
+      };
+    };
 
-export type StatusOption = {
-  value: string;
-  label: string;
-};
+    channelTitle: string;
+    channelId: string;
+  };
+}
 
-export type SortOption = string;
+export interface MemoList {
+  memos?: Memo[];
+}
+
+export interface Memo {
+  id: { videoId: string },
+  snippet: {
+    title: string;};
+  time: number;
+  memo: string;
+}

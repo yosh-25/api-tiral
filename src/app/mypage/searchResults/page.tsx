@@ -20,6 +20,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
+import { Data, Item } from "@/types";
 
 const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search";
 const youtubeUrl = "https://www.youtube.com/watch?v=";
@@ -30,27 +31,6 @@ const formatDate = (publishedAt: string) => {
   const date = new Date(publishedAt);
   return date.toLocaleString("ja-JP");
 };
-
-interface Data {
-  items?: Item[];
-}
-interface Item {
-  id: { videoId: string },
-    snippet: {
-    title: string;
-    description: string;
-    publishedAt: string;
-    thumbnails?: {
-      medium: {
-        url: string;
-      };
-    };
-
-    channelTitle: string;
-    channelId: string;
-  };
-}
-
 
 const SearchResults = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -87,7 +67,7 @@ const SearchResults = () => {
       console.error(error);
     }    
   };
-    // todo; 個々の編集から
+  
     const ClicktoWatchVideo = (item:any) => {
       console.log(item.id);
       // router.push(`/mypage/searchResults/${item.id.videoId}/watch`);
