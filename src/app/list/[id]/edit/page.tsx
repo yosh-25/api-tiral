@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/../libs/firebase";
 import WordItemForEdit from "@/app/components/wordListForEdit";
-import { Word } from "@/types";
+import { Word } from "@/typesAndState";
 import {
   Box,
   Button,

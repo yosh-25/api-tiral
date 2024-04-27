@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { Data, Item, videoDataState } from '@/typesAndState';
+import { useRecoilState } from "recoil";
 import { useRouter } from "next/navigation";
 import {
   Button,
@@ -21,7 +23,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
-import { Memo, MemoList } from "@/types";
+import { Memo, MemoList } from "@/typesAndState";
 import YouTube from "react-youtube";
 
 // todo: 次回reduxで前のページからtitle等情報を取得&画面に表示
@@ -33,6 +35,7 @@ const watch = ({ params }: { params: { id: string } }) => {
   const [YTPlayer, setYTPlayer] = useState<YT.Player>();
   const [currentTime, setCurrentTime] = useState<number>();
   const [memoList, setMemoList] = useState<MemoList>();
+  const [videoData, setVideoData] = useRecoilState(videoDataState);
 
   const opts = {
     width: "70%",
@@ -58,25 +61,18 @@ const watch = ({ params }: { params: { id: string } }) => {
     return () => clearInterval(interval); // Clean up the interval on unmount
   }, [YTPlayer]);
 
-  const fetchVideoInfo = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const fetchVideoInfo = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.preventDefault();
-    if (!API_KEY) {
-      console.error("API_KEY is undefined");
-      return;
+
+    if (!videoData || !videoData.items || videoData.items.length === 0) {
+      console.log("No video data available or items array is empty");
+    } else {
+      videoData.items.forEach((item) => console.log(item.snippet));
     }
-
-        //クエリ文字列を整理する
-        const params = {
-          key: API_KEY,
-          part: 'snippet',
-          q: searchTerm, //検索ワード
-          type: "video",
-          maxResults: "10", //表示する動画数
-          order: "relevance", //デフォルトの並び順
-          
-        };
-        const queryParams = new URLSearchParams(params);
-
+    console.log('aa')
+  };
 
   return (
     <Box>
@@ -86,9 +82,14 @@ const watch = ({ params }: { params: { id: string } }) => {
         <Typography></Typography>
       </Box>
       <Button onClick={recordCurrentTime}>
-      <Typography sx={{ border: 1, padding: "1rem", marginBottom: '1rem'}}>
-      {currentTime?.toFixed(0)}秒にメモを作成します＋
-      </Typography>
+        <Typography sx={{ border: 1, padding: "1rem", marginBottom: "1rem" }}>
+          {currentTime?.toFixed(0)}秒にメモを作成します＋
+        </Typography>
+      </Button>
+      <Button onClick={fetchVideoInfo}>
+        <Typography sx={{ border: 1, padding: "1rem", marginBottom: "1rem" }}>
+          console.logでデータ確認
+        </Typography>
       </Button>
       <TableContainer sx={{ marginBottom: "50px" }}>
         <Typography variant="h3" fontWeight="650" sx={{ fontSize: "1rem" }}>

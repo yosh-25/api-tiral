@@ -1,3 +1,5 @@
+import { atom } from 'recoil';
+
 export interface Data {
   items?: Item[];
 }
@@ -17,6 +19,11 @@ export interface Item {
     channelId: string;
   };
 }
+
+export const videoDataState = atom<Data>({
+  key: 'videoDataState',
+  default: { items: []},
+})
 
 export interface MemoList {
   memos?: Memo[];

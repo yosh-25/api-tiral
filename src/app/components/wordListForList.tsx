@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Word } from "../../types";
+import { Word } from "../../typesAndState";
 import {
   Box,
   Button,
