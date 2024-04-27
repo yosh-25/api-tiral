@@ -1,7 +1,8 @@
 "use client";
-import React, { useState, useEffect} from "react";
-import { useRecoilState } from 'recoil';
-import { Data, Item, videoDataState } from '@/typesAndState';
+import React, { useState, useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { videoDataState } from "@/app/states/videDataState";
+import { Data, Item, } from "@/types";
 import { useRouter } from "next/navigation";
 import {
   Button,
@@ -22,7 +23,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
-
 
 const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search";
 const youtubeUrl = "https://www.youtube.com/watch?v=";
@@ -64,78 +64,80 @@ const SearchResults = () => {
         `${YOUTUBE_SEARCH_API_URI}?${queryParams.toString()}`
       );
       const result = await response.json();
-      setVideoData(result);
-      if (videoData?.items) {
-        videoData.items.forEach((item) => console.log(item.snippet));
+      if (result.items) {
+        setVideoData({ items: result.items });
       }
     } catch (error) {
       console.error(error);
     }
-    console.log(videoData);
   };
 
-  return (    
-      <Stack gap="3rem">
-        <Box>
-          <TextField
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="検索ワードを入力"
-            variant="outlined"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={fetchVideos}>
-                    <SearchIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            sx={{ m: 1 }}
-          />
-        </Box>
-        <Box>
-          <Typography>検索結果</Typography>
-          <Box
-            height="15rem"
-            sx={{
-              width: "100%",
-              border: 1,
-            }}
-          >
-            {videoData?.items?.map((item: Item, index: number) => (
-              <Box className="item" key={index}>
-                <Box className="thumbnail">
-                  {/* <Link onClick={()=> ClicktoWatchVideo(item.id)}>
-                   */}
+  useEffect(() => {
+    console.log(videoData?.items);
+  }, [videoData]);
+
+  return (
+    <Stack gap="3rem">
+      <Box>
+        <TextField
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="検索ワードを入力"
+          variant="outlined"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={fetchVideos}>
+                  <SearchIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          sx={{ m: 1 }}
+        />
+      </Box>
+      <Box>
+        <Typography>検索結果</Typography>
+        <Box
+          height="15rem"
+          sx={{
+            width: "100%",
+            border: 1,
+          }}
+        >
+          {videoData?.items?.map((item: Item, index: number) => (
+            <Box className="item" key={index}>
+              <Box className="thumbnail">
+                {/* <Link onClick={()=> ClicktoWatchVideo(item.id)}>
+                 */}
+                <Link href={"searchResults/" + item.id.videoId + "/watch"}>
+                  <img
+                    src={item.snippet?.thumbnails?.medium?.url}
+                    alt={item.snippet?.title}
+                  />
+                </Link>
+              </Box>
+              <Box className="right">
+                <Box className="title">
                   <Link href={"searchResults/" + item.id.videoId + "/watch"}>
-                    <img
-                      src={item.snippet?.thumbnails?.medium?.url}
-                      alt={item.snippet?.title}
-                    />
+                    {item.snippet?.title}
                   </Link>
                 </Box>
-                <Box className="right">
-                  <Box className="title">
-                    <Link href={"searchResults/" + item.id.videoId + "/watch"}>
-                      {item.snippet?.title}
-                    </Link>
-                  </Box>
-                  <Box className="description">{item.snippet?.description}</Box>
-                  <Box className="channel">
-                    <Link href={"searchResults/" + item.id.videoId + "/watch"}>
-                      {item.snippet?.channelTitle}
-                    </Link>
-                  </Box>
-                  <Box className="time">
-                    {formatDate(item.snippet?.publishedAt)}
-                  </Box>
+                <Box className="description">{item.snippet?.description}</Box>
+                <Box className="channel">
+                  <Link href={"searchResults/" + item.id.videoId + "/watch"}>
+                    {item.snippet?.channelTitle}
+                  </Link>
+                </Box>
+                <Box className="time">
+                  {formatDate(item.snippet?.publishedAt)}
                 </Box>
               </Box>
-            ))}
-          </Box>
+            </Box>
+          ))}
         </Box>
-      </Stack>   
+      </Box>
+    </Stack>
   );
 };
 

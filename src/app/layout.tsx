@@ -1,6 +1,9 @@
+'use client';
+
 import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
-import RecoilProvider from './recoilProvider'
+// import RecoilProvider from './recoilProvider'
+import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import {
@@ -13,7 +16,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Memotube",
   description:
     "Youtubeで気になったシーンに対してメモが作成でき、後で見直しができるアプリです。",
@@ -27,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>    
-      <RecoilProvider> 
+      <RecoilRoot>
         <AppBar color='default' position="static" >
           <Toolbar  sx={{display: 'flex', justifyContent: 'space-between'}}>
             <Box display='flex' alignItems='center'>
@@ -53,9 +56,9 @@ export default function RootLayout({
             width: '70%'
           }}
         >
-          <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
+        {children}
         </Box>
-        </RecoilProvider> 
+        </RecoilRoot>
       </body>
     </html>
   );

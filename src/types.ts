@@ -20,10 +20,6 @@ export interface Item {
   };
 }
 
-export const videoDataState = atom<Data>({
-  key: 'videoDataState',
-  default: { items: []},
-})
 
 export interface MemoList {
   memos?: Memo[];
@@ -36,3 +32,8 @@ export interface Memo {
   time: number;
   memo: string;
 }
+
+export const counterState = atom({
+  key: 'counterState',  // 一意のキー
+  default: 1,           // 初期値
+});

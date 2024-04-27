@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
-import { Data, Item, videoDataState } from '@/typesAndState';
-import { useRecoilState } from "recoil";
+import { Data, Item, counterState } from "@/types";
+import { videoDataState } from "@/app/states/videDataState";
+import { useRecoilValue } from "recoil";
 import { useRouter } from "next/navigation";
 import {
   Button,
@@ -23,7 +24,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
-import { Memo, MemoList } from "@/typesAndState";
+import { Memo, MemoList } from "@/types";
 import YouTube from "react-youtube";
 
 // todo: 次回reduxで前のページからtitle等情報を取得&画面に表示
@@ -35,7 +36,8 @@ const watch = ({ params }: { params: { id: string } }) => {
   const [YTPlayer, setYTPlayer] = useState<YT.Player>();
   const [currentTime, setCurrentTime] = useState<number>();
   const [memoList, setMemoList] = useState<MemoList>();
-  const [videoData, setVideoData] = useRecoilState(videoDataState);
+  const videoData = useRecoilValue(videoDataState);
+  const counter = useRecoilValue(counterState);
 
   const opts = {
     width: "70%",
@@ -65,14 +67,19 @@ const watch = ({ params }: { params: { id: string } }) => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
+    console.log(videoData);
 
     if (!videoData || !videoData.items || videoData.items.length === 0) {
       console.log("No video data available or items array is empty");
     } else {
       videoData.items.forEach((item) => console.log(item.snippet));
     }
-    console.log('aa')
+    console.log("aa");
   };
+
+  useEffect(() => {
+    console.log(videoData);
+  }, []);
 
   return (
     <Box>
@@ -86,9 +93,15 @@ const watch = ({ params }: { params: { id: string } }) => {
           {currentTime?.toFixed(0)}秒にメモを作成します＋
         </Typography>
       </Button>
-      <Button onClick={fetchVideoInfo}>
+      <Button>
         <Typography sx={{ border: 1, padding: "1rem", marginBottom: "1rem" }}>
-          console.logでデータ確認
+          {videoData?.items?.map((item, index) => (
+            <div key={index}>
+              <p>{item.snippet.title}</p>
+              <p>aaa</p>
+            </div>
+          ))}
+          aa
         </Typography>
       </Button>
       <TableContainer sx={{ marginBottom: "50px" }}>

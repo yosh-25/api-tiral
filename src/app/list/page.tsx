@@ -22,7 +22,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { Word, StatusOption, SortOption } from "../../typesAndState";
+import { Word, StatusOption, SortOption } from "../../types";
 import WordItemForList from "@/app/components/wordListForList";
 
 function showWordList() {

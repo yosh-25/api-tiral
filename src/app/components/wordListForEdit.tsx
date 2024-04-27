@@ -4,7 +4,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/../libs/firebase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Word, StatusOption } from "@/typesAndState";
+import { Word, StatusOption } from "@/types";
 import {
   Box,
   Button,
