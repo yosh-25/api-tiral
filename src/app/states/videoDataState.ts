@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { Data } from '@/types';
+import { Data, Item } from '@/types';
 
 const localStorageEffect = (key: string) => ({ setSelf, onSet }) => {
   if (typeof window === "undefined") return;
@@ -15,9 +15,9 @@ const localStorageEffect = (key: string) => ({ setSelf, onSet }) => {
   });
 };
 
-export const videoDataState = atom<Data | undefined>({
+export const videoDataState = atom<Item[]>({
   key: 'videoDataState',  // 一意のキー
-  default: undefined,     // 初期値は未定義または空のデータ構造
+  default: [],     // 初期値は未定義または空のデータ構造
   effects: [localStorageEffect("localstorage-example")]
 });
 

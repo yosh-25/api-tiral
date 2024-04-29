@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 // import RecoilProvider from './recoilProvider'
 import { RecoilRoot } from 'recoil';
+import dynamic from 'next/dynamic';
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import {
@@ -15,6 +16,8 @@ import {
   IconButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+
+
 
 const metadata: Metadata = {
   title: "Memotube",

@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
-import { Data, Item,  } from "@/types";
-import { videoDataState, counterState } from "@/app/states/videDataState";
-import { useRecoilValue } from "recoil";
+import { Data, Item } from "@/types";
+import { videoDataState, counterState } from "@/app/states/videoDataState";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { useRouter } from "next/navigation";
 import {
   Button,
@@ -34,7 +34,7 @@ const watch = ({ params }: { params: { id: string } }) => {
   const [YTPlayer, setYTPlayer] = useState<YT.Player>();
   const [currentTime, setCurrentTime] = useState<number>();
   const [memoList, setMemoList] = useState<MemoList>();
-  const videoData = useRecoilValue(videoDataState);
+  const [videoData, setVideoData] = useRecoilState(videoDataState);
   const counter = useRecoilValue(counterState);
 
   const opts = {
@@ -78,6 +78,19 @@ const watch = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     console.log(videoData);
   }, []);
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (isClient) {
+    const storedVideoData = localStorage.getItem("videoData");
+    if (storedVideoData) {
+      setVideoData(JSON.parse(storedVideoData));
+    }
+  }
 
   return (
     <Box>
