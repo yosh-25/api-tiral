@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
-import { Data, Item, counterState } from "@/types";
-import { videoDataState } from "@/app/states/videDataState";
+import { Data, Item,  } from "@/types";
+import { videoDataState, counterState } from "@/app/states/videDataState";
 import { useRecoilValue } from "recoil";
 import { useRouter } from "next/navigation";
 import {
@@ -26,8 +26,6 @@ import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
 import { Memo, MemoList } from "@/types";
 import YouTube from "react-youtube";
-
-// todo: 次回reduxで前のページからtitle等情報を取得&画面に表示
 
 const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 
@@ -93,15 +91,15 @@ const watch = ({ params }: { params: { id: string } }) => {
           {currentTime?.toFixed(0)}秒にメモを作成します＋
         </Typography>
       </Button>
-      <Button>
+      <Button onClick={fetchVideoInfo}>
         <Typography sx={{ border: 1, padding: "1rem", marginBottom: "1rem" }}>
           {videoData?.items?.map((item, index) => (
             <div key={index}>
               <p>{item.snippet.title}</p>
-              <p>aaa</p>
+              <p></p>
             </div>
           ))}
-          aa
+          aaee
         </Typography>
       </Button>
       <TableContainer sx={{ marginBottom: "50px" }}>

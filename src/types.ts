@@ -33,7 +33,4 @@ export interface Memo {
   memo: string;
 }
 
-export const counterState = atom({
-  key: 'counterState',  // 一意のキー
-  default: 1,           // 初期値
-});
+

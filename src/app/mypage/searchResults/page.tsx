@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { videoDataState } from "@/app/states/videDataState";
+import { videoDataState, counterState } from "@/app/states/videDataState";
 import { Data, Item, } from "@/types";
 import { useRouter } from "next/navigation";
 import {
@@ -37,6 +37,7 @@ const formatDate = (publishedAt: string) => {
 const SearchResults = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [videoData, setVideoData] = useRecoilState(videoDataState);
+  const [test, setTest] = useRecoilState(counterState);
   const router = useRouter();
 
   const fetchVideos = async (
@@ -76,6 +77,16 @@ const SearchResults = () => {
     console.log(videoData?.items);
   }, [videoData]);
 
+  useEffect(() => {
+    console.log(test)
+  }, []);
+
+  const countup = () => {
+    setTest(test + 1);
+    console.log(test);
+  }
+
+
   return (
     <Stack gap="3rem">
       <Box>
@@ -95,6 +106,15 @@ const SearchResults = () => {
           }}
           sx={{ m: 1 }}
         />
+      </Box>
+      <Box>
+      <Typography>Countup</Typography>
+      <Button onClick={countup}>
+        足すと1増えるよ
+      </Button>
+      <Typography>
+        結果 {test}
+      </Typography>
       </Box>
       <Box>
         <Typography>検索結果</Typography>

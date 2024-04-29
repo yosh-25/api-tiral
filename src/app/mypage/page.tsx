@@ -14,8 +14,19 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
+import { videoDataState } from "@/app/states/videDataState";
+import { useRecoilState } from "recoil";
 
 const Mypage = () => {
+
+  const [videoData, setVideoData] = useRecoilState(videoDataState);
+
+  if(videoData)(
+    console.log(videoData)
+  ); else (
+    console.log('no data')
+  )
+
   return (
     <Box
       sx={{
