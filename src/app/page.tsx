@@ -21,11 +21,9 @@ export default function Home() {
   const router = useRouter();
 
   const videoData = useRecoilValue(videoDataState);
-  const [test, setTest] = useRecoilState(counterState);
 
   useEffect(() => {
     console.log(videoData?.items);
-    console.log(test);
   }, []);
 
   return (

@@ -21,11 +21,8 @@ export const videoDataState = atom<Item[]>({
   effects: [localStorageEffect("localstorage-example")]
 });
 
-
-
-export const counterState = atom({
-  key: 'counterState',  // 一意のキー
-  default: 1,           // 初期値
-  effects: [localStorageEffect("localstorage-example")]
+export const videoIdState = atom({
+  key: 'videoId',
+  default: ''
 });
 
