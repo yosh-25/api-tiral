@@ -81,19 +81,59 @@ const Watch = ({ id }: { id: string }) => {
       </Box>
       <Box>
         {memoMode ? (
-          <Box sx={{width: '50%'}}>
-            <Button
-            sx={{width: '100%'}}
-              onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
-                setMemoMode(!memoMode)
-              }
+          <Box sx={{ width: "70%" }}>
+            <Box
+              display="flex"
+              alignItems="center"
+              paddingTop="0.5rem"
+              paddingBottom="0.5rem"
+              marginTop="0.5rem"
+              sx={{ border: 1 }}
             >
               <Typography
-                sx={{ border: 1, padding: "1rem", marginBottom: "1rem" }}
+                sx={{
+                  paddingBottom: "0.3rem",
+                  paddingLeft: "1rem",
+                  paddingRight: "1rem",
+                  marginLeft: "1rem",
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  whiteSpace: "nowrap", // 追加: テキストの折り返しを防ぐ
+                }}
               >
-                'temp display'
+                {currentTime?.toFixed(0)}秒:
               </Typography>
-            </Button>
+              <TextField
+                variant="standard"
+                placeholder="ここにメモを記入"
+                InputProps={{
+                  disableUnderline: true, // <== added this
+                }}
+                sx={{ width: "100%" }}
+              />
+            </Box>
+            <Box display="flex" justifyContent="flex-end">
+              <Box marginRight="1rem">
+                <Button
+                  sx={{ border: 1, width: "100%" }}
+                  onClick={(
+                    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                  ) => setMemoMode(!memoMode)}
+                >
+                  キャンセル
+                </Button>
+              </Box>
+              <Box>
+                <Button
+                  sx={{ border: 1, width: "100%" }}
+                  onClick={(
+                    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                  ) => setMemoMode(!memoMode)}
+                >
+                  保存する
+                </Button>
+              </Box>
+            </Box>
           </Box>
         ) : (
           <Box>
@@ -102,11 +142,11 @@ const Watch = ({ id }: { id: string }) => {
                 setMemoMode(!memoMode)
               }
             >
-            <Typography
-              sx={{ border: 1, padding: "1rem", marginBottom: "1rem" }}
-            >
-              {currentTime?.toFixed(0)}秒にメモを作成します＋
-            </Typography>
+              <Typography
+                sx={{ border: 1, padding: "1rem", marginBottom: "1rem" }}
+              >
+                {currentTime?.toFixed(0)}秒にメモを作成します
+              </Typography>
             </Button>
           </Box>
         )}
