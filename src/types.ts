@@ -20,16 +20,23 @@ export interface Item {
   };
 }
 
+// export type Memo = {
+//   id: string;
+//   videoId: string;
+
+// }
+
 
 export interface MemoList {
   memos?: Memo[];
 }
 
 export interface Memo {
-  id: { videoId: string },
-  snippet: {
-    title: string;};
-  time: number;
-  memo: string;
+  id: string;
+  videoId: string;
+  videoTitle: string;
+  createdTime: string;
+  createdAt: string;
+  content: string;
 }
 

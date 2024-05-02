@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Data, Item } from "@/types";
 import { videoDataState } from "@/app/states/videoDataState";
+import { db } from "../../../../libs/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { useRouter } from "next/navigation";
 import {
@@ -31,6 +33,18 @@ const Watch = ({ id }: { id: string }) => {
   const videoId = id;
   const [YTPlayer, setYTPlayer] = useState<YT.Player>();
   const [currentTime, setCurrentTime] = useState<number>(0);
+  const [timeToShow, setTimeToShow] = useState<string>("0");
+  const [newMemo, setNewMemo] = useState<Memo>(
+    {
+      id: '',
+      videoId: '',
+      videoTitle: '',
+      createdTime: '',
+      createdAt: '',
+      content: '',
+    }
+    
+  );
   const [memoList, setMemoList] = useState<MemoList>();
   const [videoData, setVideoData] = useRecoilState(videoDataState);
   const [memoMode, setMemoMode] = useState<boolean>(false);
@@ -56,6 +70,33 @@ const Watch = ({ id }: { id: string }) => {
   }, [YTPlayer]);
 
   useEffect(() => {
+    const secToTime = (seconds: number) => {
+      const hour = Math.floor(seconds / 3600);
+      const min = Math.floor((seconds % 3600) / 60);
+      const sec = Math.floor(seconds % 60);
+      let time = "";
+      if (hour > 0) {
+        time += `${hour}:`;
+      }
+
+      if (min > 0 || hour > 0) {
+        time += `${min < 10 ? "0" + min : min}:`;
+      } else {
+        // 時間も分も0の場合、'0:'を先に追加
+        time += "0:";
+      }
+
+      // 秒は常に二桁で表示
+      time += `${sec < 10 ? "0" + sec : sec}`;
+
+      return time;
+    };
+
+    console.log(secToTime(currentTime));
+    setTimeToShow(secToTime(currentTime));
+  }, [currentTime]);
+
+  useEffect(() => {
     console.log(videoData);
   }, []);
 
@@ -71,6 +112,52 @@ const Watch = ({ id }: { id: string }) => {
       setVideoData(JSON.parse(storedVideoData));
     }
   }
+
+  const backToPreviousUI = () => 
+    {   
+      setMemoMode(!memoMode);
+ };
+
+ const saveMemoToFirebase = async () => 
+  {  
+    // * 現在の日付を取得
+const CurrentDate = () => {
+  const today = new Date()
+
+  const year = today.getFullYear()
+  const month = ('0' + (today.getMonth() + 1)).slice(-2)
+  const day = ('0' + today.getDate()).slice(-2)
+ 
+    setNewMemo(state => ({
+      ...state,
+      'cretedTime':  year + '-' + month + '-' + day + ' '
+    }));
+ }
+ CurrentDate();
+    
+    await addDoc(collection(db, 'memoList'), {
+      id: '',
+      videoId: newMemo.videoId,
+      videoTitle: newMemo.videoTitle,
+      createdTime: serverTimestamp(),
+      createdAt: timeToShow,
+      content: newMemo.content,
+    })
+};
+
+const editNewMemo = (e: React.ChangeEvent<HTMLInputElement>) => {
+  videoData?.forEach((item) => { 
+    if (item.id.videoId === videoId) {
+      setNewMemo(state => ({
+        ...state,
+        'videoId': videoId,
+        'videoTitle': item.snippet.title,
+        'content': e.target.value
+      }));
+    }
+  });
+  console.log(newMemo);
+};
 
   return (
     <Box>
@@ -101,11 +188,13 @@ const Watch = ({ id }: { id: string }) => {
                   whiteSpace: "nowrap", // 追加: テキストの折り返しを防ぐ
                 }}
               >
-                {currentTime?.toFixed(0)}秒:
+                {timeToShow}
               </Typography>
               <TextField
                 variant="standard"
                 placeholder="ここにメモを記入"
+                value={newMemo.content}
+                onChange={editNewMemo}
                 InputProps={{
                   disableUnderline: true, // <== added this
                 }}
@@ -126,9 +215,11 @@ const Watch = ({ id }: { id: string }) => {
               <Box>
                 <Button
                   sx={{ border: 1, width: "100%" }}
-                  onClick={(
-                    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                  ) => setMemoMode(!memoMode)}
+                  onClick={()=> {
+                    backToPreviousUI();
+                    saveMemoToFirebase();                
+                  }}
+                  
                 >
                   保存する
                 </Button>
@@ -145,7 +236,7 @@ const Watch = ({ id }: { id: string }) => {
               <Typography
                 sx={{ border: 1, padding: "1rem", marginBottom: "1rem" }}
               >
-                {currentTime?.toFixed(0)}秒にメモを作成します
+                {timeToShow}にメモを作成します
               </Typography>
             </Button>
           </Box>
@@ -189,5 +280,6 @@ const Watch = ({ id }: { id: string }) => {
     </Box>
   );
 };
+
 
 export default Watch;
