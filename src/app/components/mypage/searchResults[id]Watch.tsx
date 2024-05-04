@@ -202,12 +202,20 @@ const Watch = ({ id }: { id: string }) => {
     fetchRelatedMemoList();
   }, []);
 
-
   // 経過時間を秒単位に変換する関数
-  const convertToSeconds = (createdAt:string) => {
-    const [hours, minutes, seconds] = createdAt.split(':').map(Number);
-    //秒単位に変換
-    return hours * 3600 + minutes * 60 + seconds;
+  const convertToSeconds = (createdAt: string) => {
+    console.log("createdAtの値:", createdAt);
+    const Numbers = createdAt.split(":").map(Number);
+
+    if (Numbers.length === 3) {
+      // 時間、分、秒が全て存在する場合の処理
+      const [hours3, minutes3, seconds3] = Numbers;
+      return hours3 * 3600 + minutes3 * 60 + seconds3;
+    } else {
+      // 分&秒または秒だけが存在する場合の処理
+      const [minutes2, seconds2] = Numbers;
+      return minutes2 * 60 + seconds2;
+    }
   };
 
   return (
@@ -316,14 +324,12 @@ const Watch = ({ id }: { id: string }) => {
           <TableBody>
             {relatedMemoList?.memos
               ?.filter((memo) => memo.videoId === videoId)
-              .sort(
-                (a, b) => {
-                  //経過時間を秒単位に変換して比較
-                  const timeA = convertToSeconds(a.createdAt);
-                  const timeB = convertToSeconds(b.createdAt);
-                  return timeA - timeB;
-                }
-              )
+              .sort((a, b) => {
+                //経過時間を秒単位に変換して比較
+                const timeA = convertToSeconds(a.createdAt);
+                const timeB = convertToSeconds(b.createdAt);
+                return timeA - timeB;
+              })
               .map((memo, id) => (
                 <TableRow key={id}>
                   <TableCell>{memo.createdAt}</TableCell>
