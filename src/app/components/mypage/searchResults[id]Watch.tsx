@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Data, Item } from "@/types";
 import { videoDataState } from "@/app/states/videoDataState";
 import { db } from "../../../../libs/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  serverTimestamp,
+} from "firebase/firestore";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { useRouter } from "next/navigation";
 import {
@@ -34,18 +39,14 @@ const Watch = ({ id }: { id: string }) => {
   const [YTPlayer, setYTPlayer] = useState<YT.Player>();
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [timeToShow, setTimeToShow] = useState<string>("0");
-  const [newMemo, setNewMemo] = useState<Memo>(
-    {
-      id: '',
-      videoId: '',
-      videoTitle: '',
-      createdTime: '',
-      createdAt: '',
-      content: '',
-    }
-    
-  );
-  const [memoList, setMemoList] = useState<MemoList>();
+  const [newMemo, setNewMemo] = useState<Memo>({
+    videoId: "",
+    videoTitle: "",
+    createdTime: "",
+    createdAt: "",
+    content: "",
+  });
+  const [relatedMemoList, setRelatedMemoList] = useState<MemoList>();
   const [videoData, setVideoData] = useRecoilState(videoDataState);
   const [memoMode, setMemoMode] = useState<boolean>(false);
 
@@ -101,7 +102,6 @@ const Watch = ({ id }: { id: string }) => {
   }, []);
 
   const [isClient, setIsClient] = useState(false);
-
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -113,51 +113,102 @@ const Watch = ({ id }: { id: string }) => {
     }
   }
 
-  const backToPreviousUI = () => 
-    {   
-      setMemoMode(!memoMode);
- };
+  const backToPreviousUI = () => {
+    setMemoMode(!memoMode);
+  };
 
- const saveMemoToFirebase = async () => 
-  {  
+  const saveMemoToFirebaseAndfetchAll = async () => {
     // * 現在の日付を取得
-const CurrentDate = () => {
-  const today = new Date()
+    const CurrentDate = () => {
+      const today = new Date();
 
-  const year = today.getFullYear()
-  const month = ('0' + (today.getMonth() + 1)).slice(-2)
-  const day = ('0' + today.getDate()).slice(-2)
- 
-    setNewMemo(state => ({
-      ...state,
-      'cretedTime':  year + '-' + month + '-' + day + ' '
-    }));
- }
- CurrentDate();
-    
-    await addDoc(collection(db, 'memoList'), {
-      id: '',
+      const year = today.getFullYear();
+      const month = ("0" + (today.getMonth() + 1)).slice(-2);
+      const day = ("0" + today.getDate()).slice(-2);
+
+      setNewMemo((state) => ({
+        ...state,
+        cretedTime: year + "-" + month + "-" + day + " ",
+      }));
+    };
+    CurrentDate();
+
+    //firebaseに新しいメモを追加
+    await addDoc(collection(db, "memoList"), {
       videoId: newMemo.videoId,
       videoTitle: newMemo.videoTitle,
       createdTime: serverTimestamp(),
       createdAt: timeToShow,
       content: newMemo.content,
-    })
-};
+    });
 
-const editNewMemo = (e: React.ChangeEvent<HTMLInputElement>) => {
-  videoData?.forEach((item) => { 
-    if (item.id.videoId === videoId) {
-      setNewMemo(state => ({
-        ...state,
-        'videoId': videoId,
-        'videoTitle': item.snippet.title,
-        'content': e.target.value
-      }));
-    }
-  });
-  console.log(newMemo);
-};
+    //firebaseから新しく加えたメモを含むメモリストを取得
+    const fetchRelatedMemoList = async () => {
+      const querySnapshot = await getDocs(collection(db, "memoList"));
+      const memoList: MemoList = {
+        memos: querySnapshot.docs.map((doc) => {
+          const { videoId, videoTitle, createdTime, createdAt, content } =
+            doc.data();
+
+          return {
+            id: doc.id,
+            videoId,
+            videoTitle,
+            createdTime,
+            createdAt,
+            content,
+          };
+        }),
+      };
+      setRelatedMemoList(memoList);
+    };
+    fetchRelatedMemoList();
+  };
+
+  const editNewMemo = (e: React.ChangeEvent<HTMLInputElement>) => {
+    videoData?.forEach((item) => {
+      if (item.id.videoId === videoId) {
+        setNewMemo((state) => ({
+          ...state,
+          videoId: videoId,
+          videoTitle: item.snippet.title,
+          content: e.target.value,
+        }));
+      }
+    });
+    console.log(newMemo);
+  };
+
+  useEffect(() => {
+    const fetchRelatedMemoList = async () => {
+      const querySnapshot = await getDocs(collection(db, "memoList"));
+      const memoList: MemoList = {
+        memos: querySnapshot.docs.map((doc) => {
+          const { videoId, videoTitle, createdTime, createdAt, content } =
+            doc.data();
+
+          return {
+            id: doc.id,
+            videoId,
+            videoTitle,
+            createdTime,
+            createdAt,
+            content,
+          };
+        }),
+      };
+      setRelatedMemoList(memoList);
+    };
+    fetchRelatedMemoList();
+  }, []);
+
+
+  // 経過時間を秒単位に変換する関数
+  const convertToSeconds = (createdAt:string) => {
+    const [hours, minutes, seconds] = createdAt.split(':').map(Number);
+    //秒単位に変換
+    return hours * 3600 + minutes * 60 + seconds;
+  };
 
   return (
     <Box>
@@ -215,11 +266,10 @@ const editNewMemo = (e: React.ChangeEvent<HTMLInputElement>) => {
               <Box>
                 <Button
                   sx={{ border: 1, width: "100%" }}
-                  onClick={()=> {
+                  onClick={() => {
                     backToPreviousUI();
-                    saveMemoToFirebase();                
+                    saveMemoToFirebaseAndfetchAll();
                   }}
-                  
                 >
                   保存する
                 </Button>
@@ -264,22 +314,27 @@ const editNewMemo = (e: React.ChangeEvent<HTMLInputElement>) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
-              <TableCell>15:15</TableCell>
-              <TableCell>useStateの書き方と注意事項</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>20:00</TableCell>
-              <TableCell>
-                useEffectで特定のuseStateが変更されたときにレンダリングする方法
-              </TableCell>
-            </TableRow>
+            {relatedMemoList?.memos
+              ?.filter((memo) => memo.videoId === videoId)
+              .sort(
+                (a, b) => {
+                  //経過時間を秒単位に変換して比較
+                  const timeA = convertToSeconds(a.createdAt);
+                  const timeB = convertToSeconds(b.createdAt);
+                  return timeA - timeB;
+                }
+              )
+              .map((memo, id) => (
+                <TableRow key={id}>
+                  <TableCell>{memo.createdAt}</TableCell>
+                  <TableCell>{memo.content}</TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
     </Box>
   );
 };
-
 
 export default Watch;
