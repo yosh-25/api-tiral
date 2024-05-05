@@ -22,156 +22,69 @@ import {
   TableRow,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { Word, StatusOption, SortOption } from "../../types";
-import WordItemForList from "@/app/components/wordListForList";
+import { MemoList, Memo } from "../../types";
 
 function showWordList() {
   const router = useRouter();
-
-  const [wordList, setWordList] = useState<Word[]>([]);
-  const [filteredAndSortedWordList, setFilteredAndSortedWordList] = useState<
-    Word[]
-  >([]);
-  const [filteredStatus, setFilteredStatus] = useState<StatusOption>({
-    value: "全て",
-    label: "全て",
-  });
-
-  const statusOptions: StatusOption[] = [
-    { value: "全て", label: "全て" },
-    { value: "〇", label: "〇" },
-    { value: "×", label: "×" },
-  ];
-  const [selectedSortOptionByDate, setSelectedSortOptionByDate] =
-    useState<SortOption>("未選択");
-  const sortOptionsByDate: SortOption[] = ["未選択", "降順", "昇順"];
-
-  const [selectedSortOptionBySpelling, setSelectedSortOptionBySpelling] =
-    useState<SortOption>("全て");
-  const sortOptionsBySpelling: SortOption[] = ["全て", "a→z", "z→a"];
+  const [memoListByVideoId, setMemoListByVideoId] = useState<
+    Record<string, Memo[]>
+  >({});
 
   useEffect(() => {
-    const fetchWordList = async () => {
-      const querySnapshot = await getDocs(collection(db, "wordList"));
-      const wordList = await querySnapshot.docs.map((doc) => {
-        const { spelling, meaning, translation, registeredDate, status } =
-          doc.data();
-        // dateからstringに変更したため一旦無効化
-        // const date = new Date(registeredDate.toDate());
+    const fetchMemoList = async () => {
+      try {
+        const memoSnapshot = await getDocs(collection(db, "memoList"));
+        const memos = memoSnapshot.docs.map((doc) => {
+          const { videoId, videoTitle, createdTime, createdAt, content } =
+            doc.data();
+          return {
+            id: doc.id,
+            videoId,
+            videoTitle,
+            createdTime,
+            createdAt,
+            content,
+          };
+        });
 
-        return {
-          id: doc.id,
-          spelling,
-          meaning,
-          translation,
-          registeredDate,
-          status,
-        };
-      });
-      setWordList(wordList);
+        // videoIDごとにメモをグループ化する
+        const memosGroupedByVideoId = {};
+        memos.forEach((memo) => {
+          const videoId = memo.videoId;
+          if (!memosGroupedByVideoId[videoId]) {
+            memosGroupedByVideoId[videoId] = [];
+          }
+          memosGroupedByVideoId[videoId].push(memo);
+        });
+        console.log(memosGroupedByVideoId);
+        setMemoListByVideoId(memosGroupedByVideoId);
+      } catch (error) {
+        console.error("Error fetching memos:", error);
+      }
     };
-    fetchWordList();
+    fetchMemoList();
   }, []);
 
-  const handleStatusOption = (event: SelectChangeEvent<string>) => {
-    const selectedValue = event.target.value;
-    // 選んだ選択肢をselectedStatusOptionとして保持する
-    const selected = statusOptions.find(
-      (option) => option.value === selectedValue
-    ) || {
-      value: "",
-      label: "Select an option",
-    };
-    setFilteredStatus(selected);
-  };
-
-  const handleSortOptionByDate = (event: SelectChangeEvent<string>) => {
-    const selectedValue = event.target.value;
-    // 選んだ選択肢をselecteSortOptionとして保持する
-    const selected = sortOptionsByDate.find(
-      (option) => option === selectedValue
-    );
-    if (selected !== undefined) {
-      setSelectedSortOptionByDate(selected);
-    } else {
-      setSelectedSortOptionByDate("未選択");
-    }
-  };
-
-  const handleSortOptionBySpelling = (event: SelectChangeEvent<string>) => {
-    const selectedValue = event.target.value;
-    // 選んだ選択肢をselecteSortOptionとして保持する
-    const selected = sortOptionsBySpelling.find(
-      (option) => option === selectedValue
-    );
-    if (selected !== undefined) {
-      setSelectedSortOptionBySpelling(selected);
-    } else {
-      setSelectedSortOptionBySpelling("全て");
-    }
-  };
-
+  // list中身確認用　後で消す
   useEffect(() => {
-    // 並び替えを最初に選択時はうまく動作しなかったためuseEffect内で仮List設定
-    let tempList = [...wordList];
+    console.log(memoListByVideoId);
+  }, [memoListByVideoId]);
 
-    // フィルター機能
-    switch (filteredStatus.value) {
-      case "〇":
-        tempList = tempList.filter((word) => word.status === true);
-        break;
+  // 経過時間を秒単位に変換する関数
+  const convertToSeconds = (createdAt: string) => {
+    console.log("createdAtの値:", createdAt);
+    const Numbers = createdAt.split(":").map(Number);
 
-      case "×":
-        tempList.filter((word) => word.status === false);
-        break;
-      default:
-        break;
+    if (Numbers.length === 3) {
+      // 時間、分、秒が全て存在する場合の処理
+      const [hours3, minutes3, seconds3] = Numbers;
+      return hours3 * 3600 + minutes3 * 60 + seconds3;
+    } else {
+      // 分&秒または秒だけが存在する場合の処理
+      const [minutes2, seconds2] = Numbers;
+      return minutes2 * 60 + seconds2;
     }
-
-    // Todo: string表記の日付で並び替えに対応する方法調べる？
-    // ソート機能（登録日）
-    switch (selectedSortOptionByDate) {
-      case "降順":
-        tempList.sort(
-          (a, b) =>
-            new Date(b.registeredDate).getTime() -
-            new Date(a.registeredDate).getTime()
-        );
-        break;
-
-      case "昇順":
-        tempList.sort(
-          (a, b) =>
-            new Date(a.registeredDate).getTime() -
-            new Date(b.registeredDate).getTime()
-        );
-
-        break;
-      default:
-        break;
-    }
-
-    // ソート機能（アルファベット順）
-    switch (selectedSortOptionBySpelling) {
-      case "a→z":
-        tempList.sort((a, b) => a.spelling.localeCompare(b.spelling));
-        break;
-
-      case "z→a":
-        tempList.sort((a, b) => b.spelling.localeCompare(a.spelling));
-        break;
-
-      default:
-        break;
-    }
-
-    setFilteredAndSortedWordList(tempList);
-  }, [
-    wordList,
-    filteredStatus,
-    selectedSortOptionByDate,
-    selectedSortOptionBySpelling,
-  ]);
+  };
 
   return (
     <Box
@@ -182,28 +95,50 @@ function showWordList() {
       }}
     >
       <Typography variant="h3" sx={{ textAlign: "center" }}>
-        単語リスト一覧
+        Memo List
       </Typography>
 
       <TableContainer sx={{ marginBottom: "50px" }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>単語</TableCell>
-              <TableCell>Meaning</TableCell>
-              <TableCell>意味</TableCell>
-              <TableCell>登録日</TableCell>
-              <TableCell>定着度</TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredAndSortedWordList.map((word: Word) => (
-              <WordItemForList key={word.id} word={word} />
+            {Object.entries(memoListByVideoId).map(([videoId, memos]) => (
+              <React.Fragment key={videoId}>
+                {memos
+                  .sort((a, b) => {
+                    // 日時を秒単位に変換して比較
+                    const timeA = convertToSeconds(a.createdAt);
+                    const timeB = convertToSeconds(b.createdAt);
+                    return timeA - timeB;
+                  })
+                  .map((memo, index) => (
+                    <TableRow key={memo.id}>
+                      <TableCell>
+                        {index === 0 ? memo.videoTitle : ""}
+                      </TableCell>
+                      <TableCell>{memo.createdAt}</TableCell>
+                      <TableCell>{memo.content}</TableCell>
+                      <TableCell>
+                        <Button>編集</Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button>削除</Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </React.Fragment>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-
       <Box
         sx={{
           display: "flex",
@@ -212,46 +147,7 @@ function showWordList() {
           marginRight: "auto",
         }}
         mb={5}
-      >
-        <FormControl sx={{ width: "150px", mr: "10px" }}>
-          <InputLabel id="statusSelect">絞り込み（定着度）</InputLabel>
-          <Select value={filteredStatus.value} onChange={handleStatusOption}>
-            {statusOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl sx={{ width: "150px", mr: "10px" }}>
-          <InputLabel id="sortSelect">今××並び替え（登録順）</InputLabel>
-          <Select
-            value={selectedSortOptionByDate}
-            onChange={handleSortOptionByDate}
-          >
-            {sortOptionsByDate.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl sx={{ width: "150px", mr: "10px" }}>
-          <InputLabel id="statusSelect">並び替え（綴り順）</InputLabel>
-          <Select
-            value={selectedSortOptionBySpelling}
-            onChange={handleSortOptionBySpelling}
-          >
-            {sortOptionsBySpelling.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
+      ></Box>
       <Box
         sx={{
           display: "flex",
