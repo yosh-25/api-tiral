@@ -32,6 +32,7 @@ export interface MemoList {
 }
 
 export interface Memo {
+  id: string;
   videoId: string;
   videoTitle: string;
   createdTime: string;

@@ -40,6 +40,7 @@ const Watch = ({ id }: { id: string }) => {
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [timeToShow, setTimeToShow] = useState<string>("0");
   const [newMemo, setNewMemo] = useState<Memo>({
+    id: "",
     videoId: "",
     videoTitle: "",
     createdTime: "",

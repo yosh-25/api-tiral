@@ -2,7 +2,13 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { db } from "../../../libs/firebase";
-import { getDocs, collection } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  doc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import {
   Box,
   Button,
@@ -29,7 +35,10 @@ function showWordList() {
   const [memoListByVideoId, setMemoListByVideoId] = useState<
     Record<string, Memo[]>
   >({});
+  const [fetchTrigger, setFetchTrigger] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState<boolean>(false);
 
+  // マウント時、データ削除時、編集キャンセル時にfirebaseからデータ取得
   useEffect(() => {
     const fetchMemoList = async () => {
       try {
@@ -63,7 +72,7 @@ function showWordList() {
       }
     };
     fetchMemoList();
-  }, []);
+  }, [fetchTrigger, editMode]);
 
   // list中身確認用　後で消す
   useEffect(() => {
@@ -72,7 +81,6 @@ function showWordList() {
 
   // 経過時間を秒単位に変換する関数
   const convertToSeconds = (createdAt: string) => {
-    console.log("createdAtの値:", createdAt);
     const Numbers = createdAt.split(":").map(Number);
 
     if (Numbers.length === 3) {
@@ -83,6 +91,51 @@ function showWordList() {
       // 分&秒または秒だけが存在する場合の処理
       const [minutes2, seconds2] = Numbers;
       return minutes2 * 60 + seconds2;
+    }
+  };
+
+  // メモ内容をフロントエンドで変更
+  const updateContent = (
+    videoId: string,
+    memoId: string,
+    newContent: string
+  ) => {
+    const updatedMemoListByVideoId = { ...memoListByVideoId };
+    const memos = updatedMemoListByVideoId[videoId];
+    const updatedMemos = memos.map((memo) => {
+      if (memo.id === memoId) {
+        return { ...memo, content: newContent };
+      }
+      return memo;
+    });
+
+    updatedMemoListByVideoId[videoId] = updatedMemos;
+    setMemoListByVideoId(updatedMemoListByVideoId);
+    console.log(updatedMemoListByVideoId);
+  };
+
+  // 変更したメモ内容をバックエンドに保存
+  const updateMemoContent = async (id: string, newContent: string) => {
+    const docRef = doc(db, "memoList", id);
+    try {
+      await updateDoc(docRef, {
+        content: newContent,
+      });
+      console.log("変更が保存されました！");
+      setEditMode(!editMode);
+    } catch (error) {
+      console.log("エラーが発生しました。", error);
+    }
+  };
+
+  // メモを削除
+  const deleteMemo = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "memoList", id));
+      console.log("メモを削除しました！");
+      setFetchTrigger(!fetchTrigger);
+    } catch (error) {
+      console.log("エラーが発生しました。", error);
     }
   };
 
@@ -119,18 +172,58 @@ function showWordList() {
                     const timeB = convertToSeconds(b.createdAt);
                     return timeA - timeB;
                   })
-                  .map((memo, index) => (
+                  .map((memo, index) => (                    
                     <TableRow key={memo.id}>
                       <TableCell>
                         {index === 0 ? memo.videoTitle : ""}
                       </TableCell>
                       <TableCell>{memo.createdAt}</TableCell>
-                      <TableCell>{memo.content}</TableCell>
+                      {!editMode ? (
+                        <>
+                          <TableCell>{memo.content} </TableCell>
+                          <TableCell>
+                            <Button
+                              onClick={
+                                () => setEditMode(!editMode)
+                                // updateMemoContent(memo.id, memo.content);
+                              }
+                            >
+                              編集
+                            </Button>
+                          </TableCell>
+                        </>
+                      ) : (
+                        <>
+                          <TableCell>
+                            <TextField
+                              value={memo.content}
+                              onChange={(e) =>
+                                updateContent(
+                                  memo.videoId,
+                                  memo.id,
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              onClick={() =>
+                                updateMemoContent(memo.id, memo.content)
+                              }
+                            >
+                              保存
+                            </Button>
+                            <Button onClick={() => setEditMode(!editMode)}>
+                              キャンセル
+                            </Button>
+                          </TableCell>
+                        </>
+                      )}
                       <TableCell>
-                        <Button>編集</Button>
-                      </TableCell>
-                      <TableCell>
-                        <Button>削除</Button>
+                        <Button onClick={() => deleteMemo(memo.id)}>
+                          削除
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
