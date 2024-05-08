@@ -140,98 +140,106 @@ function showWordList() {
   };
 
   return (
+    <>
     <Box
       sx={{
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
       }}
     >
-      <Typography variant="h3" sx={{ textAlign: "center" }}>
+      <Typography variant="h3" sx={{ textAlign: "center", my: 4 }}>
         Memo List
       </Typography>
 
-      <TableContainer sx={{ marginBottom: "50px" }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {Object.entries(memoListByVideoId).map(([videoId, memos]) => (
-              <React.Fragment key={videoId}>
-                {memos
-                  .sort((a, b) => {
-                    // 日時を秒単位に変換して比較
-                    const timeA = convertToSeconds(a.createdAt);
-                    const timeB = convertToSeconds(b.createdAt);
-                    return timeA - timeB;
-                  })
-                  .map((memo, index) => (                    
-                    <TableRow key={memo.id}>
-                      <TableCell>
-                        {index === 0 ? memo.videoTitle : ""}
-                      </TableCell>
-                      <TableCell>{memo.createdAt}</TableCell>
-                      {!editMode ? (
-                        <>
-                          <TableCell>{memo.content} </TableCell>
-                          <TableCell>
-                            <Button
-                              onClick={
-                                () => setEditMode(!editMode)
-                                // updateMemoContent(memo.id, memo.content);
-                              }
-                            >
-                              編集
-                            </Button>
-                          </TableCell>
-                        </>
-                      ) : (
-                        <>
-                          <TableCell>
+ 
+        {Object.entries(memoListByVideoId).map(([videoId, memos]) => (
+          <Box
+          key={videoId}
+          sx={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-around",
+            alignItems: "start",
+            my: 2,
+          }}
+        >
+          <Box sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
+          {memos.map((memo, index) => (
+            index===0 && (
+              <>
+              <Typography variant="h6" key={index}>{memo.videoTitle}</Typography>
+              <video width="320" height="240" controls>
+                <source src={memo.videoUrl} type="video/mp4" />
+              </video>
+            </>
+            )
+          ))}
+          <Box sx={{ flex: 2 }}>
+          </Box>
+            {memos
+              .sort((a, b) => {
+                // 日時を秒単位に変換して比較
+                const timeA = convertToSeconds(a.createdAt);
+                const timeB = convertToSeconds(b.createdAt);
+                return timeA - timeB;
+              })
+              .map((memo, index) => (        
+                  <TableContainer key={memo.id} sx={{ marginBottom: "50px" }}>
+                    <Table>
+                        <TableBody>
+                        <TableRow>
+                          <TableCell component='th' scope='row'>
+                         {memo.createdAt}
+                         </TableCell>
+                         <TableCell>{memo.content}</TableCell>
+                        <TableCell>
+                        {/* 編集モードと表示モードの切り替え */}
+                        {!editMode ? (
+                          <Button variant="outlined" onClick={() => setEditMode(!editMode)}>編集</Button>
+                        ) : (
+                          <>
                             <TextField
                               value={memo.content}
-                              onChange={(e) =>
-                                updateContent(
-                                  memo.videoId,
-                                  memo.id,
-                                  e.target.value
-                                )
-                              }
+                              onChange={(e) => updateContent(memo.videoId, memo.id, e.target.value)}
+                              size="small"
                             />
-                          </TableCell>
-                          <TableCell>
                             <Button
-                              onClick={() =>
-                                updateMemoContent(memo.id, memo.content)
-                              }
+                              variant="contained"
+                              sx={{ ml: 1 }}
+                              onClick={() => updateMemoContent(memo.id, memo.content)}
                             >
                               保存
                             </Button>
-                            <Button onClick={() => setEditMode(!editMode)}>
+                            <Button
+                              sx={{ ml: 1 }}
+                              onClick={() => setEditMode(!editMode)}
+                            >
                               キャンセル
                             </Button>
-                          </TableCell>
-                        </>
-                      )}
-                      <TableCell>
-                        <Button onClick={() => deleteMemo(memo.id)}>
-                          削除
-                        </Button>
+                          </>
+                        )}
                       </TableCell>
-                    </TableRow>
-                  ))}
-              </React.Fragment>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                  
+                          <TableCell>
+                            <Button onClick={() => deleteMemo(memo.id)}>
+                              削除
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+               
+              ))}
+              </Box>
+              </Box>      
+        ))}
+      </Box>
+
+
       <Box
         sx={{
           display: "flex",
@@ -261,7 +269,7 @@ function showWordList() {
           </Button>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 }
 
