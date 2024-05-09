@@ -154,7 +154,7 @@ function showWordList() {
         Memo List
       </Typography>
 
- 
+{/* 今取り組んでいる箇所 */}
         {Object.entries(memoListByVideoId).map(([videoId, memos]) => (
           <Box
           key={videoId}
@@ -166,19 +166,24 @@ function showWordList() {
             my: 2,
           }}
         >
-          <Box sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <Box sx={{ flex: 1, display: "flex",  alignItems: "center" }}>
+            
           {memos.map((memo, index) => (
             index===0 && (
-              <>
+              <Box sx={{display:'flex', flexDirection: 'column'}}>
+                <Box>
               <Typography variant="h6" key={index}>{memo.videoTitle}</Typography>
+              </Box>
+              <Box>
               <video width="320" height="240" controls>
                 <source src={memo.videoUrl} type="video/mp4" />
               </video>
-            </>
+              </Box>
+            </Box>
             )
           ))}
-          <Box sx={{ flex: 2 }}>
-          </Box>
+                  
+          <Box>
             {memos
               .sort((a, b) => {
                 // 日時を秒単位に変換して比較
@@ -234,6 +239,7 @@ function showWordList() {
                   </TableContainer>
                
               ))}
+              </Box>
               </Box>
               </Box>      
         ))}
