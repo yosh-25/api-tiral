@@ -143,8 +143,8 @@ function showWordList() {
     <>
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
+        // display: "flex",
+        // flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         width: "100%",
@@ -154,7 +154,7 @@ function showWordList() {
         Memo List
       </Typography>
 
-{/* 今取り組んでいる箇所 */}
+{/* 5/9取り組んでいる箇所 */}
         {Object.entries(memoListByVideoId).map(([videoId, memos]) => (
           <Box
           key={videoId}
@@ -163,11 +163,10 @@ function showWordList() {
             width: "100%",
             justifyContent: "space-around",
             alignItems: "start",
-            my: 2,
+            my: 1,
           }}
         >
-          <Box sx={{ flex: 1, display: "flex",  alignItems: "center" }}>
-            
+          <Box sx={{ flex: 1, display: "flex",  alignItems: "center" }}>            
           {memos.map((memo, index) => (
             index===0 && (
               <Box sx={{display:'flex', flexDirection: 'column'}}>
@@ -192,7 +191,7 @@ function showWordList() {
                 return timeA - timeB;
               })
               .map((memo, index) => (        
-                  <TableContainer key={memo.id} sx={{ marginBottom: "50px" }}>
+                  <TableContainer key={memo.id} sx={{ marginBottom: "10px" }}>
                     <Table>
                         <TableBody>
                         <TableRow>
