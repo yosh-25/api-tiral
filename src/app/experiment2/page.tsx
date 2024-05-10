@@ -3,9 +3,7 @@ import { Typography, Box, Pagination } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-interface api {
-    name: string;
-  }
+
 
 const experiment = () => {
     //pageApi
