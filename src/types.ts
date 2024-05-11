@@ -20,6 +20,10 @@ export interface Item {
   };
 }
 
+export interface PageApi {
+  [videoId: string]: number;
+}
+
 // export type Memo = {
 //   id: string;
 //   videoId: string;

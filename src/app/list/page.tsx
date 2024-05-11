@@ -26,9 +26,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Pagination,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { MemoList, Memo } from "../../types";
+import { MemoList, Memo, PageApi } from "../../types";
 
 function showWordList() {
   const router = useRouter();
@@ -38,22 +39,25 @@ function showWordList() {
   const [fetchTrigger, setFetchTrigger] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
 
+  //pageApi
+  const [pageApi, setPageApi] = useState<PageApi>({});
+  const [rowsPerPage, setRowsPerPage] = useState(3);
+
+  // ページ番号を更新するハンドラ
+  const handleChangePage = (videoId: string, event: any, value: number) => {
+    setPageApi((prev) => ({
+      ...prev,
+      [videoId]: value,
+    }));
+  };
+
   // マウント時、データ削除時、編集キャンセル時にfirebaseからデータ取得
   useEffect(() => {
     const fetchMemoList = async () => {
       try {
         const memoSnapshot = await getDocs(collection(db, "memoList"));
-        const memos = memoSnapshot.docs.map((doc) => {
-          const { videoId, videoTitle, createdTime, createdAt, content } =
-            doc.data();
-          return {
-            id: doc.id,
-            videoId,
-            videoTitle,
-            createdTime,
-            createdAt,
-            content,
-          };
+        const memos = memoSnapshot.docs.map(doc => doc.data()).sort((a,b) => {
+          return convertToSeconds(a.createdAt) - convertToSeconds(b.createdAt);
         });
 
         // videoIDごとにメモをグループ化する
@@ -73,6 +77,8 @@ function showWordList() {
     };
     fetchMemoList();
   }, [fetchTrigger, editMode]);
+
+
 
   // list中身確認用　後で消す
   useEffect(() => {
@@ -140,7 +146,6 @@ function showWordList() {
   };
 
   return (
-    <>
     <Box
       sx={{
         // display: "flex",
@@ -154,126 +159,118 @@ function showWordList() {
         Memo List
       </Typography>
 
-        {Object.entries(memoListByVideoId).map(([videoId, memos]) => (
+      {Object.entries(memoListByVideoId).map(([videoId, memos]) => {
+        const currentPage = pageApi[videoId] || 1;
+        const memosToShow = memos.slice(
+          (currentPage - 1) * rowsPerPage,
+          currentPage * rowsPerPage
+        );
+
+        return (
           <Box
-          key={videoId}
-          sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-around",
-            alignItems: "start",
-            my: 1,
-          }}
-        >
-          <Box sx={{ flex: 1, display: "flex",  alignItems: "center" }}>            
-          {memos.map((memo, index) => (
-            index===0 && (
-              <Box sx={{display:'flex', flexDirection: 'column'}}>
-                <Box>
-              <Typography variant="h6" key={index}>{memo.videoTitle}</Typography>
-              </Box>
+            key={videoId}
+            sx={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "space-around",
+              alignItems: "start",
+              my: 1,
+            }}
+          >
+            <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
+              {memosToShow.map(
+                (memo, index) =>
+                  index === 0 && (
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                      <Box>
+                        <Typography variant="h6" key={index}>
+                          {memo.videoTitle}
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <video width="320" height="240" controls>
+                          <source src={memo.videoId} type="video/mp4" />
+                        </video>
+                      </Box>
+                    </Box>
+                  )
+              )}
               <Box>
-              <video width="320" height="240" controls>
-                <source src={memo.videoUrl} type="video/mp4" />
-              </video>
+                {memosToShow            
+                  .map((memo) => (
+                    <TableContainer key={memo.id} sx={{ marginBottom: "10px" }}>
+                      <Table>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell component="th" scope="row">
+                              {memo.createdAt}
+                            </TableCell>
+                            <TableCell>{memo.content}</TableCell>
+                            <TableCell>
+                              {/* 編集モードと表示モードの切り替え */}
+                              {!editMode ? (
+                                <Button
+                                  variant="outlined"
+                                  onClick={() => setEditMode(!editMode)}
+                                >
+                                  編集
+                                </Button>
+                              ) : (
+                                <>
+                                  <TextField
+                                    value={memo.content}
+                                    onChange={(e) =>
+                                      updateContent(
+                                        memo.videoId,
+                                        memo.id,
+                                        e.target.value
+                                      )
+                                    }
+                                    size="small"
+                                  />
+                                  <Button
+                                    variant="contained"
+                                    sx={{ ml: 1 }}
+                                    onClick={() =>
+                                      updateMemoContent(memo.id, memo.content)
+                                    }
+                                  >
+                                    保存
+                                  </Button>
+                                  <Button
+                                    sx={{ ml: 1 }}
+                                    onClick={() => setEditMode(!editMode)}
+                                  >
+                                    キャンセル
+                                  </Button>
+                                </>
+                              )}
+                            </TableCell>
+
+                            <TableCell>
+                              <Button onClick={() => deleteMemo(memo.id)}>
+                                削除
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  ))}
+                <Pagination
+                  count={Math.ceil(memos.length / rowsPerPage)}
+                  page={currentPage}
+                  onChange={(event, value) =>
+                    handleChangePage(videoId, event, value)
+                  }
+                  color="primary"
+                />
               </Box>
             </Box>
-            )
-          ))}
-                  
-          <Box>
-            {memos
-              .sort((a, b) => {
-                // 日時を秒単位に変換して比較
-                const timeA = convertToSeconds(a.createdAt);
-                const timeB = convertToSeconds(b.createdAt);
-                return timeA - timeB;
-              })
-              .map((memo, index) => (        
-                  <TableContainer key={memo.id} sx={{ marginBottom: "10px" }}>
-                    <Table>
-                        <TableBody>
-                        <TableRow>
-                          <TableCell component='th' scope='row'>
-                         {memo.createdAt}
-                         </TableCell>
-                         <TableCell>{memo.content}</TableCell>
-                        <TableCell>
-                        {/* 編集モードと表示モードの切り替え */}
-                        {!editMode ? (
-                          <Button variant="outlined" onClick={() => setEditMode(!editMode)}>編集</Button>
-                        ) : (
-                          <>
-                            <TextField
-                              value={memo.content}
-                              onChange={(e) => updateContent(memo.videoId, memo.id, e.target.value)}
-                              size="small"
-                            />
-                            <Button
-                              variant="contained"
-                              sx={{ ml: 1 }}
-                              onClick={() => updateMemoContent(memo.id, memo.content)}
-                            >
-                              保存
-                            </Button>
-                            <Button
-                              sx={{ ml: 1 }}
-                              onClick={() => setEditMode(!editMode)}
-                            >
-                              キャンセル
-                            </Button>
-                          </>
-                        )}
-                      </TableCell>
-                  
-                          <TableCell>
-                            <Button onClick={() => deleteMemo(memo.id)}>
-                              削除
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-               
-              ))}
-              </Box>
-              </Box>
-              </Box>      
-        ))}
-      </Box>
-
-
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-        mb={5}
-      ></Box>
-      <Box
-        sx={{
-          display: "flex",
-          direction: "column",
-          justifyContent: "center",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-      >
-        <Box>
-          <Button variant="contained" onClick={() => router.push(`/learn`)}>
-            学習ページへのリンク（開発中だけ設置）
-          </Button>
-        </Box>
-        <Box>
-          <Button variant="contained" onClick={() => router.push(`/`)}>
-            Topページへのリンク（開発中だけ設置）
-          </Button>
-        </Box>
-      </Box>
-    </>
+          </Box>
+        );
+      })}
+    </Box>
   );
 }
 
