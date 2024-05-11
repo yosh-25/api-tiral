@@ -154,7 +154,6 @@ function showWordList() {
         Memo List
       </Typography>
 
-{/* 5/9取り組んでいる箇所 */}
         {Object.entries(memoListByVideoId).map(([videoId, memos]) => (
           <Box
           key={videoId}
