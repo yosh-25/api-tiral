@@ -63,7 +63,24 @@ const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
     const fetchMemoList = async () => {
       try {
         const memoSnapshot = await getDocs(collection(db, "memoList"));
-        const memos = memoSnapshot.docs.map(doc => doc.data()).sort((a,b) => {
+        const memos = memoSnapshot.docs.map(doc => {
+          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content } =
+          doc.data();
+      
+        return {
+          id: doc.id,
+          videoId,
+          videoThumbnail,
+          videoTitle,
+          createdTime,
+          createdAt,
+          content,
+        };
+      }
+      );
+        console.log(memos);
+
+        const sortedMemos = memos.sort((a,b) => {
           return convertToSeconds(a.createdAt) - convertToSeconds(b.createdAt);
         });
 
@@ -78,38 +95,14 @@ const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
         });
         console.log(memosGroupedByVideoId);
         setMemoListByVideoId(memosGroupedByVideoId);
+       
       } catch (error) {
         console.error("Error fetching memos:", error);
       }
+      
     };
     fetchMemoList();
   }, [fetchTrigger, editMode]);
-
-  // VideoId毎のサムネを取得
-  const getVideoThumbnail = async (videoId: string) => {
-    const url = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&part=snippet&key=${apiKey}`;
-    try {
-      const response = await fetch(url);
-      if(!response.ok) {
-        console.error('Network response was not ok');
-      }
-      const data = await response.json();
-      const video = data.items?.[0];
-      if(video) {
-        const thumbnails = video.snippet?.thumbnails;
-        if (thumbnails) {
-          console.log('Medium thumbnail URL', thumbnails.medium?.url);
-        } else {
-        console.log('No thumbnail');
-      } }else {
-        console.log('video not found');
-      }
-    } catch(error) {
-      console.error('Failed to fetch', error);
-    }
-  };
- 
-
 
   // list中身確認用　後で消す
   useEffect(() => {
@@ -166,9 +159,11 @@ const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
   };
 
   // メモを削除
-  const deleteMemo = async (id: string) => {
+  const deleteMemo = async (id:string) => {
+    const memoId = id;
+    console.log(memoId);
     try {
-      await deleteDoc(doc(db, "memoList", id));
+      await deleteDoc(doc(db, "memoList", memoId));
       console.log("メモを削除しました！");
       setFetchTrigger(!fetchTrigger);
     } catch (error) {

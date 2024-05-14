@@ -166,8 +166,10 @@ const Watch = ({ id }: { id: string }) => {
         }),
       };
       setRelatedMemoList(memoList);
+      console.log(memoList);
     };
     fetchRelatedMemoList();
+    
   };
 
   // 説明加える
