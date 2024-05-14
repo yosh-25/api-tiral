@@ -39,6 +39,7 @@ export interface Memo {
   id: string;
   videoId: string;
   videoTitle: string;
+  videoThumbnail?: string;
   createdTime: string;
   createdAt: string;
   content: string;

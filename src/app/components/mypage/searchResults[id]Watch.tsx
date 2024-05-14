@@ -43,6 +43,7 @@ const Watch = ({ id }: { id: string }) => {
     id: "",
     videoId: "",
     videoTitle: "",
+    videoThumbnail: "",
     createdTime: "",
     createdAt: "",
     content: "",
@@ -112,6 +113,7 @@ const Watch = ({ id }: { id: string }) => {
     if (storedVideoData) {
       setVideoData(JSON.parse(storedVideoData));
     }
+    console.log(storedVideoData);
   }
 
   const backToPreviousUI = () => {
@@ -138,6 +140,7 @@ const Watch = ({ id }: { id: string }) => {
     await addDoc(collection(db, "memoList"), {
       videoId: newMemo.videoId,
       videoTitle: newMemo.videoTitle,
+      videoThumbnail: newMemo.videoThumbnail,
       createdTime: serverTimestamp(),
       createdAt: timeToShow,
       content: newMemo.content,
@@ -148,12 +151,13 @@ const Watch = ({ id }: { id: string }) => {
       const querySnapshot = await getDocs(collection(db, "memoList"));
       const memoList: MemoList = {
         memos: querySnapshot.docs.map((doc) => {
-          const { videoId, videoTitle, createdTime, createdAt, content } =
+          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content } =
             doc.data();
 
           return {
             id: doc.id,
             videoId,
+            videoThumbnail: videoThumbnail,
             videoTitle,
             createdTime,
             createdAt,
@@ -166,6 +170,7 @@ const Watch = ({ id }: { id: string }) => {
     fetchRelatedMemoList();
   };
 
+  // 説明加える
   const editNewMemo = (e: React.ChangeEvent<HTMLInputElement>) => {
     videoData?.forEach((item) => {
       if (item.id.videoId === videoId) {
@@ -173,6 +178,7 @@ const Watch = ({ id }: { id: string }) => {
           ...state,
           videoId: videoId,
           videoTitle: item.snippet.title,
+          videoThumbnail: item.snippet.thumbnails?.medium.url,
           content: e.target.value,
         }));
       }
@@ -185,13 +191,14 @@ const Watch = ({ id }: { id: string }) => {
       const querySnapshot = await getDocs(collection(db, "memoList"));
       const memoList: MemoList = {
         memos: querySnapshot.docs.map((doc) => {
-          const { videoId, videoTitle, createdTime, createdAt, content } =
+          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content } =
             doc.data();
 
           return {
             id: doc.id,
             videoId,
             videoTitle,
+            videoThumbnail: videoThumbnail,
             createdTime,
             createdAt,
             content,

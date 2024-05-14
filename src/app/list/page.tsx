@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { db } from "../../../libs/firebase";
+import { videoDataState } from "@/app/states/videoDataState";
 import {
   getDocs,
   collection,
@@ -27,17 +28,23 @@ import {
   TableHead,
   TableRow,
   Pagination,
+  Link
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { MemoList, Memo, PageApi } from "../../types";
+import YouTube from "react-youtube";
 
-function showWordList() {
+function showMemoList() {
   const router = useRouter();
+const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search";
+const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
   const [memoListByVideoId, setMemoListByVideoId] = useState<
     Record<string, Memo[]>
   >({});
   const [fetchTrigger, setFetchTrigger] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [YTPlayer, setYTPlayer] = useState<YT.Player>();
+
 
   //pageApi
   const [pageApi, setPageApi] = useState<PageApi>({});
@@ -78,6 +85,30 @@ function showWordList() {
     fetchMemoList();
   }, [fetchTrigger, editMode]);
 
+  // VideoId毎のサムネを取得
+  const getVideoThumbnail = async (videoId: string) => {
+    const url = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&part=snippet&key=${apiKey}`;
+    try {
+      const response = await fetch(url);
+      if(!response.ok) {
+        console.error('Network response was not ok');
+      }
+      const data = await response.json();
+      const video = data.items?.[0];
+      if(video) {
+        const thumbnails = video.snippet?.thumbnails;
+        if (thumbnails) {
+          console.log('Medium thumbnail URL', thumbnails.medium?.url);
+        } else {
+        console.log('No thumbnail');
+      } }else {
+        console.log('video not found');
+      }
+    } catch(error) {
+      console.error('Failed to fetch', error);
+    }
+  };
+ 
 
 
   // list中身確認用　後で消す
@@ -188,17 +219,20 @@ function showWordList() {
                         </Typography>
                       </Box>
                       <Box>
-                        <video width="320" height="240" controls>
-                          <source src={memo.videoId} type="video/mp4" />
-                        </video>
+                      <Link href={"mypage/searchResults/" + memo.videoId + "/watch"}>
+                      <img
+                    src={memo.videoThumbnail}
+                    alt={'error'}
+                  />
+                        </Link>
                       </Box>
                     </Box>
                   )
               )}
               <Box>
                 {memosToShow            
-                  .map((memo) => (
-                    <TableContainer key={memo.id} sx={{ marginBottom: "10px" }}>
+                  .map((memo, index) => (
+                    <TableContainer key={`${memo.id}-${index}`} sx={{ marginBottom: "10px" }}>
                       <Table>
                         <TableBody>
                           <TableRow>
@@ -274,4 +308,4 @@ function showWordList() {
   );
 }
 
-export default showWordList;
+export default showMemoList;
