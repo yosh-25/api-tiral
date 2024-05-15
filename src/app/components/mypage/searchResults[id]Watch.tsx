@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Data, Item } from "@/types";
-import { videoDataState } from "@/app/states/videoDataState";
+import { videoDetails } from "@/app/states/videoDataState";
 import { db } from "../../../../libs/firebase";
 import {
   collection,
@@ -49,7 +49,7 @@ const Watch = ({ id }: { id: string }) => {
     content: "",
   });
   const [relatedMemoList, setRelatedMemoList] = useState<MemoList>();
-  const [videoData, setVideoData] = useRecoilState(videoDataState);
+  const [videoData, setVideoData] = useRecoilState(videoDetails);
   const [memoMode, setMemoMode] = useState<boolean>(false);
 
   const opts = {
@@ -174,17 +174,13 @@ const Watch = ({ id }: { id: string }) => {
 
   // 説明加える
   const editNewMemo = (e: React.ChangeEvent<HTMLInputElement>) => {
-    videoData?.forEach((item) => {
-      if (item.id.videoId === videoId) {
-        setNewMemo((state) => ({
-          ...state,
-          videoId: videoId,
-          videoTitle: item.snippet.title,
-          videoThumbnail: item.snippet.thumbnails?.medium.url,
+           setNewMemo((memo) => ({
+          ...memo,
+          videoId: videoData.videoId,
+          videoTitle: videoData.videoTitle,
+          videoThumbnail: videoData.videoThumbnail,
           content: e.target.value,
-        }));
-      }
-    });
+        }));   
     console.log(newMemo);
   };
 
@@ -313,16 +309,7 @@ const Watch = ({ id }: { id: string }) => {
 
       <TableContainer sx={{ marginBottom: "50px" }}>
         <Typography variant="h3" fontWeight="650" sx={{ fontSize: "1rem" }}>
-          {videoData?.map((item, index) => {
-            if (item.id.videoId === videoId) {
-              return (
-                <div key={index}>
-                  <p>{item.snippet.title}</p>
-                </div>
-              );
-            }
-            return null;
-          })}
+          {videoData.videoTitle}
         </Typography>
         <Table>
           <TableHead>

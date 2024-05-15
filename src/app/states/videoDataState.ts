@@ -1,24 +1,30 @@
 import { atom } from 'recoil';
-import { Data, Item } from '@/types';
+import { Data, Item, Memo } from '@/types';
 
-const localStorageEffect = (key: string) => ({ setSelf, onSet }) => {
+const sessionStorageEffect = (key: string) => ({ setSelf, onSet }: any) => {
   if (typeof window === "undefined") return;
-  const savedValue = localStorage.getItem(key);
+  const savedValue = sessionStorage.getItem(key);
   if (savedValue != null) {
     setSelf(JSON.parse(savedValue));
   }
 
   onSet((newValue: any, _: any, isReset: boolean) => {
     isReset
-      ? localStorage.removeItem(key)
-      : localStorage.setItem(key, JSON.stringify(newValue));
+      ? sessionStorage.removeItem(key)
+      : sessionStorage.setItem(key, JSON.stringify(newValue));
   });
 };
 
-export const videoDataState = atom<Item[]>({
-  key: 'videoDataState',  // 一意のキー
+export const videoDetails = atom<Memo>({
+  key: 'videoDetails',  // 一意のキー
+  default: undefined,     // 初期値は未定義または空のデータ構造
+  effects: [sessionStorageEffect("videoDetails")]
+});
+
+export const searchedVideoData = atom<Item[]>({
+  key: 'searchedVideoData',  // 一意のキー
   default: [],     // 初期値は未定義または空のデータ構造
-  effects: [localStorageEffect("localstorage-example")]
+  effects: [sessionStorageEffect("searchedVideoData")]
 });
 
 export const videoIdState = atom({

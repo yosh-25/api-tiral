@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useRecoilValue, useRecoilState } from "recoil";
-import { videoDataState, counterState } from "@/app/states/videoDataState";
+import { videoDetails} from "@/app/states/videoDataState";
 import {
   Button,
   Stack,
@@ -20,10 +20,10 @@ import { useEffect } from "react";
 export default function Home() {
   const router = useRouter();
 
-  const videoData = useRecoilValue(videoDataState);
+  const videoData = useRecoilValue(videoDetails);
 
   useEffect(() => {
-    console.log(videoData?.items);
+    console.log(videoData);
   }, []);
 
   return (

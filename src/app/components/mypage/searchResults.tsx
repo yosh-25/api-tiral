@@ -1,8 +1,8 @@
-'use client';
+"use client";
 import React, { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { videoDataState } from "@/app/states/videoDataState";
-import { Data, Item } from "@/types";
+import { videoDetails, searchedVideoData } from "@/app/states/videoDataState";
+import { Data, Item, Memo } from "@/types";
 import { useRouter } from "next/navigation";
 import {
   Button,
@@ -36,25 +36,30 @@ const formatDate = (publishedAt: string) => {
 
 const SearchResults = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [videoData, setVideoData] = useRecoilState(videoDataState);
+  const [searchedResults, setSearchedResults] = useRecoilState(searchedVideoData);
+  const [videoInfo, setVideoInfo] = useRecoilState(videoDetails);
+  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
+  const [prevPageTokens, setPrevPageTokens] = useState<string[]>([]);
   const router = useRouter();
 
-  const fetchVideos = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.preventDefault();
+  const fetchVideos = async (pageToken?: string) => {
     if (!API_KEY) {
       console.error("API_KEY is undefined");
       return;
     }
 
-    //クエリ文字列を整理する
+   
+    let nextPageToken = null;
+    let prevPageToken = [];
+
+ //クエリ文字列を整理する
     const params = {
       key: API_KEY,
       part: "snippet",
       q: searchTerm, //検索ワード
       type: "video",
-      maxResults: "10", //表示する動画数
+      maxResults: "50", //表示する動画数
+      pageToken: pageToken || "", // 次50個の検索表示用
       order: "relevance", //デフォルトの並び順
     };
     const queryParams = new URLSearchParams(params);
@@ -65,7 +70,13 @@ const SearchResults = () => {
       );
       const result = await response.json();
       if (result.items) {
-        setVideoData(result.items);
+        setSearchedResults(result.items);
+      }
+      if (result.nextPageToken) {
+        setNextPageToken(result.nextPageToken);
+      }
+      if (pageToken) {
+        setPrevPageTokens((prevTokens) => [...prevTokens, pageToken]);
       }
     } catch (error) {
       console.error(error);
@@ -73,10 +84,47 @@ const SearchResults = () => {
   };
 
   useEffect(() => {
+    console.log(searchedResults);
+  }, [searchedResults]);
+
+  const handleSearchClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    setPrevPageTokens([]);
+    fetchVideos();
+  };
+
+  const handleNextPage = async () => {
+    if (nextPageToken) {
+      await fetchVideos(nextPageToken);
+      window.scroll({
+        top: 0,
+        behavior: 'instant',
+      })
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (prevPageTokens.length > 0) {
+      const lastPageToken = prevPageTokens.pop();
+      fetchVideos(lastPageToken);
+    }
+  };
+
+  const SaveVideoDetails = (item: Item) => {
+    const videoData: Memo = {
+      id: "",
+      videoId: item.id.videoId,
+      videoThumbnail: item.snippet.thumbnails?.medium.url,
+      videoTitle: item.snippet.title,
+      createdTime: "",
+      createdAt: "",
+      content: "",
+    };
+    setVideoInfo(videoData);
     console.log(videoData);
-  }, [videoData]);
-
-
+  };
 
   return (
     <Stack gap="3rem">
@@ -89,7 +137,7 @@ const SearchResults = () => {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={fetchVideos}>
+                <IconButton onClick={handleSearchClick}>
                   <SearchIcon />
                 </IconButton>
               </InputAdornment>
@@ -100,44 +148,65 @@ const SearchResults = () => {
       </Box>
 
       <Box>
-        <Typography>検索結果</Typography>
-        <Box
-          height="15rem"
-          sx={{
-            width: "100%",
-            border: 1,
-          }}
-        >
-          {videoData?.map((item: Item, index: number) => (
+        
+        <Box height="15rem" sx={{width: "100%"}}>
+          {Array.isArray(searchedResults) && searchedResults.length > 0 ? (
+          searchedResults?.map((item: Item, index: number) => (
+            <>
+            <Typography>検索結果</Typography>
             <Box className="item" key={index}>
-              <Box className="thumbnail">
-                {/* <Link onClick={()=> ClicktoWatchVideo(item.id)}>
-                 */}
-                <Link href={"searchResults/" + item.id.videoId + "/watch"}>
+              <Link
+                href={"searchResults/" + item.id.videoId + "/watch"}
+                onClick={() => SaveVideoDetails(item)}
+              >
+                <Box className="thumbnail">
                   <img
                     src={item.snippet?.thumbnails?.medium?.url}
                     alt={item.snippet?.title}
                   />
-                </Link>
-              </Box>
-              <Box className="right">
-                <Box className="title">
-                  <Link href={"searchResults/" + item.id.videoId + "/watch"}>
-                    {item.snippet?.title}
-                  </Link>
                 </Box>
-                <Box className="description">{item.snippet?.description}</Box>
-                <Box className="channel">
-                  <Link href={"searchResults/" + item.id.videoId + "/watch"}>
-                    {item.snippet?.channelTitle}
-                  </Link>
+                <Box className="right">
+                  <Box className="title">
+                    <Typography>{item.snippet?.title}</Typography>
+                  </Box>
+                  <Box className="description">{item.snippet?.description}</Box>
+                  <Box className="channel">
+                    <Typography>{item.snippet?.channelTitle}</Typography>
+                  </Box>
+                  <Box className="time">
+                    {formatDate(item.snippet?.publishedAt)}
+                  </Box>
                 </Box>
-                <Box className="time">
-                  {formatDate(item.snippet?.publishedAt)}
-                </Box>
-              </Box>
+              </Link>
             </Box>
-          ))}
+            </>
+          ))
+        ) : (
+          <Typography>検索するとここに結果がでます</Typography>
+        )
+        }
+          <Box>
+            <Button
+              variant="contained"
+              onClick={handlePrevPage}
+              disabled={prevPageTokens.length === 0}
+            >
+              前のページ
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleNextPage}
+              disabled={!nextPageToken}
+            >
+              次のページ
+            </Button>
+            {/* <Button
+            onClick={window.scroll({
+              top: 0,
+              behavior: 'auto'
+            })
+            >test</Button> */}
+          </Box>
         </Box>
       </Box>
     </Stack>
