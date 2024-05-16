@@ -234,16 +234,19 @@ const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
                             <TableCell component="th" scope="row">
                               {memo.createdAt}
                             </TableCell>
-                            <TableCell>{memo.content}</TableCell>
+                            
                             <TableCell>
                               {/* 編集モードと表示モードの切り替え */}
                               {!editMode ? (
+                                <>
+                                <TableCell>{memo.content}</TableCell>
                                 <Button
                                   variant="outlined"
                                   onClick={() => setEditMode(!editMode)}
                                 >
                                   編集
                                 </Button>
+                                </>
                               ) : (
                                 <>
                                   <TextField
