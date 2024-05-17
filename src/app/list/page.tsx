@@ -84,6 +84,7 @@ const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
           return convertToSeconds(a.createdAt) - convertToSeconds(b.createdAt);
         });
 
+        // todo; createdatを参照して並び替える方法を実装する
         // videoIDごとにメモをグループ化する
         const memosGroupedByVideoId = {};
         memos.forEach((memo) => {
