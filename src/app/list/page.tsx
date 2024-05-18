@@ -28,23 +28,22 @@ import {
   TableHead,
   TableRow,
   Pagination,
-  Link
+  Link,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { MemoList, Memo, PageApi } from "../../types";
+import { MemoList, Memo, PageApi, MemosByVideoId, TimestampsByVideoId, LatestTimestampByVideoId } from "../../types";
 import YouTube from "react-youtube";
 
 function showMemoList() {
   const router = useRouter();
-const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search";
-const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
-  const [memoListByVideoId, setMemoListByVideoId] = useState<
-    Record<string, Memo[]>
-  >({});
+  const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search";
+  const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
+  const [memoListByVideoId, setMemoListByVideoId] = useState<MemosByVideoId>(
+    {}
+  );
   const [fetchTrigger, setFetchTrigger] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [YTPlayer, setYTPlayer] = useState<YT.Player>();
-
 
   //pageApi
   const [pageApi, setPageApi] = useState<PageApi>({});
@@ -63,30 +62,35 @@ const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
     const fetchMemoList = async () => {
       try {
         const memoSnapshot = await getDocs(collection(db, "memoList"));
-        const memos = memoSnapshot.docs.map(doc => {
-          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content } =
-          doc.data();
-      
-        return {
-          id: doc.id,
-          videoId,
-          videoThumbnail,
-          videoTitle,
-          createdTime,
-          createdAt,
-          content,
-        };
-      }
-      );
+        const memos = memoSnapshot.docs.map((doc) => {
+          const {
+            videoId,
+            videoTitle,
+            videoThumbnail,
+            createdTime,
+            createdAt,
+            content,
+          } = doc.data();
+
+          return {
+            id: doc.id,
+            videoId,
+            videoThumbnail,
+            videoTitle,
+            createdTime,
+            createdAt,
+            content,
+          };
+        });
         console.log(memos);
 
-        const sortedMemos = memos.sort((a,b) => {
+        const sortedMemos = memos.sort((a, b) => {
           return convertToSeconds(a.createdAt) - convertToSeconds(b.createdAt);
         });
 
         // todo; createdatを参照して並び替える方法を実装する
         // videoIDごとにメモをグループ化する
-        const memosGroupedByVideoId = {};
+        const memosGroupedByVideoId: MemosByVideoId = {};
         memos.forEach((memo) => {
           const videoId = memo.videoId;
           if (!memosGroupedByVideoId[videoId]) {
@@ -96,18 +100,61 @@ const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
         });
         console.log(memosGroupedByVideoId);
         setMemoListByVideoId(memosGroupedByVideoId);
-       
       } catch (error) {
         console.error("Error fetching memos:", error);
       }
-      
     };
     fetchMemoList();
   }, [fetchTrigger, editMode]);
 
   // list中身確認用　後で消す
   useEffect(() => {
+
+    // 各videoIdで直近のメモ作成日を抽出し、それを順番に並べ表示順を決める。
+    const getLatestTime = () => {
+      const createdTimesByVideoId: TimestampsByVideoId = {}
+      // 各videoIDの配列内で作成日を昇順に並べる
+      Object.entries(memoListByVideoId).forEach(([videoId, memos]) => {          
+        createdTimesByVideoId[videoId] = memos
+        .map(memo => memo.createdTime)
+        .sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+        });
+        console.log(createdTimesByVideoId);
+
+        // 各VIDEOID別の最新の作成日だけをオブジェクトで取り出す。
+        const listOfLatestTimesByVideo: LatestTimestampByVideoId = {};
+        Object.entries(createdTimesByVideoId).forEach(([videoId, createdTime]) => {
+          if(createdTime.length> 0 ){
+            listOfLatestTimesByVideo[videoId] = createdTime[0];
+          }
+          console.log(listOfLatestTimesByVideo);
+        });
+        return listOfLatestTimesByVideo        
+      }
+      // todo: 次ここから。idと最新日付を紐づけて、それをなんとかmapで展開表示する箇所に紐づける。
+
+      const sortMemosByLatestTimestamp = (memoListByVideoId: MemosByVideoId, listOfLatestTimesByVideo:LatestTimestampByVideoId ): Memo[]=> {
+        const videoIdsSortedByLatestTimestamp = Object.entries(listOfLatestTimesByVideo)
+        .sort(([, timeA], [, timeB])=> new Date(timeB).getTime() - new Date(timeA).getTime())
+        .map(([videoId]) => videoId);
+
+          // ソートされた順にメモリストをフラット化して返す
+      const sortedMemos: Memo[] = [];
+      videoIdsSortedByLatestTimestamp.forEach(videoId => {
+    if (memoListByVideoId[videoId]) {
+      sortedMemos.push(...memoListByVideoId[videoId]);
+    }
+  });
+  
+  return sortedMemos;
+
+      }
+
     console.log(memoListByVideoId);
+          //  グループ化されたメモリストを最新メモ作成日時または編集日時に応じて並び替え
+        const listOfLatestTimesByVideo = getLatestTime();
+        const sortedMemos = sortMemosByLatestTimestamp(memoListByVideoId, listOfLatestTimesByVideo);
+        console.log(sortedMemos);
   }, [memoListByVideoId]);
 
   // 経過時間を秒単位に変換する関数
@@ -160,7 +207,7 @@ const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
   };
 
   // メモを削除
-  const deleteMemo = async (id:string) => {
+  const deleteMemo = async (id: string) => {
     const memoId = id;
     console.log(memoId);
     try {
@@ -215,31 +262,34 @@ const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
                         </Typography>
                       </Box>
                       <Box>
-                      <Link href={"mypage/searchResults/" + memo.videoId + "/watch"}>
-                      <img
-                    src={memo.videoThumbnail}
-                    alt={'error'}
-                  />
+                        <Link
+                          href={
+                            "mypage/searchResults/" + memo.videoId + "/watch"
+                          }
+                        >
+                          <img src={memo.videoThumbnail} alt={"error"} />
                         </Link>
                       </Box>
                     </Box>
                   )
               )}
               <Box>
-                {memosToShow            
-                  .map((memo, index) => (
-                    <TableContainer key={`${memo.id}-${index}`} sx={{ marginBottom: "10px" }}>
-                      <Table>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell component="th" scope="row">
-                              {memo.createdAt}
-                            </TableCell>
-                            
-                            <TableCell>
-                              {/* 編集モードと表示モードの切り替え */}
-                              {!editMode ? (
-                                <>
+                {memosToShow.map((memo, index) => (
+                  <TableContainer
+                    key={`${memo.id}-${index}`}
+                    sx={{ marginBottom: "10px" }}
+                  >
+                    <Table>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell component="th" scope="row">
+                            {memo.createdAt}
+                          </TableCell>
+
+                          <TableCell>
+                            {/* 編集モードと表示モードの切り替え */}
+                            {!editMode ? (
+                              <>
                                 <TableCell>{memo.content}</TableCell>
                                 <Button
                                   variant="outlined"
@@ -247,49 +297,49 @@ const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
                                 >
                                   編集
                                 </Button>
-                                </>
-                              ) : (
-                                <>
-                                  <TextField
-                                    value={memo.content}
-                                    onChange={(e) =>
-                                      updateContent(
-                                        memo.videoId,
-                                        memo.id,
-                                        e.target.value
-                                      )
-                                    }
-                                    size="small"
-                                  />
-                                  <Button
-                                    variant="contained"
-                                    sx={{ ml: 1 }}
-                                    onClick={() =>
-                                      updateMemoContent(memo.id, memo.content)
-                                    }
-                                  >
-                                    保存
-                                  </Button>
-                                  <Button
-                                    sx={{ ml: 1 }}
-                                    onClick={() => setEditMode(!editMode)}
-                                  >
-                                    キャンセル
-                                  </Button>
-                                </>
-                              )}
-                            </TableCell>
+                              </>
+                            ) : (
+                              <>
+                                <TextField
+                                  value={memo.content}
+                                  onChange={(e) =>
+                                    updateContent(
+                                      memo.videoId,
+                                      memo.id,
+                                      e.target.value
+                                    )
+                                  }
+                                  size="small"
+                                />
+                                <Button
+                                  variant="contained"
+                                  sx={{ ml: 1 }}
+                                  onClick={() =>
+                                    updateMemoContent(memo.id, memo.content)
+                                  }
+                                >
+                                  保存
+                                </Button>
+                                <Button
+                                  sx={{ ml: 1 }}
+                                  onClick={() => setEditMode(!editMode)}
+                                >
+                                  キャンセル
+                                </Button>
+                              </>
+                            )}
+                          </TableCell>
 
-                            <TableCell>
-                              <Button onClick={() => deleteMemo(memo.id)}>
-                                削除
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  ))}
+                          <TableCell>
+                            <Button onClick={() => deleteMemo(memo.id)}>
+                              削除
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ))}
                 <Pagination
                   count={Math.ceil(memos.length / rowsPerPage)}
                   page={currentPage}

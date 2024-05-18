@@ -3,6 +3,29 @@ import { atom } from 'recoil';
 export interface Data {
   items?: Item[];
 }
+
+export interface MemosByVideoId {
+  [videoId: string]: Memo[];
+}
+
+export interface Memo {
+  id: string;
+  videoId: string;
+  videoTitle: string;
+  videoThumbnail?: string;
+  createdTime: string;
+  createdAt: string;
+  content: string;
+}
+
+export interface TimestampsByVideoId {
+  [videoId: string]: string[]
+;}
+
+export interface LatestTimestampByVideoId {
+  [videoId: string]: string
+;}
+
 export interface Item {
   id: { videoId: string },
     snippet: {
@@ -35,13 +58,5 @@ export interface MemoList {
   memos?: Memo[];
 }
 
-export interface Memo {
-  id: string;
-  videoId: string;
-  videoTitle: string;
-  videoThumbnail?: string;
-  createdTime: string;
-  createdAt: string;
-  content: string;
-}
+
 
