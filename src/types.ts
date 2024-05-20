@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 import { atom } from 'recoil';
 
 export interface Data {
@@ -13,7 +15,17 @@ export interface Memo {
   videoId: string;
   videoTitle: string;
   videoThumbnail?: string;
-  createdTime: string;
+  createdTime: Timestamp;
+  createdAt: string;
+  content: string;
+}
+
+export interface FetchedMemo {
+  id: string;
+  videoId: string;
+  videoTitle: string;
+  videoThumbnail?: string;
+  createdTime: Timestamp;
   createdAt: string;
   content: string;
 }
@@ -23,7 +35,7 @@ export interface TimestampsByVideoId {
 ;}
 
 export interface LatestTimestampByVideoId {
-  [videoId: string]: string
+  [videoId: string]: Timestamp
 ;}
 
 export interface Item {
