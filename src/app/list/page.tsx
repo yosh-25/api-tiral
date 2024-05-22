@@ -73,26 +73,7 @@ function showMemoList() {
   // マウント時、データ削除時、編集キャンセル時にfirebaseからデータ取得
     const fetchMemoList = async () => {
       try {
-        const memoCollection = collection(db, 'memoList');
-        let memoQuery;
-        if(searchQuery){
-          const queryStr = searchQuery
-          const memoSnapshotWithQuery = await 
-          memoCollection.where('videoTitle', 'array-contains', 'HTML').get();       
-        } else {
-          memoQuery= await memoCollection;
-        }
-
-        console.log('memoquery=', memoQuery)
-
-        const memoSnapshot = await getDocs(memoQuery);
-        console.log("Fetched memos:", memoSnapshot.docs); 
-
-        if (memoSnapshot.empty) {
-          console.log("No matching documents.");
-          return;
-        }
-
+        const memoSnapshot = await getDocs(collection(db, 'memoList'));        
         const memos: FetchedMemo[] = memoSnapshot.docs.map((doc) => {
           const {
             videoId,
