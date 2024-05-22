@@ -10,7 +10,6 @@ import {
   deleteDoc,
   query,
   where,
-  
 } from "firebase/firestore";
 import {
   Box,
@@ -71,56 +70,73 @@ function showMemoList() {
 
   // todo 再トライ　https://zenn.dev/tentel/articles/ea7d5c03e68e6d142d98
   // マウント時、データ削除時、編集キャンセル時にfirebaseからデータ取得
-    const fetchMemoList = async () => {
-      try {
-        const memoSnapshot = await getDocs(collection(db, 'memoList'));        
-        const memos: FetchedMemo[] = memoSnapshot.docs.map((doc) => {
-          const {
-            videoId,
-            videoTitle,
-            videoThumbnail,
-            createdTime,
-            createdAt,
-            content,
-          } = doc.data();
+  const fetchMemoList = async () => {
+    try {
+      const memoSnapshot = await getDocs(collection(db, "memoList"));
+      const memos: FetchedMemo[] = memoSnapshot.docs.map((doc) => {
+        const {
+          videoId,
+          videoTitle,
+          videoThumbnail,
+          createdTime,
+          createdAt,
+          content,
+        } = doc.data();
 
-          return {
-            id: doc.id,
-            videoId,
-            videoThumbnail,
-            videoTitle,
-            createdTime,
-            createdAt,
-            content,
-          };
-        });
+        return {
+          id: doc.id,
+          videoId,
+          videoThumbnail,
+          videoTitle,
+          createdTime,
+          createdAt,
+          content,
+        };
+      });
 
-        console.log("Processed memos:", memos);
-
-        // videoIDごとにメモをグループ化する
-        const memosGroupedByVideoId: MemosByVideoId = {};
-        memos.forEach((memo) => {
-          const videoId = memo.videoId;
-          if (!memosGroupedByVideoId[videoId]) {
-            memosGroupedByVideoId[videoId] = [];
-          }
-          memosGroupedByVideoId[videoId].push(memo);
-        });
-        setMemoListByVideoId(memosGroupedByVideoId);
-      } catch (error) {
-        console.error("Error fetching memos:", error);
-      }
-    };
+      // videoIDごとにメモをグループ化する
+      const memosGroupedByVideoId: MemosByVideoId = {};
+      memos.forEach((memo) => {
+        const videoId = memo.videoId;
+        if (!memosGroupedByVideoId[videoId]) {
+          memosGroupedByVideoId[videoId] = [];
+        }
+        memosGroupedByVideoId[videoId].push(memo);
+      });
+      setMemoListByVideoId(memosGroupedByVideoId);
+    } catch (error) {
+      console.error("Error fetching memos:", error);
+    }
+    console.log(memoListByVideoId);
     
+  };
 
   useEffect(() => {
     fetchMemoList();
-  }, [fetchTrigger, editMode, searchQuery]);
+  }, [fetchTrigger, editMode]);
+
+  // リスト内で前方一致のメモを抽出
+  const searchContents = (searchQuery:string) => {
+    const searchItem = searchQuery.toLowerCase();
+    const matchingMemos: MemosByVideoId = {};
+    Object.entries(memoListByVideoId).forEach(([videoId, memos]) => {
+      memos.forEach((memo) => {
+        if(memo.content.toLowerCase().includes(searchItem)){
+          if(!matchingMemos[videoId]){
+            matchingMemos[videoId] = [];
+          }matchingMemos[videoId].push(memo);
+
+        }
+    });
+  });
+  setMemoListByVideoId(matchingMemos);
+  console.log(matchingMemos);
+}
 
   // 各videoIdで直近のメモ作成日を抽出し、それを順番に並べ表示順を決める。
   const getLatestTime = (): LatestTimestampByVideoId => {
     const latestCreatedTimes: LatestTimestampByVideoId = {};
-  Object.entries(memoListByVideoId).forEach(([videoId, memos]) => {
+    Object.entries(memoListByVideoId).forEach(([videoId, memos]) => {
       const latestCreatedTime = memos
         .map((memo) => memo.createdTime)
         .sort(
@@ -235,19 +251,19 @@ function showMemoList() {
       </Typography>
 
       <TextField
-      label='Search'
-      variant='outlined'      
-      value={searchQuery}
-      onChange={(e)=> setSearchQuery(e.target.value)}
-      sx={{mb:4, width:'60%'}}
+        label="Search"
+        variant="outlined"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        sx={{ mb: 4, width: "60%" }}
       />
 
-      <Button
-      onClick={()=> fetchMemoList()}
-      >検索</Button>
+      <Button onClick={() => searchContents(searchQuery)}>メモを検索</Button>
+
+      <Button onClick={() => fetchMemoList()}  >全てのメモを表示</Button>
 
       {sortedVideoIds.map((videoId) => {
-        const memos = memoListByVideoId[videoId]|| [];
+        const memos = memoListByVideoId[videoId] || [];
         const currentPage = pageApi[videoId] || 1;
         const memosToShow = memos.slice(
           (currentPage - 1) * rowsPerPage,
