@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Data, Item } from "@/types";
 import { videoDetails } from "@/app/states/videoDataState";
 import { db } from "../../../../libs/firebase";
 import {
@@ -7,8 +6,11 @@ import {
   addDoc,
   getDocs,
   serverTimestamp,
+  doc,
+  updateDoc,
+  deleteDoc
 } from "firebase/firestore";
-import { useRecoilValue, useRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { useRouter } from "next/navigation";
 import {
   Button,
@@ -25,11 +27,7 @@ import {
   IconButton,
   Link,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
-import Autocomplete from "@mui/material/Autocomplete";
-import InputAdornment from "@mui/material/InputAdornment";
-import { Memo, MemoList } from "@/types";
+import { Memo, MemoList,MemosByVideoId } from "@/types";
 import YouTube from "react-youtube";
 
 const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
@@ -48,9 +46,15 @@ const Watch = ({ id }: { id: string }) => {
     createdAt: "",
     content: "",
   });
-  const [relatedMemoList, setRelatedMemoList] = useState<MemoList>();
+  const [memoList, setMemoList] = useState<MemoList>();
   const [videoData, setVideoData] = useRecoilState(videoDetails);
   const [memoMode, setMemoMode] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState<boolean>(false);
+  // todo: 多分修正対象
+  const [memoListByVideoId, setMemoListByVideoId] = useState<MemosByVideoId>(
+    {}
+  );
+  const [fetchTrigger, setFetchTrigger] = useState<boolean>(false);
 
   const opts = {
     width: "70%",
@@ -94,8 +98,6 @@ const Watch = ({ id }: { id: string }) => {
 
       return time;
     };
-
-    console.log(secToTime(currentTime));
     setTimeToShow(secToTime(currentTime));
   }, [currentTime]);
 
@@ -103,22 +105,33 @@ const Watch = ({ id }: { id: string }) => {
     console.log(videoData);
   }, []);
 
-  const [isClient, setIsClient] = useState(false);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (isClient) {
-    const storedVideoData = localStorage.getItem("videoData");
-    if (storedVideoData) {
-      setVideoData(JSON.parse(storedVideoData));
-    }
-    console.log(storedVideoData);
-  }
-
   const backToPreviousUI = () => {
     setMemoMode(!memoMode);
   };
+
+  useEffect(() => {
+    const fetchMemoList = async () => {
+      const querySnapshot = await getDocs(collection(db, "memoList"));
+      const memoList: MemoList = {
+        memos: querySnapshot.docs.map((doc) => {
+          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content } =
+            doc.data();
+
+          return {
+            id: doc.id,
+            videoId,
+            videoTitle,
+            videoThumbnail: videoThumbnail,
+            createdTime,
+            createdAt,
+            content,
+          };
+        }),
+      };
+      setMemoList(memoList);
+    };
+    fetchMemoList();
+  }, []);
 
   const saveMemoToFirebaseAndfetchAll = async () => {
     // * 現在の日付を取得
@@ -147,7 +160,7 @@ const Watch = ({ id }: { id: string }) => {
     });
 
     //firebaseから新しく加えたメモを含むメモリストを取得
-    const fetchRelatedMemoList = async () => {
+    const fetchNewMemoList = async () => {
       const querySnapshot = await getDocs(collection(db, "memoList"));
       const memoList: MemoList = {
         memos: querySnapshot.docs.map((doc) => {
@@ -165,11 +178,11 @@ const Watch = ({ id }: { id: string }) => {
           };
         }),
       };
-      setRelatedMemoList(memoList);
-      console.log(memoList);
+      setMemoList(memoList);
+      
     };
-    fetchRelatedMemoList();
-    
+    fetchNewMemoList();
+    console.log(memoList);
   };
 
   // 説明加える
@@ -184,33 +197,10 @@ const Watch = ({ id }: { id: string }) => {
     console.log(newMemo);
   };
 
-  useEffect(() => {
-    const fetchRelatedMemoList = async () => {
-      const querySnapshot = await getDocs(collection(db, "memoList"));
-      const memoList: MemoList = {
-        memos: querySnapshot.docs.map((doc) => {
-          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content } =
-            doc.data();
 
-          return {
-            id: doc.id,
-            videoId,
-            videoTitle,
-            videoThumbnail: videoThumbnail,
-            createdTime,
-            createdAt,
-            content,
-          };
-        }),
-      };
-      setRelatedMemoList(memoList);
-    };
-    fetchRelatedMemoList();
-  }, []);
 
   // 経過時間を秒単位に変換する関数
   const convertToSeconds = (createdAt: string) => {
-    console.log("createdAtの値:", createdAt);
     const Numbers = createdAt.split(":").map(Number);
 
     if (Numbers.length === 3) {
@@ -223,6 +213,69 @@ const Watch = ({ id }: { id: string }) => {
       return minutes2 * 60 + seconds2;
     }
   };
+
+    // 変更したメモ内容をバックエンドに保存
+    const updateMemoContent = async (id: string, newContent: string) => {
+      const docRef = doc(db, "memoList", id);
+      try {
+        await updateDoc(docRef, {
+          content: newContent,
+        });
+        console.log("変更が保存されました！");
+        setEditMode(!editMode);
+      } catch (error) {
+        console.log("エラーが発生しました。", error);
+      }
+    };
+
+    // 変更内容が反映されない箇所から
+    const handleContentChange = (videoId: string, memoId: string, newContent:string) => {
+      const updatedMemoListByVideoId = { ...memoListByVideoId };
+  const memos = updatedMemoListByVideoId[videoId]|| [];
+  const updatedMemos = memos.map((memo) => {
+    if (memo.id === memoId) {
+      return { ...memo, content: newContent };
+    }
+    return memo;
+  });
+
+  updatedMemoListByVideoId[videoId] = updatedMemos;
+  setMemoListByVideoId(updatedMemoListByVideoId);
+};
+
+      // メモ内容をフロントエンドで変更
+  const updateContent = (
+    videoId: string,
+    memoId: string,
+    newContent: string
+  ) => {
+    const updatedMemoListByVideoId = { ...memoListByVideoId };
+    const memos = updatedMemoListByVideoId[videoId];
+    console.log(memos);
+    // const updatedMemos = memos.map((memo:any) => {
+    //   if (memo.id === memoId) {
+    //     return { ...memo, content: newContent };
+    //   }
+    //   return memo;
+    // });
+
+    // updatedMemoListByVideoId[videoId] = updatedMemos;
+    // setMemoListByVideoId(updatedMemoListByVideoId);
+    // console.log(updatedMemoListByVideoId);
+  };
+
+    // メモを削除
+    const deleteMemo = async (id: string) => {
+      const memoId = id;
+      console.log(memoId);
+      try {
+        await deleteDoc(doc(db, "memoList", memoId));
+        console.log("メモを削除しました！");
+        setFetchTrigger(!fetchTrigger);
+      } catch (error) {
+        console.log("エラーが発生しました。", error);
+      }
+    };
 
   return (
     <Box>
@@ -309,7 +362,7 @@ const Watch = ({ id }: { id: string }) => {
 
       <TableContainer sx={{ marginBottom: "50px" }}>
         <Typography variant="h3" fontWeight="650" sx={{ fontSize: "1rem" }}>
-          {videoData.videoTitle}
+        {videoData ? videoData.videoTitle : "Loading..."}
         </Typography>
         <Table>
           <TableHead>
@@ -319,7 +372,7 @@ const Watch = ({ id }: { id: string }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {relatedMemoList?.memos
+            {memoList?.memos
               ?.filter((memo) => memo.videoId === videoId)
               .sort((a, b) => {
                 //経過時間を秒単位に変換して比較
@@ -330,7 +383,51 @@ const Watch = ({ id }: { id: string }) => {
               .map((memo, id) => (
                 <TableRow key={id}>
                   <TableCell>{memo.createdAt}</TableCell>
-                  <TableCell>{memo.content}</TableCell>
+                  <TableCell>
+                            {/* 編集モードと表示モードの切り替え */}
+                            {!editMode ? (
+                              <>
+                                <TableCell>{memo.content}</TableCell>
+                                <TableCell>
+                                <Button
+                                  variant="outlined"
+                                  onClick={() => setEditMode(!editMode)}
+                                >
+                                  編集
+                                </Button>
+                                </TableCell>
+                              </>
+                            ) : (
+                              <>
+                                <TextField
+                                  value={memo.content}
+                                  onChange={(e:any) => handleContentChange(memo.videoId, memo.id, e.target.value)}
+                                  size="small"
+                                />
+                                <Button
+                                  variant="contained"
+                                  sx={{ ml: 1 }}
+                                  onClick={() =>
+                                    updateMemoContent(memo.id, memo.content)
+                                  }
+                                >
+                                  保存
+                                </Button>
+                                <Button
+                                  sx={{ ml: 1 }}
+                                  onClick={() => setEditMode(!editMode)}
+                                >
+                                  キャンセル
+                                </Button>
+                              </>
+                            )}
+                          </TableCell>
+
+                          <TableCell>
+                            <Button onClick={() => deleteMemo(memo.id)}>
+                              削除（削除予定）
+                            </Button>
+                          </TableCell>
                 </TableRow>
               ))}
           </TableBody>

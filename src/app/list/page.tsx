@@ -174,20 +174,6 @@ function showMemoList() {
     setSortedVideoIds(sortedVideoIds);
   }, [memoListByVideoId]);
 
-  // 経過時間を秒単位に変換する関数
-  const convertToSeconds = (createdAt: string) => {
-    const Numbers = createdAt.split(":").map(Number);
-
-    if (Numbers.length === 3) {
-      // 時間、分、秒が全て存在する場合の処理
-      const [hours3, minutes3, seconds3] = Numbers;
-      return hours3 * 3600 + minutes3 * 60 + seconds3;
-    } else {
-      // 分&秒または秒だけが存在する場合の処理
-      const [minutes2, seconds2] = Numbers;
-      return minutes2 * 60 + seconds2;
-    }
-  };
 
   // メモ内容をフロントエンドで変更
   const updateContent = (
@@ -259,16 +245,11 @@ function showMemoList() {
       />
 
       <Button onClick={() => searchContents(searchQuery)}>メモを検索</Button>
-
       <Button onClick={() => fetchMemoList()}  >全てのメモを表示</Button>
 
       {sortedVideoIds.map((videoId) => {
         const memos = memoListByVideoId[videoId] || [];
-        const currentPage = pageApi[videoId] || 1;
-        const memosToShow = memos.slice(
-          (currentPage - 1) * rowsPerPage,
-          currentPage * rowsPerPage
-        );
+        const memoToShow = memos[0]
 
         return (
           <Box
@@ -282,60 +263,58 @@ function showMemoList() {
             }}
           >
             <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
-              {memosToShow.map(
-                (memo, index) =>
-                  index === 0 && (
+              
                     <Box sx={{ display: "flex", flexDirection: "column" }}>
                       <Box>
-                        <Typography variant="h6" key={index}>
-                          {memo.videoTitle}
+                        <Typography variant="h6" key={memoToShow.videoId}>
+                          {memoToShow.videoTitle}
                         </Typography>
                       </Box>
                       <Box>
                         <Link
                           href={
-                            "mypage/searchResults/" + memo.videoId + "/watch"
+                            "mypage/searchResults/" + memoToShow.videoId + "/watch"
                           }
                         >
-                          <img src={memo.videoThumbnail} alt={"error"} />
+                          <img src={memoToShow.videoThumbnail} alt={"error"} />
                         </Link>
                       </Box>
                     </Box>
-                  )
-              )}
+                  
+              
               <Box>
-                {memosToShow.map((memo, index) => (
+                
                   <TableContainer
-                    key={`${memo.id}-${index}`}
+                    key={memoToShow.videoId}
                     sx={{ marginBottom: "10px" }}
                   >
                     <Table>
                       <TableBody>
                         <TableRow>
                           <TableCell component="th" scope="row">
-                            {memo.createdAt}
+                            {memoToShow.createdAt}
                           </TableCell>
 
                           <TableCell>
                             {/* 編集モードと表示モードの切り替え */}
                             {!editMode ? (
                               <>
-                                <TableCell>{memo.content}</TableCell>
+                                <TableCell>{memoToShow.content}</TableCell>
                                 <Button
                                   variant="outlined"
                                   onClick={() => setEditMode(!editMode)}
                                 >
-                                  編集
+                                  編集（削除予定）
                                 </Button>
                               </>
                             ) : (
                               <>
                                 <TextField
-                                  value={memo.content}
+                                  value={memoToShow.content}
                                   onChange={(e) =>
                                     updateContent(
-                                      memo.videoId,
-                                      memo.id,
+                                      memoToShow.videoId,
+                                      memoToShow.id,
                                       e.target.value
                                     )
                                   }
@@ -345,7 +324,7 @@ function showMemoList() {
                                   variant="contained"
                                   sx={{ ml: 1 }}
                                   onClick={() =>
-                                    updateMemoContent(memo.id, memo.content)
+                                    updateMemoContent(memoToShow.id, memoToShow.content)
                                   }
                                 >
                                   保存
@@ -361,23 +340,21 @@ function showMemoList() {
                           </TableCell>
 
                           <TableCell>
-                            <Button onClick={() => deleteMemo(memo.id)}>
-                              削除
+                            <Button onClick={() => deleteMemo(memoToShow.id)}>
+                              削除（削除予定）
                             </Button>
                           </TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>
                   </TableContainer>
-                ))}
-                <Pagination
-                  count={Math.ceil(memos.length / rowsPerPage)}
-                  page={currentPage}
-                  onChange={(event, value) =>
-                    handleChangePage(videoId, event, value)
-                  }
-                  color="primary"
-                />
+                
+                <Button >
+                              メモ編集画面へ
+                            </Button>
+                <Typography variant="body2" sx={{ textAlign: "right", mr: 2 }}>
+            1/{memos.length}
+          </Typography>
               </Box>
             </Box>
           </Box>
