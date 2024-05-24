@@ -37,7 +37,7 @@ const formatDate = (publishedAt: string) => {
 const SearchResults = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchedResults, setSearchedResults] = useRecoilState(searchedVideoData);
-  const [videoInfo, setVideoInfo] = useRecoilState(videoDetails);
+  const [videoData, setVideoData] = useRecoilState(videoDetails);
   const [nextPageToken, setNextPageToken] = useState<string | null>(null);
   const [prevPageTokens, setPrevPageTokens] = useState<string[]>([]);
   const router = useRouter();
@@ -122,7 +122,7 @@ const SearchResults = () => {
       createdAt: "",
       content: "",
     };
-    setVideoInfo(videoData);
+    setVideoData(videoData);
     console.log(videoData);
   };
 

@@ -131,6 +131,7 @@ const Watch = ({ id }: { id: string }) => {
         setMemoList(memoList);
     };
     fetchMemoList();
+  
   }, []);
 
   const saveMemoToFirebaseAndfetchAll = async () => {
@@ -376,7 +377,7 @@ const Watch = ({ id }: { id: string }) => {
           </TableHead>
           
           <TableBody>
-            {memoList?.filter((memo) => memo.videoId === videoId)
+            {memoList?.filter((memo) => memo.videoId === videoData.videoId)
               .sort((a, b) => {
                 //経過時間を秒単位に変換して比較
                 const timeA = convertToSeconds(a.createdAt);
