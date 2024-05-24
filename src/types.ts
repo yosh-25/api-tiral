@@ -66,9 +66,6 @@ export interface PageApi {
 // }
 
 
-export interface MemoList {
-  memos?: Memo[];
-}
-
+export type MemoList =Memo[];
 
 

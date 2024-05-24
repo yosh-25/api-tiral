@@ -112,8 +112,8 @@ const Watch = ({ id }: { id: string }) => {
   useEffect(() => {
     const fetchMemoList = async () => {
       const querySnapshot = await getDocs(collection(db, "memoList"));
-      const memoList: MemoList = {
-        memos: querySnapshot.docs.map((doc) => {
+      const memoList: MemoList = 
+        querySnapshot.docs.map((doc) => {
           const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content } =
             doc.data();
 
@@ -126,9 +126,9 @@ const Watch = ({ id }: { id: string }) => {
             createdAt,
             content,
           };
-        }),
-      };
-      setMemoList(memoList);
+          
+        }) 
+        setMemoList(memoList);
     };
     fetchMemoList();
   }, []);
@@ -162,8 +162,8 @@ const Watch = ({ id }: { id: string }) => {
     //firebaseから新しく加えたメモを含むメモリストを取得
     const fetchNewMemoList = async () => {
       const querySnapshot = await getDocs(collection(db, "memoList"));
-      const memoList: MemoList = {
-        memos: querySnapshot.docs.map((doc) => {
+      const memoList: MemoList = 
+        querySnapshot.docs.map((doc) => {
           const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content } =
             doc.data();
 
@@ -176,8 +176,8 @@ const Watch = ({ id }: { id: string }) => {
             createdAt,
             content,
           };
-        }),
-      };
+        })
+      
       setMemoList(memoList);
       
     };
@@ -241,6 +241,7 @@ const Watch = ({ id }: { id: string }) => {
 
   updatedMemoListByVideoId[videoId] = updatedMemos;
   setMemoListByVideoId(updatedMemoListByVideoId);
+  console.log(updatedMemoListByVideoId);
 };
 
       // メモ内容をフロントエンドで変更
@@ -252,6 +253,8 @@ const Watch = ({ id }: { id: string }) => {
     const updatedMemoListByVideoId = { ...memoListByVideoId };
     const memos = updatedMemoListByVideoId[videoId];
     console.log(memos);
+    console.log(updatedMemoListByVideoId);
+    console.log(memoList)
     // const updatedMemos = memos.map((memo:any) => {
     //   if (memo.id === memoId) {
     //     return { ...memo, content: newContent };
@@ -371,9 +374,9 @@ const Watch = ({ id }: { id: string }) => {
               <TableCell align="left">メモ</TableCell>
             </TableRow>
           </TableHead>
+          
           <TableBody>
-            {memoList?.memos
-              ?.filter((memo) => memo.videoId === videoId)
+            {memoList?.filter((memo) => memo.videoId === videoId)
               .sort((a, b) => {
                 //経過時間を秒単位に変換して比較
                 const timeA = convertToSeconds(a.createdAt);
@@ -401,7 +404,7 @@ const Watch = ({ id }: { id: string }) => {
                               <>
                                 <TextField
                                   value={memo.content}
-                                  onChange={(e:any) => handleContentChange(memo.videoId, memo.id, e.target.value)}
+                                  onChange={(e)=>updateContent(memo.videoId, memo.id, e.target.value)}
                                   size="small"
                                 />
                                 <Button
