@@ -45,6 +45,7 @@ const Watch = ({ id }: { id: string }) => {
     createdTime: "",
     createdAt: "",
     content: "",
+    isEditing: false,
   });
   const [memoList, setMemoList] = useState<MemoList>();
   const [videoData, setVideoData] = useRecoilState(videoDetails);
@@ -258,6 +259,15 @@ const Watch = ({ id }: { id: string }) => {
       );      
   };
 
+  // 編集モード個別切り替え
+  const toggleEditMode = (memoId: string) => {
+    setMemoList((prevMemoList) =>
+      prevMemoList?.map((memo) =>
+        memo.id === memoId ? { ...memo, isEditing: !memo.isEditing } : memo
+      )
+    );
+  };
+
     // メモを削除
     const deleteMemo = async (id: string) => {
       const memoId = id;
@@ -379,13 +389,13 @@ const Watch = ({ id }: { id: string }) => {
                   <TableCell>{memo.createdAt}</TableCell>
                   <TableCell>
                             {/* 編集モードと表示モードの切り替え */}
-                            {!editMode ? (
+                            {!memo.isEditing ? (
                               <>
                                 <TableCell>{memo.content}</TableCell>
                                 <TableCell>
                                 <Button
                                   variant="outlined"
-                                  onClick={() => setEditMode(!editMode)}
+                                  onClick={() => toggleEditMode(memo.id)}
                                 >
                                   編集
                                 </Button>
@@ -401,15 +411,16 @@ const Watch = ({ id }: { id: string }) => {
                                 <Button
                                   variant="contained"
                                   sx={{ ml: 1 }}
-                                  onClick={() =>
-                                    updateMemoContent(memo.id, memo.content)
-                                  }
+                                  onClick={() => {
+                                    updateMemoContent(memo.id, memo.content);
+                                    toggleEditMode(memo.id)
+                                  }}
                                 >
                                   保存
                                 </Button>
                                 <Button
                                   sx={{ ml: 1 }}
-                                  onClick={() => setEditMode(!editMode)}
+                                  onClick={() => toggleEditMode(memo.id)}
                                 >
                                   キャンセル
                                 </Button>
@@ -419,7 +430,7 @@ const Watch = ({ id }: { id: string }) => {
 
                           <TableCell>
                             <Button onClick={() => deleteMemo(memo.id)}>
-                              削除（削除予定）
+                              削除
                             </Button>
                           </TableCell>
                 </TableRow>

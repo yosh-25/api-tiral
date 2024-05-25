@@ -18,7 +18,10 @@ export interface Memo {
   createdTime: Timestamp;
   createdAt: string;
   content: string;
+  isEditing?: boolean;
 }
+
+export type MemoList =Memo[];
 
 export interface FetchedMemo {
   id: string;
@@ -66,6 +69,6 @@ export interface PageApi {
 // }
 
 
-export type MemoList =Memo[];
+
 
 
