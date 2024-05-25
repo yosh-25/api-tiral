@@ -247,25 +247,15 @@ const Watch = ({ id }: { id: string }) => {
 
       // メモ内容をフロントエンドで変更
   const updateContent = (
-    videoId: string,
     memoId: string,
-    newContent: string
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const updatedMemoListByVideoId = { ...memoListByVideoId };
-    const memos = updatedMemoListByVideoId[videoId];
-    console.log(memos);
-    console.log(updatedMemoListByVideoId);
-    console.log(memoList)
-    // const updatedMemos = memos.map((memo:any) => {
-    //   if (memo.id === memoId) {
-    //     return { ...memo, content: newContent };
-    //   }
-    //   return memo;
-    // });
-
-    // updatedMemoListByVideoId[videoId] = updatedMemos;
-    // setMemoListByVideoId(updatedMemoListByVideoId);
-    // console.log(updatedMemoListByVideoId);
+      const newContent = e.target.value
+      setMemoList((previousMemoList) => 
+        previousMemoList?.map((memo) => 
+          memo.id === memoId ? {...memo, content: newContent}: memo
+        )
+      );      
   };
 
     // メモを削除
@@ -375,7 +365,7 @@ const Watch = ({ id }: { id: string }) => {
               <TableCell align="left">メモ</TableCell>
             </TableRow>
           </TableHead>
-          
+          {/* Todo: 続きはここから。次は編集が変更されるように。正しいアクセス */}
           <TableBody>
             {memoList?.filter((memo) => memo.videoId === videoData.videoId)
               .sort((a, b) => {
@@ -405,7 +395,7 @@ const Watch = ({ id }: { id: string }) => {
                               <>
                                 <TextField
                                   value={memo.content}
-                                  onChange={(e)=>updateContent(memo.videoId, memo.id, e.target.value)}
+                                  onChange={(e: React.ChangeEvent<HTMLInputElement>)=>updateContent(memo.id, e)}
                                   size="small"
                                 />
                                 <Button
