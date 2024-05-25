@@ -27,11 +27,10 @@ import {
   IconButton,
   Link,
 } from "@mui/material";
-import { Memo, MemoList,MemosByVideoId } from "@/types";
+import { Memo, MemoList } from "@/types";
 import YouTube from "react-youtube";
 
 const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
-
 const Watch = ({ id }: { id: string }) => {
   const videoId = id;
   const [YTPlayer, setYTPlayer] = useState<YT.Player>();
@@ -248,7 +247,6 @@ const Watch = ({ id }: { id: string }) => {
     );
   };
 
-  // todo: 次ここ deleteのロジックを他のと整合性を併せる
     // メモを削除
     const deleteMemo = async (id: string) => {
       const memoId = id;

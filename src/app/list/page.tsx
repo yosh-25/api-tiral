@@ -108,7 +108,6 @@ function showMemoList() {
       console.error("Error fetching memos:", error);
     }
     console.log(memoListByVideoId);
-    
   };
 
   useEffect(() => {
@@ -116,22 +115,22 @@ function showMemoList() {
   }, [fetchTrigger, editMode]);
 
   // リスト内で前方一致のメモを抽出
-  const searchContents = (searchQuery:string) => {
+  const searchContents = (searchQuery: string) => {
     const searchItem = searchQuery.toLowerCase();
     const matchingMemos: MemosByVideoId = {};
     Object.entries(memoListByVideoId).forEach(([videoId, memos]) => {
       memos.forEach((memo) => {
-        if(memo.content.toLowerCase().includes(searchItem)){
-          if(!matchingMemos[videoId]){
+        if (memo.content.toLowerCase().includes(searchItem)) {
+          if (!matchingMemos[videoId]) {
             matchingMemos[videoId] = [];
-          }matchingMemos[videoId].push(memo);
-
+          }
+          matchingMemos[videoId].push(memo);
         }
+      });
     });
-  });
-  setMemoListByVideoId(matchingMemos);
-  console.log(matchingMemos);
-}
+    setMemoListByVideoId(matchingMemos);
+    console.log(matchingMemos);
+  };
 
   // 各videoIdで直近のメモ作成日を抽出し、それを順番に並べ表示順を決める。
   const getLatestTime = (): LatestTimestampByVideoId => {
@@ -173,7 +172,6 @@ function showMemoList() {
     console.log("Setting sortedVideoIds:", sortedVideoIds);
     setSortedVideoIds(sortedVideoIds);
   }, [memoListByVideoId]);
-
 
   // メモ内容をフロントエンドで変更
   const updateContent = (
@@ -245,11 +243,11 @@ function showMemoList() {
       />
 
       <Button onClick={() => searchContents(searchQuery)}>メモを検索</Button>
-      <Button onClick={() => fetchMemoList()}  >全てのメモを表示</Button>
+      <Button onClick={() => fetchMemoList()}>全てのメモを表示</Button>
 
       {sortedVideoIds.map((videoId) => {
         const memos = memoListByVideoId[videoId] || [];
-        const memoToShow = memos[0]
+        const memoToShow = memos[0];
 
         return (
           <Box
@@ -263,98 +261,48 @@ function showMemoList() {
             }}
           >
             <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
-              
-                    <Box sx={{ display: "flex", flexDirection: "column" }}>
-                      <Box>
-                        <Typography variant="h6" key={memoToShow.videoId}>
-                          {memoToShow.videoTitle}
-                        </Typography>
-                      </Box>
-                      <Box>
-                        <Link
-                          href={
-                            "mypage/searchResults/" + memoToShow.videoId + "/watch"
-                          }
-                        >
-                          <img src={memoToShow.videoThumbnail} alt={"error"} />
-                        </Link>
-                      </Box>
-                    </Box>
-                  
-              
-              <Box>
-                
-                  <TableContainer
-                    key={memoToShow.videoId}
-                    sx={{ marginBottom: "10px" }}
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <Box>
+                  <Typography variant="h6" key={memoToShow?.videoId}>
+                    {memoToShow?.videoTitle}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Link
+                    href={
+                      "mypage/searchResults/" + memoToShow?.videoId + "/watch"
+                    }
                   >
-                    <Table>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell component="th" scope="row">
-                            {memoToShow.createdAt}
-                          </TableCell>
+                    <img src={memoToShow?.videoThumbnail} alt={"error"} />
+                  </Link>
+                </Box>
+              </Box>
 
-                          <TableCell>
-                            {/* 編集モードと表示モードの切り替え */}
-                            {!editMode ? (
-                              <>
-                                <TableCell>{memoToShow.content}</TableCell>
-                                <Button
-                                  variant="outlined"
-                                  onClick={() => setEditMode(!editMode)}
-                                >
-                                  編集（削除予定）
-                                </Button>
-                              </>
-                            ) : (
-                              <>
-                                <TextField
-                                  value={memoToShow.content}
-                                  onChange={(e) =>
-                                    updateContent(
-                                      memoToShow.videoId,
-                                      memoToShow.id,
-                                      e.target.value
-                                    )
-                                  }
-                                  size="small"
-                                />
-                                <Button
-                                  variant="contained"
-                                  sx={{ ml: 1 }}
-                                  onClick={() =>
-                                    updateMemoContent(memoToShow.id, memoToShow.content)
-                                  }
-                                >
-                                  保存
-                                </Button>
-                                <Button
-                                  sx={{ ml: 1 }}
-                                  onClick={() => setEditMode(!editMode)}
-                                >
-                                  キャンセル
-                                </Button>
-                              </>
-                            )}
-                          </TableCell>
+              <Box>
+                <TableContainer
+                  key={memoToShow?.videoId}
+                  sx={{ marginBottom: "10px" }}
+                >
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell component="th" scope="row">
+                          {memoToShow?.createdAt}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
 
-                          <TableCell>
-                            <Button onClick={() => deleteMemo(memoToShow.id)}>
-                              削除（削除予定）
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                
-                <Button >
-                              メモ編集画面へ
-                            </Button>
+                <Link
+                href={"mypage/searchResults/" + videoId + "/watch"}
+              >
+                <Button                
+                >この動画のメモを編集する</Button>
+                </Link>
                 <Typography variant="body2" sx={{ textAlign: "right", mr: 2 }}>
-            1/{memos.length}
-          </Typography>
+                  1/{memos.length}
+                </Typography>
               </Box>
             </Box>
           </Box>
