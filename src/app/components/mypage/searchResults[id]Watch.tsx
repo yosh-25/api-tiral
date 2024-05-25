@@ -51,10 +51,6 @@ const Watch = ({ id }: { id: string }) => {
   const [videoData, setVideoData] = useRecoilState(videoDetails);
   const [memoMode, setMemoMode] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
-  // todo: 多分修正対象
-  const [memoListByVideoId, setMemoListByVideoId] = useState<MemosByVideoId>(
-    {}
-  );
   const [fetchTrigger, setFetchTrigger] = useState<boolean>(false);
 
   const opts = {
@@ -230,22 +226,6 @@ const Watch = ({ id }: { id: string }) => {
       }
     };
 
-    // 変更内容が反映されない箇所から
-    const handleContentChange = (videoId: string, memoId: string, newContent:string) => {
-      const updatedMemoListByVideoId = { ...memoListByVideoId };
-  const memos = updatedMemoListByVideoId[videoId]|| [];
-  const updatedMemos = memos.map((memo) => {
-    if (memo.id === memoId) {
-      return { ...memo, content: newContent };
-    }
-    return memo;
-  });
-
-  updatedMemoListByVideoId[videoId] = updatedMemos;
-  setMemoListByVideoId(updatedMemoListByVideoId);
-  console.log(updatedMemoListByVideoId);
-};
-
       // メモ内容をフロントエンドで変更
   const updateContent = (
     memoId: string,
@@ -268,6 +248,7 @@ const Watch = ({ id }: { id: string }) => {
     );
   };
 
+  // todo: 次ここ deleteのロジックを他のと整合性を併せる
     // メモを削除
     const deleteMemo = async (id: string) => {
       const memoId = id;
@@ -278,7 +259,25 @@ const Watch = ({ id }: { id: string }) => {
         setFetchTrigger(!fetchTrigger);
       } catch (error) {
         console.log("エラーが発生しました。", error);
-      }
+      }      
+      const querySnapshot = await getDocs(collection(db, "memoList"));
+      const memoList: MemoList = 
+        querySnapshot.docs.map((doc) => {
+          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content } =
+            doc.data();
+
+          return {
+            id: doc.id,
+            videoId,
+            videoTitle,
+            videoThumbnail: videoThumbnail,
+            createdTime,
+            createdAt,
+            content,
+          };
+          
+        }) 
+        setMemoList(memoList);
     };
 
   return (
@@ -377,7 +376,7 @@ const Watch = ({ id }: { id: string }) => {
           </TableHead>
           {/* Todo: 続きはここから。次は編集が変更されるように。正しいアクセス */}
           <TableBody>
-            {memoList?.filter((memo) => memo.videoId === videoData.videoId)
+            {memoList?.filter((memo) => memo.videoId === videoData?.videoId)
               .sort((a, b) => {
                 //経過時間を秒単位に変換して比較
                 const timeA = convertToSeconds(a.createdAt);
