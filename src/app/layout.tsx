@@ -2,6 +2,7 @@
 
 import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
+import { AuthProvider } from '../../context/AuthContext'
 // import RecoilProvider from './recoilProvider'
 import { RecoilRoot } from 'recoil';
 import dynamic from 'next/dynamic';
@@ -31,6 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <AuthProvider>
     <html lang="en">
       <body>    
       <RecoilRoot>
@@ -64,5 +66,6 @@ export default function RootLayout({
         </RecoilRoot>
       </body>
     </html>
+    </AuthProvider>
   );
 }

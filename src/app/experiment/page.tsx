@@ -1,42 +1,40 @@
 'use client'
-import { Typography, Box, Pagination } from "@mui/material";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { getAuth, signOut, onAuthStateChanged, User } from "firebase/auth";
+import { auth } from "../../../libs/firebase";
+import React, { useEffect, useState } from "react";
 
-interface api {
-    name: string;
-  }
+const Header = () => {
+  // 現在ログインしているユーザーを取得する
+  const [currentUser, setCurrentUser] = useState<User|null>(null);
 
-const experiment = () => {
-    //pageApi
-    const [pageApi, setPageApi] = useState(1);
-    //API
-    const [api, setApi] = useState([] as any[]);
-    const ApiAddress = axios.create({
-      baseURL: "https://swapi.dev/api/people"
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // ユーザーがログインしている場合
+        setCurrentUser(user);
+        console.log(currentUser);
+      } else {
+        // ユーザーがログアウトしている場合
+        setCurrentUser(null);
+      }
     });
-    useEffect(() => {
-      ApiAddress.get("?page=" + pageApi)
-        .then((response: any) => setApi(response.data.results))
-        .catch((err: any) => console.log(err));
-        console.log(pageApi);
-    },
-  
-    [pageApi]);
-  
-    return (
-      <>
-        <Typography>App</Typography>
-  
-        <br />
-        {api.map((apiElement) => (
-          <Box key={apiElement.name}>{apiElement.name}</Box>
-        ))}
-        <br />
-        <br />
-  
-        <Pagination count={8} onChange={(e, value) => setPageApi(value)} />
-      </>
-    );
-  }
-export default experiment;
+
+    // クリーンアップ関数を返す
+    return () => unsubscribe();
+  }, []);
+
+  return (
+    <div style={{ padding: "1rem 0" }} >
+      { currentUser ? (
+        // suppressHydrationWarningを入れてサーバーサイドとクライアントサイドでレンダーされる内容が違うときにエラーがでないようにする
+        <div suppressHydrationWarning={true}>
+          <div style={{ paddingBottom: "1rem" }}>※ここにログインしているユーザーのメールアドレス※ でログインしています。</div>
+        </div>
+      ):(
+        <div suppressHydrationWarning={true}>ログインしていません。</div>
+      )}
+    </div>
+  );
+}
+
+export default Header;

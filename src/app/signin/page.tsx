@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { useRouter } from "next/navigation";
-import { getAuth, useAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {  signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseError } from "@firebase/util";
 import { auth } from "../../../libs/firebase";
 import Avatar from "@mui/material/Avatar";
@@ -16,15 +16,18 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Header from '../components/Header'
 
-// todo; サイト参照してログイン状態表示させる  https://qiita.com/masakiwakabayashi/items/741998ed5b830d8f3707
+// todo; サイト参照してログイン状態表示させる  認証結果をproviderで包んで表示できるように。
 
 const login = () => {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");  
   const [password, setPassword] = useState<string>("");
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
     try {
       const userCredential = await  signInWithEmailAndPassword(
         auth,
@@ -32,19 +35,16 @@ const login = () => {
         password
       );
       // サインアップ成功時の処理
-      console.log("User signed up:", userCredential.user);
-      setEmail("");
-      setPassword("");
+      console.log("User signed up:", userCredential);
+      // setEmail("");
+      // setPassword("");
     } catch (e) {
       if (e instanceof FirebaseError) {
         console.log(e);
       }
     }
+    
   };
-
-   // 現在ログインしているユーザーを取得する
-   const { currentUser } = useAuth();
-   console.log(currentUser);
 
   return (
       <Container component="main" maxWidth="xs">
@@ -63,6 +63,7 @@ const login = () => {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+          <Header/>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -102,7 +103,7 @@ const login = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              Sign in
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
