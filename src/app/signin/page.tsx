@@ -1,7 +1,9 @@
 'use client'
 import React, { useState } from 'react'
 import { useRouter } from "next/navigation";
-import {  signInWithEmailAndPassword } from "firebase/auth";
+import {  signInWithEmailAndPassword, getAuth, signOut } from "firebase/auth";
+import { useAuth } from '../../../context/AuthContext'
+import {  } from "firebase/auth";
 import { FirebaseError } from "@firebase/util";
 import { auth } from "../../../libs/firebase";
 import Avatar from "@mui/material/Avatar";
@@ -25,7 +27,9 @@ const login = () => {
   const [email, setEmail] = useState<string>("");  
   const [password, setPassword] = useState<string>("");
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const { currentUser } = useAuth();
+
+  const doSignin = async (event: React.FormEvent) => {
     event.preventDefault();
 
     try {
@@ -46,6 +50,20 @@ const login = () => {
     
   };
 
+  // ログアウトの処理を追記
+  const doLogout = () => {
+    const auth = getAuth();
+
+    signOut(auth)
+    .then(() => {
+      // ログアウトされたことをわかりやすくするためのアラート
+      alert( 'ログアウト完了！' );
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
   return (
       <Container component="main" maxWidth="xs">
         <Box
@@ -63,7 +81,7 @@ const login = () => {
             Sign in
           </Typography>
           <Header/>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form" noValidate onSubmit={doSignin} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -96,6 +114,13 @@ const login = () => {
                 />
               </Grid>
             </Grid>
+            <div>
+            <Button onClick={()=>{
+              doLogout();
+            }} >
+              ログアウト
+            </Button>
+          </div>
             <Button
               type="submit"
               fullWidth

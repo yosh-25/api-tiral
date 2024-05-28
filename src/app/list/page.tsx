@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from '../../../context/AuthContext'
 import { db } from "../../../libs/firebase";
 import {
   getDocs,
@@ -45,6 +46,7 @@ import YouTube from "react-youtube";
 
 function showMemoList() {
   const router = useRouter();
+  const { currentUser }:any = useAuth();
   const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search";
   const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
   const [memoListByVideoId, setMemoListByVideoId] = useState<MemosByVideoId>(
@@ -60,6 +62,8 @@ function showMemoList() {
   const [pageApi, setPageApi] = useState<PageApi>({});
   const [rowsPerPage, setRowsPerPage] = useState(3);
 
+  if (!currentUser) router.replace('/signin') // ログインしていなければサインインページへ転
+
   // ページ番号を更新するハンドラ
   const handleChangePage = (videoId: string, event: any, value: number) => {
     setPageApi((prev) => ({
@@ -68,7 +72,6 @@ function showMemoList() {
     }));
   };
 
-  // todo 再トライ　https://zenn.dev/tentel/articles/ea7d5c03e68e6d142d98
   // マウント時、データ削除時、編集キャンセル時にfirebaseからデータ取得
   const fetchMemoList = async () => {
     try {
@@ -231,9 +234,15 @@ function showMemoList() {
       }}
     >
       <Typography variant="h3" sx={{ textAlign: "center", my: 4 }}>
-        Memo List
+        My Page
       </Typography>
+      <Link  href={"mypage/searchResults/"}>
+      <Typography>
+        動画検索ページへ
+      </Typography>
+      </Link>
 
+      <Typography>メモ一覧</Typography>
       <TextField
         label="Search"
         variant="outlined"

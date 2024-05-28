@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { videoDetails } from "@/app/states/videoDataState";
+import { useRouter } from "next/navigation";
+import { useAuth } from '../../../../context/AuthContext'
 import { db } from "../../../../libs/firebase";
 import {
   collection,
@@ -11,7 +13,6 @@ import {
   deleteDoc
 } from "firebase/firestore";
 import { useRecoilState } from "recoil";
-import { useRouter } from "next/navigation";
 import {
   Button,
   Stack,
@@ -51,6 +52,11 @@ const Watch = ({ id }: { id: string }) => {
   const [memoMode, setMemoMode] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [fetchTrigger, setFetchTrigger] = useState<boolean>(false);
+
+  const router = useRouter();
+  const { currentUser }:any = useAuth();
+  if (!currentUser) router.replace('/signin') // ログインしていなければサインインページへ転
+
 
   const opts = {
     width: "70%",

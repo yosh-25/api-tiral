@@ -4,7 +4,7 @@ import { getAuth, signOut } from "firebase/auth";
 
 
 const Header = () => {
-  const { currentUser } = useAuth();
+  const { currentUser }:any = useAuth();
   // console.log(currentUser);
 
   return (

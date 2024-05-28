@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from '../../../context/AuthContext'
 import {
   Box,
   Button,
@@ -14,14 +16,19 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
-import { videoDataState } from "@/app/states/videoDataState";
+// import { videoDataState } from "@/app/states/videoDataState";
 import { useRecoilState } from "recoil";
 
 const Mypage = () => {
-  const [videoData, setVideoData] = useRecoilState(videoDataState);
+  // const [videoData, setVideoData] = useRecoilState(videoDataState);
 
-  if (videoData) console.log(videoData);
-  else console.log("no data");
+  // if (videoData) console.log(videoData);
+  // else console.log("no data");
+
+  const router = useRouter();
+  const { currentUser }:any = useAuth();
+  if (!currentUser) router.replace('/signin') // ログインしていなければサインインページへ転
+
 
   return (
     <Box

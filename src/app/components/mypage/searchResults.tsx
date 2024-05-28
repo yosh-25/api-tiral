@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from '../../../../context/AuthContext'
 import { useRecoilState } from "recoil";
 import { videoDetails, searchedVideoData } from "@/app/states/videoDataState";
 import { Data, Item, Memo } from "@/types";
-import { useRouter } from "next/navigation";
 import {
   Button,
   Stack,
@@ -40,7 +41,11 @@ const SearchResults = () => {
   const [videoData, setVideoData] = useRecoilState(videoDetails);
   const [nextPageToken, setNextPageToken] = useState<string | null>(null);
   const [prevPageTokens, setPrevPageTokens] = useState<string[]>([]);
+
   const router = useRouter();
+  const { currentUser }:any = useAuth();
+  if (!currentUser) router.replace('/signin') // ログインしていなければサインインページへ転
+
 
   const fetchVideos = async (pageToken?: string) => {
     if (!API_KEY) {
