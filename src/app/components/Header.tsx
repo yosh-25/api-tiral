@@ -12,10 +12,10 @@ const Header = () => {
       { currentUser ? (
         // useAuth()で取得した現在ログインしているユーザーのメールアドレスをcurrentUser.emailで表示
         <div suppressHydrationWarning={true}>
-          <div style={{ paddingBottom: "1rem" }}>{ currentUser.email } でログインしています。</div>
+          <div style={{ paddingBottom: "1rem" }}>{ currentUser.email } </div>
         </div>
       ):(
-        <div suppressHydrationWarning={true}>ログインしていません。</div>
+        <div suppressHydrationWarning={true}>会員登録/ログインはこちら</div>
       )}
     </div>
   );
