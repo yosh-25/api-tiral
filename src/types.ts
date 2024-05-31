@@ -19,6 +19,7 @@ export interface Memo {
   createdAt: string;
   content: string;
   isEditing?: boolean;
+  uid: string;
 }
 
 export type MemoList =Memo[];

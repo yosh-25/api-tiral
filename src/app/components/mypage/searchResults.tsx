@@ -46,6 +46,7 @@ const SearchResults = () => {
   const { currentUser }:any = useAuth();
   if (!currentUser) router.replace('/signin') // ログインしていなければサインインページへ転
 
+  console.log('currentUser', currentUser.uid);
 
   const fetchVideos = async (pageToken?: string) => {
     if (!API_KEY) {
@@ -126,6 +127,7 @@ const SearchResults = () => {
       createdTime: "",
       createdAt: "",
       content: "",
+      uid: currentUser.uid,
     };
     setVideoData(videoData);
     console.log(videoData);

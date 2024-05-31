@@ -10,7 +10,9 @@ import {
   serverTimestamp,
   doc,
   updateDoc,
-  deleteDoc
+  deleteDoc,
+  query,
+  where
 } from "firebase/firestore";
 import { useRecoilState } from "recoil";
 import {
@@ -46,6 +48,7 @@ const Watch = ({ id }: { id: string }) => {
     createdAt: "",
     content: "",
     isEditing: false,
+    uid: "",
   });
   const [memoList, setMemoList] = useState<MemoList>();
   const [videoData, setVideoData] = useRecoilState(videoDetails);
@@ -113,10 +116,11 @@ const Watch = ({ id }: { id: string }) => {
 
   useEffect(() => {
     const fetchMemoList = async () => {
-      const querySnapshot = await getDocs(collection(db, "memoList"));
+      const q = query(collection(db, 'memoList'), where("uid", "==", currentUser.uid))
+      const querySnapshot = await getDocs(q);
       const memoList: MemoList = 
         querySnapshot.docs.map((doc) => {
-          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content } =
+          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content, uid } =
             doc.data();
 
           return {
@@ -127,6 +131,7 @@ const Watch = ({ id }: { id: string }) => {
             createdTime,
             createdAt,
             content,
+            uid
           };
           
         }) 
@@ -160,14 +165,16 @@ const Watch = ({ id }: { id: string }) => {
       createdTime: serverTimestamp(),
       createdAt: timeToShow,
       content: newMemo.content,
+      uid: currentUser.uid,
     });
 
     //firebaseから新しく加えたメモを含むメモリストを取得
     const fetchNewMemoList = async () => {
-      const querySnapshot = await getDocs(collection(db, "memoList"));
+      const q = query(collection(db, 'memoList'), where("uid", "==", currentUser.uid));
+      const querySnapshot = await getDocs(q);
       const memoList: MemoList = 
         querySnapshot.docs.map((doc) => {
-          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content } =
+          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content, uid } =
             doc.data();
 
           return {
@@ -178,6 +185,7 @@ const Watch = ({ id }: { id: string }) => {
             createdTime,
             createdAt,
             content,
+            uid
           };
         })
       
@@ -267,7 +275,7 @@ const Watch = ({ id }: { id: string }) => {
       const querySnapshot = await getDocs(collection(db, "memoList"));
       const memoList: MemoList = 
         querySnapshot.docs.map((doc) => {
-          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content } =
+          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content, uid } =
             doc.data();
 
           return {
@@ -278,6 +286,7 @@ const Watch = ({ id }: { id: string }) => {
             createdTime,
             createdAt,
             content,
+            uid,
           };
           
         }) 
@@ -286,10 +295,8 @@ const Watch = ({ id }: { id: string }) => {
 
   return (
     <Box>
-      <Box height="100%">
+      <Box>
         <YouTube videoId={videoId} opts={opts} onReady={makeYTPlayer} />
-
-        <Typography></Typography>
       </Box>
       <Box>
         {memoMode ? (

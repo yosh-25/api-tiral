@@ -8,7 +8,7 @@ import { RecoilRoot } from "recoil";
 import dynamic from "next/dynamic";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import Header from '@/app/components/Header';
+import Header from "@/app/components/Header";
 
 import {
   AppBar,
@@ -32,16 +32,14 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>)
-
-{
-  
+}>) {
   return (
-    <AuthProvider>
-      <RecoilRoot>
-        <ThemeProvider theme={theme}>
-          <html lang="en">
-            <body>
+    <html lang="en">
+      <body>
+        <AuthProvider>
+          <RecoilRoot>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
               <AppBar color="default" position="static">
                 <Toolbar
                   sx={{ display: "flex", justifyContent: "space-between" }}
@@ -58,7 +56,7 @@ export default function RootLayout({
                     </IconButton>
                     <Typography fontWeight="750">Memotube</Typography>
                   </Box>
-                  <Header/>
+                  <Header />
                 </Toolbar>
               </AppBar>
               <Box
@@ -71,10 +69,10 @@ export default function RootLayout({
               >
                 {children}
               </Box>
-            </body>
-          </html>
-        </ThemeProvider>
-      </RecoilRoot>
-    </AuthProvider>
+            </ThemeProvider>
+          </RecoilRoot>
+        </AuthProvider>
+      </body>
+    </html>
   );
 }
