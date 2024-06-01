@@ -20,8 +20,6 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Header from "../components/Header";
 
-// todo; サイト参照してログイン状態表示させる  認証結果をproviderで包んで表示できるように。
-
 const login = () => {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
