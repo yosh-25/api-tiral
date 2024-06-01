@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
 } from "firebase/auth";
-import { auth } from "../../../libs/firebase";
+import { auth } from "../../../lib/firebase";
 import { FirebaseError } from "@firebase/util";
 // MUI
 import Avatar from "@mui/material/Avatar";
@@ -25,7 +25,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 const signup = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -68,7 +67,7 @@ const signup = () => {
               <TextField
                 required
                 fullWidth
-                type='email'
+                type="email"
                 id="email"
                 label="Email Address"
                 name="email"
@@ -84,7 +83,7 @@ const signup = () => {
                 label="Password"
                 type="password"
                 id="password"
-                autoComplete="new-password"                
+                autoComplete="new-password"
                 onChange={(e) => setPassword(e.target.value)}
               />
             </Grid>

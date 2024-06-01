@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from '../../../context/AuthContext'
-import { db } from "../../../libs/firebase";
+import { useAuth } from "../../../context/AuthContext";
+import { db } from "../../../lib/firebase";
 import {
   getDocs,
   collection,
@@ -46,7 +46,7 @@ import YouTube from "react-youtube";
 
 function showMemoList() {
   const router = useRouter();
-  const { currentUser }:any = useAuth();
+  const { currentUser }: any = useAuth();
   const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search";
   const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
   const [memoListByVideoId, setMemoListByVideoId] = useState<MemosByVideoId>(
@@ -62,7 +62,7 @@ function showMemoList() {
   const [pageApi, setPageApi] = useState<PageApi>({});
   const [rowsPerPage, setRowsPerPage] = useState(3);
 
-  if (!currentUser) router.replace('/signin') // ログインしていなければサインインページへ転
+  if (!currentUser) router.replace("/signin"); // ログインしていなければサインインページへ転
 
   // ページ番号を更新するハンドラ
   const handleChangePage = (videoId: string, event: any, value: number) => {
@@ -236,10 +236,8 @@ function showMemoList() {
       <Typography variant="h3" sx={{ textAlign: "center", my: 4 }}>
         My Page
       </Typography>
-      <Link  href={"mypage/searchResults/"}>
-      <Typography>
-        動画検索ページへ
-      </Typography>
+      <Link href={"mypage/searchResults/"}>
+        <Typography>動画検索ページへ</Typography>
       </Link>
 
       <Typography>メモ一覧</Typography>
@@ -303,11 +301,8 @@ function showMemoList() {
                   </Table>
                 </TableContainer>
 
-                <Link
-                href={"mypage/searchResults/" + videoId + "/watch"}
-              >
-                <Button                
-                >この動画のメモを編集する</Button>
+                <Link href={"mypage/searchResults/" + videoId + "/watch"}>
+                  <Button>この動画のメモを編集する</Button>
                 </Link>
                 <Typography variant="body2" sx={{ textAlign: "right", mr: 2 }}>
                   1/{memos.length}

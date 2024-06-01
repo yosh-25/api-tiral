@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { videoDetails } from "@/app/states/videoDataState";
 import { useRouter } from "next/navigation";
-import { useAuth } from '../../../../context/AuthContext'
-import { db } from "../../../../libs/firebase";
+import { useAuth } from "../../../../context/AuthContext";
+import { db } from "../../../../lib/firebase";
 import {
   collection,
   addDoc,
@@ -12,7 +12,7 @@ import {
   updateDoc,
   deleteDoc,
   query,
-  where
+  where,
 } from "firebase/firestore";
 import { useRecoilState } from "recoil";
 import {
@@ -57,9 +57,8 @@ const Watch = ({ id }: { id: string }) => {
   const [fetchTrigger, setFetchTrigger] = useState<boolean>(false);
 
   const router = useRouter();
-  const { currentUser }:any = useAuth();
-  if (!currentUser) router.replace('/signin') // ログインしていなければサインインページへ転
-
+  const { currentUser }: any = useAuth();
+  if (!currentUser) router.replace("/signin"); // ログインしていなければサインインページへ転
 
   const opts = {
     width: "70%",
@@ -116,29 +115,36 @@ const Watch = ({ id }: { id: string }) => {
 
   useEffect(() => {
     const fetchMemoList = async () => {
-      const q = query(collection(db, 'memoList'), where("uid", "==", currentUser.uid))
+      const q = query(
+        collection(db, "memoList"),
+        where("uid", "==", currentUser.uid)
+      );
       const querySnapshot = await getDocs(q);
-      const memoList: MemoList = 
-        querySnapshot.docs.map((doc) => {
-          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content, uid } =
-            doc.data();
+      const memoList: MemoList = querySnapshot.docs.map((doc) => {
+        const {
+          videoId,
+          videoTitle,
+          videoThumbnail,
+          createdTime,
+          createdAt,
+          content,
+          uid,
+        } = doc.data();
 
-          return {
-            id: doc.id,
-            videoId,
-            videoTitle,
-            videoThumbnail: videoThumbnail,
-            createdTime,
-            createdAt,
-            content,
-            uid
-          };
-          
-        }) 
-        setMemoList(memoList);
+        return {
+          id: doc.id,
+          videoId,
+          videoTitle,
+          videoThumbnail: videoThumbnail,
+          createdTime,
+          createdAt,
+          content,
+          uid,
+        };
+      });
+      setMemoList(memoList);
     };
     fetchMemoList();
-  
   }, []);
 
   const saveMemoToFirebaseAndfetchAll = async () => {
@@ -170,27 +176,35 @@ const Watch = ({ id }: { id: string }) => {
 
     //firebaseから新しく加えたメモを含むメモリストを取得
     const fetchNewMemoList = async () => {
-      const q = query(collection(db, 'memoList'), where("uid", "==", currentUser.uid));
+      const q = query(
+        collection(db, "memoList"),
+        where("uid", "==", currentUser.uid)
+      );
       const querySnapshot = await getDocs(q);
-      const memoList: MemoList = 
-        querySnapshot.docs.map((doc) => {
-          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content, uid } =
-            doc.data();
+      const memoList: MemoList = querySnapshot.docs.map((doc) => {
+        const {
+          videoId,
+          videoTitle,
+          videoThumbnail,
+          createdTime,
+          createdAt,
+          content,
+          uid,
+        } = doc.data();
 
-          return {
-            id: doc.id,
-            videoId,
-            videoThumbnail: videoThumbnail,
-            videoTitle,
-            createdTime,
-            createdAt,
-            content,
-            uid
-          };
-        })
-      
+        return {
+          id: doc.id,
+          videoId,
+          videoThumbnail: videoThumbnail,
+          videoTitle,
+          createdTime,
+          createdAt,
+          content,
+          uid,
+        };
+      });
+
       setMemoList(memoList);
-      
     };
     fetchNewMemoList();
     console.log(memoList);
@@ -198,17 +212,15 @@ const Watch = ({ id }: { id: string }) => {
 
   // 説明加える
   const editNewMemo = (e: React.ChangeEvent<HTMLInputElement>) => {
-           setNewMemo((memo) => ({
-          ...memo,
-          videoId: videoData.videoId,
-          videoTitle: videoData.videoTitle,
-          videoThumbnail: videoData.videoThumbnail,
-          content: e.target.value,
-        }));   
+    setNewMemo((memo) => ({
+      ...memo,
+      videoId: videoData.videoId,
+      videoTitle: videoData.videoTitle,
+      videoThumbnail: videoData.videoThumbnail,
+      content: e.target.value,
+    }));
     console.log(newMemo);
   };
-
-
 
   // 経過時間を秒単位に変換する関数
   const convertToSeconds = (createdAt: string) => {
@@ -225,31 +237,31 @@ const Watch = ({ id }: { id: string }) => {
     }
   };
 
-    // 変更したメモ内容をバックエンドに保存
-    const updateMemoContent = async (id: string, newContent: string) => {
-      const docRef = doc(db, "memoList", id);
-      try {
-        await updateDoc(docRef, {
-          content: newContent,
-        });
-        console.log("変更が保存されました！");
-        setEditMode(!editMode);
-      } catch (error) {
-        console.log("エラーが発生しました。", error);
-      }
-    };
+  // 変更したメモ内容をバックエンドに保存
+  const updateMemoContent = async (id: string, newContent: string) => {
+    const docRef = doc(db, "memoList", id);
+    try {
+      await updateDoc(docRef, {
+        content: newContent,
+      });
+      console.log("変更が保存されました！");
+      setEditMode(!editMode);
+    } catch (error) {
+      console.log("エラーが発生しました。", error);
+    }
+  };
 
-      // メモ内容をフロントエンドで変更
+  // メモ内容をフロントエンドで変更
   const updateContent = (
     memoId: string,
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-      const newContent = e.target.value
-      setMemoList((previousMemoList) => 
-        previousMemoList?.map((memo) => 
-          memo.id === memoId ? {...memo, content: newContent}: memo
-        )
-      );      
+    const newContent = e.target.value;
+    setMemoList((previousMemoList) =>
+      previousMemoList?.map((memo) =>
+        memo.id === memoId ? { ...memo, content: newContent } : memo
+      )
+    );
   };
 
   // 編集モード個別切り替え
@@ -261,37 +273,42 @@ const Watch = ({ id }: { id: string }) => {
     );
   };
 
-    // メモを削除
-    const deleteMemo = async (id: string) => {
-      const memoId = id;
-      console.log(memoId);
-      try {
-        await deleteDoc(doc(db, "memoList", memoId));
-        console.log("メモを削除しました！");
-        setFetchTrigger(!fetchTrigger);
-      } catch (error) {
-        console.log("エラーが発生しました。", error);
-      }      
-      const querySnapshot = await getDocs(collection(db, "memoList"));
-      const memoList: MemoList = 
-        querySnapshot.docs.map((doc) => {
-          const { videoId, videoTitle, videoThumbnail, createdTime, createdAt, content, uid } =
-            doc.data();
+  // メモを削除
+  const deleteMemo = async (id: string) => {
+    const memoId = id;
+    console.log(memoId);
+    try {
+      await deleteDoc(doc(db, "memoList", memoId));
+      console.log("メモを削除しました！");
+      setFetchTrigger(!fetchTrigger);
+    } catch (error) {
+      console.log("エラーが発生しました。", error);
+    }
+    const querySnapshot = await getDocs(collection(db, "memoList"));
+    const memoList: MemoList = querySnapshot.docs.map((doc) => {
+      const {
+        videoId,
+        videoTitle,
+        videoThumbnail,
+        createdTime,
+        createdAt,
+        content,
+        uid,
+      } = doc.data();
 
-          return {
-            id: doc.id,
-            videoId,
-            videoTitle,
-            videoThumbnail: videoThumbnail,
-            createdTime,
-            createdAt,
-            content,
-            uid,
-          };
-          
-        }) 
-        setMemoList(memoList);
-    };
+      return {
+        id: doc.id,
+        videoId,
+        videoTitle,
+        videoThumbnail: videoThumbnail,
+        createdTime,
+        createdAt,
+        content,
+        uid,
+      };
+    });
+    setMemoList(memoList);
+  };
 
   return (
     <Box>
@@ -376,7 +393,7 @@ const Watch = ({ id }: { id: string }) => {
 
       <TableContainer sx={{ marginBottom: "50px" }}>
         <Typography variant="h3" fontWeight="650" sx={{ fontSize: "1rem" }}>
-        {videoData ? videoData.videoTitle : "Loading..."}
+          {videoData ? videoData.videoTitle : "Loading..."}
         </Typography>
         <Table>
           <TableHead>
@@ -387,7 +404,8 @@ const Watch = ({ id }: { id: string }) => {
           </TableHead>
           {/* Todo: 続きはここから。次は編集が変更されるように。正しいアクセス */}
           <TableBody>
-            {memoList?.filter((memo) => memo.videoId === videoData?.videoId)
+            {memoList
+              ?.filter((memo) => memo.videoId === videoData?.videoId)
               .sort((a, b) => {
                 //経過時間を秒単位に変換して比較
                 const timeA = convertToSeconds(a.createdAt);
@@ -398,51 +416,51 @@ const Watch = ({ id }: { id: string }) => {
                 <TableRow key={id}>
                   <TableCell>{memo.createdAt}</TableCell>
                   <TableCell>
-                            {/* 編集モードと表示モードの切り替え */}
-                            {!memo.isEditing ? (
-                              <>
-                                <TableCell>{memo.content}</TableCell>
-                                <TableCell>
-                                <Button
-                                  variant="outlined"
-                                  onClick={() => toggleEditMode(memo.id)}
-                                >
-                                  編集
-                                </Button>
-                                </TableCell>
-                              </>
-                            ) : (
-                              <>
-                                <TextField
-                                  value={memo.content}
-                                  onChange={(e: React.ChangeEvent<HTMLInputElement>)=>updateContent(memo.id, e)}
-                                  size="small"
-                                />
-                                <Button
-                                  variant="contained"
-                                  sx={{ ml: 1 }}
-                                  onClick={() => {
-                                    updateMemoContent(memo.id, memo.content);
-                                    toggleEditMode(memo.id)
-                                  }}
-                                >
-                                  保存
-                                </Button>
-                                <Button
-                                  sx={{ ml: 1 }}
-                                  onClick={() => toggleEditMode(memo.id)}
-                                >
-                                  キャンセル
-                                </Button>
-                              </>
-                            )}
-                          </TableCell>
+                    {/* 編集モードと表示モードの切り替え */}
+                    {!memo.isEditing ? (
+                      <>
+                        <TableCell>{memo.content}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outlined"
+                            onClick={() => toggleEditMode(memo.id)}
+                          >
+                            編集
+                          </Button>
+                        </TableCell>
+                      </>
+                    ) : (
+                      <>
+                        <TextField
+                          value={memo.content}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            updateContent(memo.id, e)
+                          }
+                          size="small"
+                        />
+                        <Button
+                          variant="contained"
+                          sx={{ ml: 1 }}
+                          onClick={() => {
+                            updateMemoContent(memo.id, memo.content);
+                            toggleEditMode(memo.id);
+                          }}
+                        >
+                          保存
+                        </Button>
+                        <Button
+                          sx={{ ml: 1 }}
+                          onClick={() => toggleEditMode(memo.id)}
+                        >
+                          キャンセル
+                        </Button>
+                      </>
+                    )}
+                  </TableCell>
 
-                          <TableCell>
-                            <Button onClick={() => deleteMemo(memo.id)}>
-                              削除
-                            </Button>
-                          </TableCell>
+                  <TableCell>
+                    <Button onClick={() => deleteMemo(memo.id)}>削除</Button>
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useEffect, useState } from "react";
 import firebase from "firebase/app";
@@ -7,7 +7,7 @@ import {
   verifyPasswordResetCode,
   confirmPasswordReset,
 } from "firebase/auth";
-import { auth } from "../../../libs/firebase";
+import { auth } from "../../../lib/firebase";
 
 const NewPassword = () => {
   const [actionCode, setActionCode] = useState<string>("");
@@ -44,7 +44,6 @@ const NewPassword = () => {
   };
 
   return (
-  
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="password">New Password:</label>
@@ -57,7 +56,6 @@ const NewPassword = () => {
       </div>
       <button type="submit">Reset Password</button>
     </form>
-    
   );
 };
 export default NewPassword;
