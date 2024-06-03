@@ -236,7 +236,7 @@ function showMemoList() {
       <Typography variant="h3" sx={{ textAlign: "center", my: 4 }}>
         My Page
       </Typography>
-      <Link href={"mypage/searchResults/"}>
+      <Link href={"searchResults/"}>
         <Typography>動画検索ページへ</Typography>
       </Link>
 
@@ -277,7 +277,7 @@ function showMemoList() {
                 <Box>
                   <Link
                     href={
-                      "mypage/searchResults/" + memoToShow?.videoId + "/watch"
+                      "searchResults/" + memoToShow?.videoId + "/watchAndEdit"
                     }
                   >
                     <img src={memoToShow?.videoThumbnail} alt={"error"} />
@@ -301,7 +301,7 @@ function showMemoList() {
                   </Table>
                 </TableContainer>
 
-                <Link href={"mypage/searchResults/" + videoId + "/watch"}>
+                <Link href={"searchResults/" + videoId + "/watchAndEdit"}>
                   <Button>この動画のメモを編集する</Button>
                 </Link>
                 <Typography variant="body2" sx={{ textAlign: "right", mr: 2 }}>

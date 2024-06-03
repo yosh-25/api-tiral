@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from '../../../../context/AuthContext'
+import { useAuth } from '../../../context/AuthContext'
 import { useRecoilState } from "recoil";
 import { videoDetails, searchedVideoData } from "@/app/states/videoDataState";
 import { Data, Item, Memo } from "@/types";
@@ -163,7 +163,7 @@ const SearchResults = () => {
             <Typography>検索結果</Typography>
             <Box className="item" key={index}>
               <Link
-                href={"searchResults/" + item.id.videoId + "/watch"}
+                href={"searchResults/" + item.id.videoId + "/watchAndEdit"}
                 onClick={() => SaveVideoDetails(item)}
               >
                 <Box className="thumbnail">
