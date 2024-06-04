@@ -16,6 +16,7 @@ import {
 import { useEffect, useState } from "react";
 import { Memo, MemoList } from "@/types";
 import YouTube from "react-youtube";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Home() {
   const router = useRouter();
@@ -23,6 +24,17 @@ export default function Home() {
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [timeToShow, setTimeToShow] = useState<string>("0");
   const [newMemo, setNewMemo] = useState<Memo>({
+    id: "",
+    videoId: "",
+    videoTitle: "",
+    videoThumbnail: "",
+    createdTime: "",
+    createdAt: "",
+    content: "",
+    isEditing: false,
+    uid: "",
+  });
+  const [editedMemo, setEditedMemo] = useState<Memo>({
     id: "",
     videoId: "",
     videoTitle: "",
@@ -127,45 +139,70 @@ export default function Home() {
   };
 
   // メモを保存
-  const saveMemo = (memoId: string) =>{
+  const saveMemo = () =>{
+        // * 現在の日付を取得
+        
+          const today = new Date();    
+          const year = today.getFullYear();
+          const month = ("0" + (today.getMonth() + 1)).slice(-2);
+          const day = ("0" + today.getDate()).slice(-2);
+          const currentDate = year + '-' + month + '-' + day;
+          const uniqueId = uuidv4();
+
+          setNewMemo((state) => ({
+            ...state,
+            cretedTime: currentDate,
+            createdAt: timeToShow,
+            id: uniqueId
+          }));
+        
     
-  }
+        setMemoList((prevMemoList) => {
+          const updatedMemo = {
+            ...newMemo,
+            createdTime: currentDate,
+            createdAt: timeToShow,
+            id: uniqueId
+          };
+          return [...(prevMemoList || []), updatedMemo];
+        });
+        console.log(memoList);
+
+        setNewMemo({
+          id: "",
+          videoId: "",
+          videoTitle: "",
+          videoThumbnail: "",
+          createdTime: "",
+          createdAt: "",
+          content: "",
+          isEditing: false,
+          uid: "",
+        })
+  };
+
+  const updateMemoList = (id:string) => {
+    setMemoList((prevMemoList)=>
+    prevMemoList?.map((memo)=> 
+      memo.id ===  id ? {...memo, content: newMemo.content}: memo
+  ))
+  setNewMemo({
+    id: "",
+    videoId: "",
+    videoTitle: "",
+    videoThumbnail: "",
+    createdTime: "",
+    createdAt: "",
+    content: "",
+    isEditing: false,
+    uid: "",
+  })
+    };
+
 
   // メモを削除
   const deleteMemo = async (id: string) => {
-    const memoId = id;
-    console.log(memoId);
-    try {
-      await deleteDoc(doc(db, "memoList", memoId));
-      console.log("メモを削除しました！");
-      setFetchTrigger(!fetchTrigger);
-    } catch (error) {
-      console.log("エラーが発生しました。", error);
-    }
-    const querySnapshot = await getDocs(collection(db, "memoList"));
-    const memoList: MemoList = querySnapshot.docs.map((doc) => {
-      const {
-        videoId,
-        videoTitle,
-        videoThumbnail,
-        createdTime,
-        createdAt,
-        content,
-        uid,
-      } = doc.data();
-
-      return {
-        id: doc.id,
-        videoId,
-        videoTitle,
-        videoThumbnail: videoThumbnail,
-        createdTime,
-        createdAt,
-        content,
-        uid,
-      };
-    });
-    setMemoList(memoList);
+    setMemoList((prevMemoList)=> prevMemoList?.filter((memo)=>memo.id !== id));
   };
 
   const makeYTPlayer = (e: { target: YT.Player }) => {
@@ -256,7 +293,7 @@ export default function Home() {
 
       <TableContainer sx={{ marginBottom: "50px" }}>
         <Typography variant="h3" fontWeight="650" sx={{ fontSize: "1rem" }}>
-          動画のタイトルをサンプル表示
+          TypeScript in 100 Seconds
         </Typography>
         <Table>
           <TableHead>
@@ -265,11 +302,9 @@ export default function Home() {
               <TableCell align="left">メモ</TableCell>
             </TableRow>
           </TableHead>
-          {/* Todo: 続きはここから。次は編集が変更されるように。正しいアクセス */}
           <TableBody>
             {memoList
-              ?.filter((memo) => memo.videoId === videoData?.videoId)
-              .sort((a, b) => {
+              ?.sort((a, b) => {
                 //経過時間を秒単位に変換して比較
                 const timeA = convertToSeconds(a.createdAt);
                 const timeB = convertToSeconds(b.createdAt);
@@ -286,7 +321,10 @@ export default function Home() {
                         <TableCell>
                           <Button
                             variant="outlined"
-                            onClick={() => toggleEditMode(memo.id)}
+                            onClick={() => {
+                              toggleEditMode(memo.id),
+                              setEditedMemo(memo)
+                            }}
                           >
                             編集
                           </Button>
@@ -295,9 +333,12 @@ export default function Home() {
                     ) : (
                       <>
                         <TextField
-                          value={memo.content}
+                          value={editedMemo.content}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            updateContent(memo.id, e)
+                            setEditedMemo((prevNewMemo)=>({
+                              ...prevNewMemo,
+                              content: e.target.value
+                            }))
                           }
                           size="small"
                         />
@@ -305,7 +346,7 @@ export default function Home() {
                           variant="contained"
                           sx={{ ml: 1 }}
                           onClick={() => {
-                            updateMemoContent(memo.id, memo.content);
+                            updateMemoList(memo.id);
                             toggleEditMode(memo.id);
                           }}
                         >
