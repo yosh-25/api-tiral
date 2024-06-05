@@ -38,8 +38,9 @@ const login = () => {
       );
       // サインアップ成功時の処理
       console.log("User signed up:", userCredential);
-      // setEmail("");
-      // setPassword("");
+      setEmail("");
+      setPassword("");
+      
     } catch (e) {
       if (e instanceof FirebaseError) {
         console.log(e);

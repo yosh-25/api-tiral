@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 // firebase
+import { useRouter } from "next/navigation";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
@@ -23,6 +24,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const signup = () => {
+  const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -38,6 +40,8 @@ const signup = () => {
       console.log("User signed up:", userCredential.user);
       setEmail("");
       setPassword("");
+      router.push('/dashboard');
+
     } catch (e) {
       if (e instanceof FirebaseError) {
         console.log(e);

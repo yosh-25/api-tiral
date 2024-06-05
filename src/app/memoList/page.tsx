@@ -234,13 +234,10 @@ function showMemoList() {
       }}
     >
       <Typography variant="h3" sx={{ textAlign: "center", my: 4 }}>
-        My Page
+        メモ一覧
       </Typography>
-      <Link href={"searchResults/"}>
-        <Typography>動画検索ページへ</Typography>
-      </Link>
 
-      <Typography>メモ一覧</Typography>
+
       <TextField
         label="Search"
         variant="outlined"
@@ -254,66 +251,66 @@ function showMemoList() {
 
       {sortedVideoIds.map((videoId) => {
         const memos = memoListByVideoId[videoId] || [];
-        const memoToShow = memos[0];
-
-        return (
-          <Box
-            key={videoId}
-            sx={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "space-around",
-              alignItems: "start",
-              my: 1,
-            }}
-          >
-            <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Box>
-                  <Typography variant="h6" key={memoToShow?.videoId}>
-                    {memoToShow?.videoTitle}
-                  </Typography>
+        
+          return (
+            <Box
+              key={videoId}
+              sx={{
+                display: "flex",
+                width: "100%",
+                justifyContent: "space-around",
+                alignItems: "start",
+                my: 1,
+              }}
+            >
+              <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
+                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                  <Box>
+                    <Typography variant="h6" >
+                      {memos[0].videoTitle}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Link
+                      href={"searchResults/" + videoId + "/watchAndEdit"}
+                    >
+                      <img src={memos[0].videoThumbnail} alt={"error"} />
+                    </Link>
+                  </Box>
                 </Box>
+
                 <Box>
-                  <Link
-                    href={
-                      "searchResults/" + memoToShow?.videoId + "/watchAndEdit"
-                    }
+                  <TableContainer
+                    key={videoId}
+                    sx={{ marginBottom: "10px" }}
                   >
-                    <img src={memoToShow?.videoThumbnail} alt={"error"} />
+                    <Table>
+                      <TableBody>
+                      {memos.map((memo) => (
+                        <TableRow>
+                          <TableCell component="th" scope="row">
+                            {memo?.createdAt}
+                          </TableCell>
+                          <TableCell component="th" scope="row">
+                            {memo?.content}
+                          </TableCell>
+                        </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+
+                  <Link
+                    href={"searchResults/" + videoId + "/watchAndEdit"}
+                  >
+                    <Button>この動画のメモを編集する</Button>
                   </Link>
                 </Box>
               </Box>
-
-              <Box>
-                <TableContainer
-                  key={memoToShow?.videoId}
-                  sx={{ marginBottom: "10px" }}
-                >
-                  <Table>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell component="th" scope="row">
-                          {memoToShow?.createdAt}
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-
-                <Link href={"searchResults/" + videoId + "/watchAndEdit"}>
-                  <Button>この動画のメモを編集する</Button>
-                </Link>
-                <Typography variant="body2" sx={{ textAlign: "right", mr: 2 }}>
-                  1/{memos.length}
-                </Typography>
-              </Box>
             </Box>
-          </Box>
-        );
-      })}
-    </Box>
-  );
-}
-
+          );
+        })}
+      </Box>
+    );
+  };
 export default showMemoList;
