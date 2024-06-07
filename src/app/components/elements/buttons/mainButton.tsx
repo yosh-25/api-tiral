@@ -10,10 +10,15 @@ type Props = MuiButtonProps & {
   children: ReactNode;
 };
 
-const CustomButton = ({ children, ...props }: Props) => {
+const MainButton = ({ children, ...props }: Props) => {
   return (
     <MuiButton
-      variant="contained"      
+      variant="contained"
+      sx={{
+        // width:'10rem',
+        p:'0.6rem'
+
+      }}   
       {...props}
     >
       {children}
@@ -21,4 +26,4 @@ const CustomButton = ({ children, ...props }: Props) => {
   );
 };
 
-export default CustomButton;
+export default MainButton;

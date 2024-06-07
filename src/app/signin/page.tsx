@@ -19,7 +19,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Header from "../components/Header";
-import CustomButton from "../components/elements/Button";
+import MainButton from "../components/elements/buttons/mainButton";
 
 const login = () => {
   const router = useRouter();
@@ -41,7 +41,6 @@ const login = () => {
       console.log("User signed up:", userCredential);
       setEmail("");
       setPassword("");
-      
     } catch (e) {
       if (e instanceof FirebaseError) {
         console.log(e);
@@ -130,7 +129,7 @@ const login = () => {
           >
             Sign in
           </Button>
-          <CustomButton>Test</CustomButton>
+          <MainButton>Test</MainButton>
           <Grid container justifyContent="flex-end">
             <Grid item>
               <Link href="#" variant="body2">

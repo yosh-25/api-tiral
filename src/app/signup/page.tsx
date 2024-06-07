@@ -22,6 +22,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import MainButton from "../components/elements/buttons/mainButton";
 
 const signup = () => {
   const router = useRouter();
@@ -40,8 +41,7 @@ const signup = () => {
       console.log("User signed up:", userCredential.user);
       setEmail("");
       setPassword("");
-      router.push('/dashboard');
-
+      router.push("/dashboard");
     } catch (e) {
       if (e instanceof FirebaseError) {
         console.log(e);

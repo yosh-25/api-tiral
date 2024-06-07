@@ -44,16 +44,17 @@ const SearchResults = () => {
 
   const router = useRouter();
   const { currentUser }:any = useAuth();
-  if (!currentUser) router.replace('/signin') // ログインしていなければサインインページへ転
 
-  console.log('currentUser', currentUser.uid);
+  // エラーの原因！
+  useEffect(() => {  
+  if (!currentUser) router.replace('/signin') // ログインしていなければサインインページへ転
+  }, [currentUser]);
 
   const fetchVideos = async (pageToken?: string) => {
     if (!API_KEY) {
       console.error("API_KEY is undefined");
       return;
     }
-
    
     let nextPageToken = null;
     let prevPageToken = [];

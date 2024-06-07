@@ -17,8 +17,9 @@ import { useEffect, useState } from "react";
 import { Memo, MemoList } from "@/types";
 import YouTube from "react-youtube";
 import { v4 as uuidv4 } from "uuid";
-import Image from 'next/image'
+import Image from "next/image";
 import Link from "next/link";
+import MainButton from "./components/elements/buttons/mainButton";
 
 export default function Home() {
   const router = useRouter();
@@ -279,31 +280,29 @@ export default function Home() {
                   </Box>
                   <Box display="flex" justifyContent="flex-end">
                     <Box marginRight="1rem">
-                      <Button
-                        sx={{ border: 1, width: "100%" }}
+                      <MainButton
                         onClick={(
                           e: React.MouseEvent<HTMLButtonElement, MouseEvent>
                         ) => setMemoMode(!memoMode)}
                       >
                         キャンセル
-                      </Button>
+                      </MainButton>
                     </Box>
                     <Box>
-                      <Button
-                        sx={{ border: 1, width: "100%" }}
+                      <MainButton
                         onClick={() => {
                           backToPreviousUI();
                           saveMemo();
                         }}
                       >
                         保存する
-                      </Button>
+                      </MainButton>
                     </Box>
                   </Box>
                 </Box>
               ) : (
                 <Box>
-                  <Button
+                  <MainButton
                     onClick={(
                       e: React.MouseEvent<HTMLButtonElement, MouseEvent>
                     ) => setMemoMode(!memoMode)}
@@ -313,7 +312,7 @@ export default function Home() {
                     >
                       {timeToShow}にメモを作成します
                     </Typography>
-                  </Button>
+                  </MainButton>
                 </Box>
               )}
             </Box>
@@ -350,15 +349,14 @@ export default function Home() {
                             <>
                               <TableCell>{memo.content}</TableCell>
                               <TableCell>
-                                <Button
-                                  variant="outlined"
+                                <MainButton
                                   onClick={() => {
                                     toggleEditMode(memo.id),
                                       setEditedMemo(memo);
                                   }}
                                 >
                                   編集
-                                </Button>
+                                </MainButton>
                               </TableCell>
                             </>
                           ) : (
@@ -375,16 +373,14 @@ export default function Home() {
                                 }
                                 size="small"
                               />
-                              <Button
-                                variant="contained"
-                                sx={{ ml: 1 }}
+                              <MainButton
                                 onClick={() => {
                                   updateMemoList(memo.id);
                                   toggleEditMode(memo.id);
                                 }}
                               >
                                 保存
-                              </Button>
+                              </MainButton>
                               <Button
                                 sx={{ ml: 1 }}
                                 onClick={() => toggleEditMode(memo.id)}
@@ -423,10 +419,18 @@ export default function Home() {
             <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
               <Box sx={{ display: "flex", flexDirection: "column" }}>
                 <Box>
-                  <Typography variant="h6">TypeScript in 100 seconds</Typography>
+                  <Typography variant="h6">
+                    TypeScript in 100 seconds
+                  </Typography>
                 </Box>
                 <Box>
-                  <Image src="/TypeScriptIn100Seconds.jpg" alt={"videoTitle"} width={300} height={200} objectFit="contain"/>
+                  <Image
+                    src="/TypeScriptIn100Seconds.jpg"
+                    alt={"videoTitle"}
+                    width={300}
+                    height={200}
+                    objectFit="contain"
+                  />
                 </Box>
               </Box>
               <Box>
@@ -458,10 +462,18 @@ export default function Home() {
             <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
               <Box sx={{ display: "flex", flexDirection: "column" }}>
                 <Box>
-                  <Typography variant="h6">How to use typescript with React</Typography>
+                  <Typography variant="h6">
+                    How to use typescript with React
+                  </Typography>
                 </Box>
                 <Box>
-                  <Image src="/HowToUseTypescriptWithReact.jpg" alt={"videoTitle"} width={300} height={200} objectFit="contain"/>
+                  <Image
+                    src="/HowToUseTypescriptWithReact.jpg"
+                    alt={"videoTitle"}
+                    width={300}
+                    height={200}
+                    objectFit="contain"
+                  />
                 </Box>
               </Box>
               <Box>
@@ -488,16 +500,19 @@ export default function Home() {
                   </Table>
                 </TableContainer>
               </Box>
-            </Box>            
+            </Box>
           </Box>
-          <Link
-          href="/signup"
-          >
-          <Button variant="contained">初めての方はこちら</Button>
+          <Link href="/signup">
+            <MainButton>初めての方はこちら</MainButton>
           </Link>
-          <Link
-          href="/signin">
-          <Button variant="contained">ログイン</Button>
+          <Link href="/signin">
+            <MainButton
+              sx={{
+                width: "9rem",
+              }}
+            >
+              ログイン
+            </MainButton>
           </Link>
         </Stack>
       </Box>
