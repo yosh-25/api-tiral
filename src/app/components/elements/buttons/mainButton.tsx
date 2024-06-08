@@ -13,12 +13,12 @@ type Props = MuiButtonProps & {
 const MainButton = ({ children, ...props }: Props) => {
   return (
     <MuiButton
+      type="submit"
       variant="contained"
       sx={{
         // width:'10rem',
-        p:'0.6rem'
-
-      }}   
+        p: "0.6rem",
+      }}
       {...props}
     >
       {children}

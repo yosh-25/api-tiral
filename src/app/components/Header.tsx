@@ -3,7 +3,7 @@ import { useAuth } from '../../../context/AuthContext'
 import { getAuth, signOut } from "firebase/auth";
 import ButtonToAddMemo from './elements/buttons/buttonToAddMemo';
 import MainButton from './elements/buttons/mainButton';
-import Signout from './Signout';
+import Signout from './SignoutOrLinkToLogin';
 
 const Header = () => {
   const { currentUser }:any = useAuth();

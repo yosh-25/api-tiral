@@ -30,7 +30,7 @@ import Link from "next/link";
                 <MainButton onClick={doLogout}>ログアウト </MainButton>
               </Box>
             ):(
-              <Link href='/src/app/signin/page.tsx'>
+              <Link href='./signin'>
               <Typography suppressHydrationWarning={true}>会員登録/ログインはこちら</Typography>
               </Link>
             )}
