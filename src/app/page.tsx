@@ -20,6 +20,7 @@ import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 import Link from "next/link";
 import MainButton from "./components/elements/buttons/mainButton";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Home() {
   const router = useRouter();
@@ -50,6 +51,13 @@ export default function Home() {
   });
   const [memoList, setMemoList] = useState<MemoList>();
   const [memoMode, setMemoMode] = useState<boolean>(false);
+
+  const { currentUser }:any = useAuth();
+
+  // エラーの原因！
+  useEffect(() => {  
+  if (currentUser) router.replace('/dashboard') // ログインしていなければサインインページへ転
+  }, [currentUser]);
 
   const backToPreviousUI = () => {
     setMemoMode(!memoMode);
@@ -231,7 +239,7 @@ export default function Home() {
             Youtube動画を検索して、秒数毎にメモしながら視聴できます。
           </Typography>
           <Typography fontSize="1.5rem" fontWeight="500">
-            サンプル動画を再生してメモを取ってみましょう。
+            動画をクリックして、このアプリの使い方を見てみましょう💡
           </Typography>
           <Box
             height="28rem"
@@ -302,7 +310,7 @@ export default function Home() {
                 </Box>
               ) : (
                 <Box>
-                  <MainButton
+                  <Button
                     onClick={(
                       e: React.MouseEvent<HTMLButtonElement, MouseEvent>
                     ) => setMemoMode(!memoMode)}
@@ -312,7 +320,7 @@ export default function Home() {
                     >
                       {timeToShow}にメモを作成します
                     </Typography>
-                  </MainButton>
+                  </Button>
                 </Box>
               )}
             </Box>
