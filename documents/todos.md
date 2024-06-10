@@ -12,7 +12,15 @@ https://zenn.dev/nino_cast/books/43c539eb47caab/viewer/d432a6
 #リファクタリング
 
 6/7 todo: topageのボタン配置
-6/8 todo: breakpoints設定してtoppageからCSS整える, header表示部分のコンポーネント化。新しく作った関数からコンポーネント化して慣れていく。
+6/8 todo: 
+✔breakpoints設定してtoppageからCSS整える, header表示部分のコンポーネント化。
+✔新しく作った関数からコンポーネント化して慣れていく。
+dashboardのCSS、コンポーネント化
+ListofsearchedResultsのprops整理
+引き続きデータの渡し方
+6/10
+↑のデータ引き渡し。一旦保留。
+
 
 PC：設定なし
 タブレット：md 1024

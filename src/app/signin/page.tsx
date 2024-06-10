@@ -24,8 +24,8 @@ import MainButton from "../components/elements/buttons/mainButton";
 
 const login = () => {
   const router = useRouter();
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const { currentUser }:any = useAuth();
 
   if (currentUser) router.replace("/dashboard"); // ログインしていなければサインインページへ転
@@ -87,6 +87,7 @@ const login = () => {
                 name="email"
                 autoComplete="email"
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder="aaa@gmail.com"
               />
             </Grid>
             <Grid item xs={12}>
@@ -115,6 +116,10 @@ const login = () => {
                 </Box>
             </Grid>
           </Grid>
+          <Box sx={{mt: '1rem'}}>
+            Demo Email Addres: aaa@gmail.com<br/>
+            Demo Password: aaaaaa
+          </Box>
         </Box>
       </Box>
     </Container>

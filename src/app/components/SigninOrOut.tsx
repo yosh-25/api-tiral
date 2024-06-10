@@ -9,7 +9,7 @@ import ButtonToAddMemo from './elements/buttons/buttonToAddMemo';
 import MainButton from './elements/buttons/mainButton';
 import Link from "next/link";
 
-  const Signout = () => {
+  const SigninOrOut = () => {
   const router = useRouter();
   const { currentUser }:any = useAuth();
     const auth = getAuth();
@@ -38,4 +38,4 @@ import Link from "next/link";
   );
 };
 
-export default Signout;
+export default SigninOrOut;
