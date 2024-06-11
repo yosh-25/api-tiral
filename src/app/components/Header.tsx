@@ -37,7 +37,7 @@ const Header = () => {
                 ml: 8,
               }}
             >
-              <Link href={'/dashboard'}>
+              <Link href={'/mypage'}>
               <IconButton
                 size="large"
                 edge="start"

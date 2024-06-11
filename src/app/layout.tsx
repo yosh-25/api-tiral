@@ -20,6 +20,7 @@ import {
   IconButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import Footer from "./components/Footer";
 
 const metadata: Metadata = {
   title: "Memotube",
@@ -57,10 +58,12 @@ export default function RootLayout({
                   marginRight: "auto",
                   marginLeft: "auto",
                   width: "70%",
+                  minHeight: '100vh',
                 }}
               >
                 {children}
               </Box>
+              <Footer/>
             </ThemeProvider>
           </RecoilRoot>
         </AuthProvider>

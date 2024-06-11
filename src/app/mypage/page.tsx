@@ -3,10 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext";
 import { db } from "../../../lib/firebase";
-import {
-  getDocs,
-  collection,
-} from "firebase/firestore";
+import { getDocs, collection } from "firebase/firestore";
 import {
   Box,
   Button,
@@ -18,17 +15,24 @@ import {
   TableHead,
   TableRow,
   Link,
+  IconButton,
 } from "@mui/material";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
+import SettingsIcon from "@mui/icons-material/Settings";
 import {
   MemosByVideoId,
   LatestTimestampByVideoId,
   FetchedMemo,
 } from "../../types";
+import CustomCard from "../components/elements/cards/CustomCards";
 
-function Dashboard() {
+function Mypage() {
   const router = useRouter();
   const { currentUser }: any = useAuth();
-  const [memoListByVideoId, setMemoListByVideoId] = useState<MemosByVideoId>({});
+  const [memoListByVideoId, setMemoListByVideoId] = useState<MemosByVideoId>(
+    {}
+  );
   const [fetchTrigger, setFetchTrigger] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [sortedVideoIds, setSortedVideoIds] = useState<string[]>([]);
@@ -206,24 +210,60 @@ function Dashboard() {
                   </TableBody>
                 </Table>
               </TableContainer>
-              <Link href={"searchResults/" + videoId + "/watchAndEdit"}>
-                <Button variant="contained" sx={{ width: "100%" }}>
-                  この動画のメモを編集する
-                </Button>
-              </Link>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center", // 水平方向の中央配置
+                  alignItems: "center",
+                }}
+              >
+                <Link href={"searchResults/" + videoId + "/watchAndEdit"}>
+                  <Button variant="contained" sx={{ width: "100%" }}>
+                    メモを編集/動画を視聴
+                  </Button>
+                </Link>
+              </Box>
               <Typography variant="body2" sx={{ textAlign: "right", mt: 2 }}>
-                {(memos.length >= 2) ? '2' : '1' }
-                /{memos.length}
+                {memos.length >= 2 ? "2" : "1"}/{memos.length}
               </Typography>
             </Box>
           );
         })}
       </Box>
-      <Link href="/memoList">
-        <Button variant="contained">全てのメモを見る</Button>
-      </Link>
+
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "flex-start",
+          gap: 3,
+          mt: {
+            xs: '1em',
+            md: '2em'}
+        }}
+      >
+        <CustomCard
+          href="/memoList"
+          icon={
+            <>
+              <OndemandVideoIcon />
+              <FormatListBulletedIcon />
+            </>
+          }
+          label="全てのメモを見る"
+        />
+        <CustomCard
+          href="/settings"
+          icon={
+            <>
+              <SettingsIcon />
+            </>
+          }
+          label="個人設定"
+        />
+      </Box>
     </>
   );
 }
 
-export default Dashboard;
+export default Mypage;
