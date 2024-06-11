@@ -1,6 +1,7 @@
 "use client";
 
 import type { Metadata } from "next";
+import { usePathname } from 'next/navigation'
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { AuthProvider } from "../../context/AuthContext";
 // import RecoilProvider from './recoilProvider'
@@ -28,11 +29,20 @@ const metadata: Metadata = {
 
 const theme = createTheme();
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>)
+
+{
+  const pathname = usePathname();
+  const pathsWithNoHeader = ['/signin','/signup', '/']
+
+  const isNoHeaderPage = pathsWithNoHeader.includes(pathname);
+
+
   return (
     <html lang="en">
       <body>
@@ -40,7 +50,7 @@ export default function RootLayout({
           <RecoilRoot>
             <ThemeProvider theme={theme}>
               <CssBaseline />
-              <Header/>
+              {isNoHeaderPage? (null):(<Header/>)}
               <Box
                 sx={{
                   marginTop: "50px",
