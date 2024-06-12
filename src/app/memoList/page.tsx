@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext";
 import { db } from "../../../lib/firebase";
+import ShowAllMemos from "../components/elements/lists/AllMemos";
 import {
   getDocs,
   collection,
@@ -31,7 +32,12 @@ import {
   TableRow,
   Pagination,
   Link,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import BackspaceIcon from "@mui/icons-material/Backspace";
+
 import { SelectChangeEvent } from "@mui/material/Select";
 import {
   MemoList,
@@ -43,6 +49,7 @@ import {
   FetchedMemo,
 } from "../../types";
 import YouTube from "react-youtube";
+import MainButton from "../components/elements/buttons/mainButton";
 
 function showMemoList() {
   const router = useRouter();
@@ -233,84 +240,60 @@ function showMemoList() {
         width: "100%",
       }}
     >
-      <Typography variant="h3" sx={{ textAlign: "center", my: 4 }}>
-        メモ一覧
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "80%",
+        }}
+      >
+        <Typography variant="h3" sx={{ 
+          fontSize: {
+            xs: '2em',
+            md: '3em'
+          },
+          textAlign: "center", 
+          mb: "1em" }}>
+          メモ一覧
+        </Typography>
 
-
-      <TextField
-        label="Search"
-        variant="outlined"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        sx={{ mb: 4, width: "60%" }}
-      />
-
-      <Button onClick={() => searchContents(searchQuery)}>メモを検索</Button>
-      <Button onClick={() => fetchMemoList()}>全てのメモを表示</Button>
-
-      {sortedVideoIds.map((videoId) => {
-        const memos = memoListByVideoId[videoId] || [];
-        
-          return (
-            <Box
-              key={videoId}
-              sx={{
-                display: "flex",
-                width: "100%",
-                justifyContent: "space-around",
-                alignItems: "start",
-                my: 1,
-              }}
-            >
-              <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
-                <Box sx={{ display: "flex", flexDirection: "column" }}>
-                  <Box>
-                    <Typography variant="h6" >
-                      {memos[0].videoTitle}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Link
-                      href={"searchResults/" + videoId + "/watchAndEdit"}
-                    >
-                      <img src={memos[0].videoThumbnail} alt={"error"} />
-                    </Link>
-                  </Box>
-                </Box>
-
-                <Box>
-                  <TableContainer
-                    key={videoId}
-                    sx={{ marginBottom: "10px" }}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "16px",
+            width: "100%",
+          }}
+        >
+          <TextField
+            label="メモを検索"
+            variant="outlined"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{ mb: 4, width: "20em" }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    edge="end"
+                    onClick={() => searchContents(searchQuery)}
                   >
-                    <Table>
-                      <TableBody>
-                      {memos.map((memo) => (
-                        <TableRow>
-                          <TableCell component="th" scope="row">
-                            {memo?.createdAt}
-                          </TableCell>
-                          <TableCell component="th" scope="row">
-                            {memo?.content}
-                          </TableCell>
-                        </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-
-                  <Link
-                    href={"searchResults/" + videoId + "/watchAndEdit"}
-                  >
-                    <Button>この動画のメモを編集する</Button>
-                  </Link>
-                </Box>
-              </Box>
-            </Box>
-          );
-        })}
+                    <SearchIcon />
+                  </IconButton>
+                  <IconButton edge="end" onClick={() => fetchMemoList()}>
+                    <BackspaceIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
       </Box>
-    );
-  };
+      <ShowAllMemos />
+    </Box>
+  );
+}
 export default showMemoList;

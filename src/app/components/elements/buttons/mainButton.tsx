@@ -18,6 +18,7 @@ const MainButton = ({ children, ...props }: Props) => {
       sx={{
         // width:'10rem',
         p: "0.6rem",
+        backgroundColor: '#1976d2'
       }}
       {...props}
     >

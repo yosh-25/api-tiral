@@ -26,7 +26,10 @@ const Header = () => {
     <>
       <AppBar color="default" position="static">
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Box display="flex" alignItems="center" sx={{ ml: 5 }}>
+          <Box display="flex" alignItems="center" sx={{ 
+            ml: {
+              xs: 2,
+              md:5 }}}>
             <Typography fontWeight="750">Memotube</Typography>
             <Box
               sx={{
@@ -34,7 +37,10 @@ const Header = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: "100%",
-                ml: 8,
+                ml: {
+                  xs: 4,
+                  md: 8
+                }
               }}
             >
               <Link href={'/mypage'}>

@@ -56,7 +56,7 @@ export default function Home() {
 
   // エラーの原因！
   useEffect(() => {  
-  if (currentUser) router.replace('/dashboard') // ログインしていなければサインインページへ転
+  if (currentUser) router.replace('/mypage') // ログインしていなければサインインページへ転
   }, [currentUser]);
 
   const backToPreviousUI = () => {

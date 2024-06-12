@@ -25,7 +25,8 @@ import {
   LatestTimestampByVideoId,
   FetchedMemo,
 } from "../../types";
-import CustomCard from "../components/elements/cards/CustomCards";
+import CustomCard from "../components/elements/cards/CustomCardsForSettings";
+import MainButton from "../components/elements/buttons/mainButton";
 
 function Mypage() {
   const router = useRouter();
@@ -218,9 +219,9 @@ function Mypage() {
                 }}
               >
                 <Link href={"searchResults/" + videoId + "/watchAndEdit"}>
-                  <Button variant="contained" sx={{ width: "100%" }}>
+                  <MainButton >
                     メモを編集/動画を視聴
-                  </Button>
+                  </MainButton>
                 </Link>
               </Box>
               <Typography variant="body2" sx={{ textAlign: "right", mt: 2 }}>
@@ -250,7 +251,7 @@ function Mypage() {
               <FormatListBulletedIcon />
             </>
           }
-          label="全てのメモを見る"
+          label="メモ一覧を見る"
         />
         <CustomCard
           href="/settings"
@@ -259,7 +260,7 @@ function Mypage() {
               <SettingsIcon />
             </>
           }
-          label="個人設定"
+          label="個人設定(Coming soon?)"
         />
       </Box>
     </>
