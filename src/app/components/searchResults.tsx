@@ -24,7 +24,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
-import Search from "./Search";
+import SearchIconAndFunction from "./SearchIconAndFunction";
 import SearchBar from "./elements/searchBar";
 
 const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search";
@@ -133,17 +133,19 @@ const SearchResults = () => {
     setSearchTerm(event.target.value);
   };
 
-
   const handleClick = () => {
     // 新しい検索の際にリセット
-   
   };
 
   return (
     <Stack gap="3rem">
       <Box>
-      <SearchBar value={searchTerm} onChange={handleSearchChange} onClick={handleClick} />
-        <Search />
+        <SearchBar
+          value={searchTerm}
+          onChange={handleSearchChange}
+          onClick={handleClick}
+        />
+        <SearchIconAndFunction />
       </Box>
 
       <Box>

@@ -29,9 +29,11 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
         display: "flex",
         flexDirection: "column",
         width: "80%",
-        mb: 4,
-        backgroundColor: "#e1f5fe",
+        mb: 5,
+        // backgroundColor: "#e1f5fe",
         border: "0.5px solid lightgray",
+        borderRadius: "8px",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
       }}
     >
       <Box
@@ -84,7 +86,7 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
           {memos[0].videoTitle}
         </Typography>
       </Box>
-      <TableContainer sx={{ mt: 2,  overflowX: "auto" }}>
+      <TableContainer sx={{ mt: 2, overflowX: "auto" }}>
         <Table
           sx={{
             width: "100%",
@@ -92,31 +94,39 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
         >
           <TableHead>
             <TableRow>
-              <TableCell sx={{ width: "1em", fontSize: '0.6em' }}>再生位置</TableCell>
-              <TableCell sx={{ fontSize: '0.6em' }}>メモ</TableCell>
+              <TableCell sx={{ width: "1em", fontSize: "0.6em" }}>
+                再生位置
+              </TableCell>
+              <TableCell sx={{ fontSize: "0.6em" }}>メモ</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {memos.map((memo, index) => (
               <TableRow key={index}>
-                <TableCell sx={{ width: "25%", pl:3 }}>{memo.createdAt}</TableCell>
-                <TableCell 
-                sx={{
+                <TableCell sx={{ width: "25%", pl: 3 }}>
+                  {memo.createdAt}
+                </TableCell>
+                <TableCell
+                  sx={{
                     display: "-webkit-box",
                     WebkitLineClamp: 1, // 行数の制限を指定
                     WebkitBoxOrient: "vertical",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                   }}
-                >{memo.content}</TableCell>
+                >
+                  {memo.content}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
       {/* todo: リンク先後で編集 */}
-      <Link href='./searchResults'>
-      <MainButton sx={{width: '100%'}}>この動画を見る/メモを編集する</MainButton>
+      <Link href="./searchResults">
+        <MainButton sx={{ width: "100%" }}>
+          この動画を見る/メモを編集する
+        </MainButton>
       </Link>
     </Box>
   );

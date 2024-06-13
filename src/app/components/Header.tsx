@@ -15,7 +15,7 @@ import ButtonToAddMemo from "./elements/buttons/buttonToAddMemo";
 import MainButton from "./elements/buttons/mainButton";
 import SigninOrOut from "./SigninOrOut";
 import SearchBar from "./elements/searchBar";
-import Search from "./Search";
+import Search from "./SearchIconAndFunction";
 import Link from "next/link";
 
 const Header = () => {
@@ -26,10 +26,16 @@ const Header = () => {
     <>
       <AppBar color="default" position="static">
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Box display="flex" alignItems="center" sx={{ 
-            ml: {
-              xs: 2,
-              md:5 }}}>
+          <Box
+            display="flex"
+            alignItems="center"
+            sx={{
+              ml: {
+                xs: 2,
+                md: 5,
+              },
+            }}
+          >
             <Typography fontWeight="750">Memotube</Typography>
             <Box
               sx={{
@@ -39,31 +45,31 @@ const Header = () => {
                 width: "100%",
                 ml: {
                   xs: 4,
-                  md: 8
-                }
+                  md: 8,
+                },
               }}
             >
-              <Link href={'/mypage'}>
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                sx={{ mr: 2}}
-              >
-                <HomeIcon />
-              </IconButton>
+              <Link href={"/mypage"}>
+                <IconButton
+                  size="large"
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  sx={{ mr: 2 }}
+                >
+                  <HomeIcon />
+                </IconButton>
               </Link>
-              <Link href={'/searchResults'}>
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                sx={{ mr: 2}}
-              >
-                <SearchIcon />
-              </IconButton>
+              <Link href={"/searchResults"}>
+                <IconButton
+                  size="large"
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  sx={{ mr: 2 }}
+                >
+                  <SearchIcon />
+                </IconButton>
               </Link>
             </Box>
           </Box>

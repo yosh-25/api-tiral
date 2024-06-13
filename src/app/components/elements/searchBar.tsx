@@ -6,32 +6,33 @@ interface SearchBarProps {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onClick: () => void;
+  label: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch }) => {
+const SearchBar: React.FC<SearchBarProps> = ({
+  value,
+  onChange,
+  onClick,
+  label,
+}) => {
   return (
-    <>
-      <TextField
-        type="text"
-        variant="outlined"
-        // todo: propsで渡す予定
-        value={value}
-        // todo: 関数名名前変更
-        onChange={onChange}
-        placeholder="検索ワードを入力"
-        InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={onSearch}>
-                  <SearchIcon />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          sx={{ m: 1, width: '100%' }}
-      />
-   
-    </>
+    <TextField
+      type="text"
+      variant="outlined"
+      value={value}
+      onChange={onChange}
+      placeholder={label}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton onClick={onClick}>
+              <SearchIcon />
+            </IconButton>
+          </InputAdornment>
+        ),
+      }}
+      sx={{ m: 1, width: "100%" }}
+    />
   );
 };
 

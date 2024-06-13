@@ -61,8 +61,6 @@ const ShowAllMemos = ({ id }: { id: string }) => {
   const { currentUser }: any = useAuth();
   if (!currentUser) router.replace("/signin"); // ログインしていなければサインインページへ転
 
-
-
   useEffect(() => {
     const secToTime = (seconds: number) => {
       const hour = Math.floor(seconds / 3600);
@@ -131,10 +129,22 @@ const ShowAllMemos = ({ id }: { id: string }) => {
   }, {} as MemosByVideoId);
 
   return (
-    <Box>
-      {memosByVideoId && Object.entries(memosByVideoId).map(([videoId, memos]) => (
-        <CustomCardsForMemoList key={videoId} videoId={videoId} memos={memos} />
-      ))}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      {memosByVideoId &&
+        Object.entries(memosByVideoId).map(([videoId, memos]) => (
+          <CustomCardsForMemoList
+            key={videoId}
+            videoId={videoId}
+            memos={memos}
+          />
+        ))}
     </Box>
   );
 };

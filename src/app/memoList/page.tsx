@@ -183,58 +183,12 @@ function showMemoList() {
     setSortedVideoIds(sortedVideoIds);
   }, [memoListByVideoId]);
 
-  // メモ内容をフロントエンドで変更
-  const updateContent = (
-    videoId: string,
-    memoId: string,
-    newContent: string
-  ) => {
-    const updatedMemoListByVideoId = { ...memoListByVideoId };
-    const memos = updatedMemoListByVideoId[videoId];
-    const updatedMemos = memos.map((memo) => {
-      if (memo.id === memoId) {
-        return { ...memo, content: newContent };
-      }
-      return memo;
-    });
-
-    updatedMemoListByVideoId[videoId] = updatedMemos;
-    setMemoListByVideoId(updatedMemoListByVideoId);
-    console.log(updatedMemoListByVideoId);
-  };
-
-  // 変更したメモ内容をバックエンドに保存
-  const updateMemoContent = async (id: string, newContent: string) => {
-    const docRef = doc(db, "memoList", id);
-    try {
-      await updateDoc(docRef, {
-        content: newContent,
-      });
-      console.log("変更が保存されました！");
-      setEditMode(!editMode);
-    } catch (error) {
-      console.log("エラーが発生しました。", error);
-    }
-  };
-
-  // メモを削除
-  const deleteMemo = async (id: string) => {
-    const memoId = id;
-    console.log(memoId);
-    try {
-      await deleteDoc(doc(db, "memoList", memoId));
-      console.log("メモを削除しました！");
-      setFetchTrigger(!fetchTrigger);
-    } catch (error) {
-      console.log("エラーが発生しました。", error);
-    }
-  };
-
+ 
   return (
     <Box
       sx={{
-        // display: "flex",
-        // flexDirection: "column",
+        display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         width: "100%",
