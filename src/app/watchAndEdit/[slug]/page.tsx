@@ -1,8 +1,9 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import { videoDetails } from "@/app/states/videoDataState";
-import { useRouter } from "next/navigation";
-import { useAuth } from "../../../context/AuthContext";
-import { db } from "../../../lib/firebase";
+import { useRouter, useParams } from "next/navigation";
+import { useAuth } from "../../../../context/AuthContext";
+import { db } from "../../../../lib/firebase";
 import {
   collection,
   addDoc,
@@ -17,26 +18,15 @@ import {
 import { useRecoilState } from "recoil";
 import {
   Button,
-  Stack,
-  TextField,
   Typography,
   Box,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  IconButton,
-  Link,
 } from "@mui/material";
 import { Memo, MemoList } from "@/types";
-import YouTube from "react-youtube";
-import MemoListForWatchAndEdit from "./elements/lists/MemoListForWatchAndEdit";
+import YouTubePlayer from "@/app/components/YoutubePlayer";
+import NewMemo from "@/app/components/elements/lists/NewMemo";
+import MemoListForWatchAndEdit from "@/app/components/elements/lists/MemoListForWatchAndEdit";
 
-const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
-const Watch = ({ id }: { id: string }) => {
-  const videoId = id;
+const WatchAndEdit = () => {
   const [YTPlayer, setYTPlayer] = useState<YT.Player>();
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [timeToShow, setTimeToShow] = useState<string>("0");
@@ -58,14 +48,12 @@ const Watch = ({ id }: { id: string }) => {
   const [fetchTrigger, setFetchTrigger] = useState<boolean>(false);
 
   const router = useRouter();
+  const params = useParams();
+  const videoId: string = Array.isArray(params.slug)
+    ? params.slug.join(" ")
+    : params.slug;
   const { currentUser }: any = useAuth();
   if (!currentUser) router.replace("/signin"); // ログインしていなければサインインページへ転
-
-  const opts = {
-    width: "70%",
-    height: "400px",
-    aspectRatio: "0.5",
-  };
 
   const makeYTPlayer = (e: { target: YT.Player }) => {
     setYTPlayer(e.target);
@@ -105,10 +93,6 @@ const Watch = ({ id }: { id: string }) => {
     };
     setTimeToShow(secToTime(currentTime));
   }, [currentTime]);
-
-  useEffect(() => {
-    console.log(videoData);
-  }, []);
 
   const backToPreviousUI = () => {
     setMemoMode(!memoMode);
@@ -152,7 +136,6 @@ const Watch = ({ id }: { id: string }) => {
     // * 現在の日付を取得
     const CurrentDate = () => {
       const today = new Date();
-
       const year = today.getFullYear();
       const month = ("0" + (today.getMonth() + 1)).slice(-2);
       const day = ("0" + today.getDate()).slice(-2);
@@ -204,11 +187,13 @@ const Watch = ({ id }: { id: string }) => {
           uid,
         };
       });
-
       setMemoList(memoList);
     };
     fetchNewMemoList();
-    console.log(memoList);
+    setNewMemo({
+        ...newMemo,
+        content: '',
+    })
   };
 
   // 説明加える
@@ -314,67 +299,20 @@ const Watch = ({ id }: { id: string }) => {
   return (
     <Box>
       <Box>
-        <YouTube videoId={videoId} opts={opts} onReady={makeYTPlayer} />
+        <YouTubePlayer videoId={videoId} onReady={makeYTPlayer} />
       </Box>
-      <Box>
+      <Box sx={{ mb: 4 }}>
         {memoMode ? (
-          <Box sx={{ width: "70%" }}>
-            <Box
-              display="flex"
-              alignItems="center"
-              paddingTop="0.5rem"
-              paddingBottom="0.5rem"
-              marginTop="0.5rem"
-              sx={{ border: 1 }}
-            >
-              <Typography
-                sx={{
-                  paddingBottom: "0.3rem",
-                  paddingLeft: "1rem",
-                  paddingRight: "1rem",
-                  marginLeft: "1rem",
-                  fontWeight: "bold",
-                  fontSize: "1rem",
-                  whiteSpace: "nowrap", // 追加: テキストの折り返しを防ぐ
-                }}
-              >
-                {timeToShow}
-              </Typography>
-              <TextField
-                variant="standard"
-                placeholder="ここにメモを記入"
-                value={newMemo.content}
-                onChange={editNewMemo}
-                InputProps={{
-                  disableUnderline: true, // <== added this
-                }}
-                sx={{ width: "100%" }}
-              />
-            </Box>
-            <Box display="flex" justifyContent="flex-end">
-              <Box marginRight="1rem">
-                <Button
-                  sx={{ border: 1, width: "100%" }}
-                  onClick={(
-                    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                  ) => setMemoMode(!memoMode)}
-                >
-                  キャンセル
-                </Button>
-              </Box>
-              <Box>
-                <Button
-                  sx={{ border: 1, width: "100%" }}
-                  onClick={() => {
-                    backToPreviousUI();
-                    saveMemoToFirebaseAndfetchAll();
-                  }}
-                >
-                  保存する
-                </Button>
-              </Box>
-            </Box>
-          </Box>
+          <NewMemo
+            timeToShow={timeToShow}
+            newMemo={newMemo}
+            editNewMemo={editNewMemo}
+            onSave={saveMemoToFirebaseAndfetchAll}
+            onCancel={() => {setMemoMode(!memoMode); setNewMemo({
+                ...newMemo,
+                content: '',
+            })}}
+          />
         ) : (
           <Box>
             <Button
@@ -398,11 +336,11 @@ const Watch = ({ id }: { id: string }) => {
         convertToSeconds={convertToSeconds}
         onDelete={deleteMemo}
         onEdit={(memo) => updateMemoContent(memo.id, memo.content)}
-        onUpdate={updateContent}
+        onUpdate={updateContent} 
         toggleEditMode={toggleEditMode}
       />
     </Box>
   );
 };
 
-export default Watch;
+export default WatchAndEdit;

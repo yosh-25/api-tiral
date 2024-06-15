@@ -1,14 +1,19 @@
 import React from 'react';
 import { Box, Typography, Link } from '@mui/material';
+import { usePathname } from 'next/navigation';
 
 const Footer = () => {
+  const pathname = usePathname();
+  const isSearchPage = pathname === '/search';
+
   return (
     <Box
       component="footer"
       sx={{
-        position: 'fixed',
-        bottom: '0',
-        height: '13vh',
+        // todo: searchページだけ
+        position: isSearchPage? 'fixed': null,
+        bottom: isSearchPage? '0' : null,
+        height: isSearchPage? '10vh': null,
         width: '100%',
         display: 'flex',
         flexDirection: 'column',

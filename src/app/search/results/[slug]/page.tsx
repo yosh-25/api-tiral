@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "../../../context/AuthContext";
+import { useRouter, useParams } from "next/navigation";
+import { useAuth } from "../../../../../context/AuthContext";
 import { useRecoilState } from "recoil";
 import { videoDetails, searchedVideoData } from "@/app/states/videoDataState";
 import { Data, Item, Memo } from "@/types";
@@ -24,8 +24,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
-import SearchIconAndFunction from "./SearchIconAndFunction";
-import SearchBar from "./elements/searchBar";
+import SearchIconAndFunction from "@/app/components/SearchIconAndFunction";
+import { SearchParamsContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
 
 const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search";
 const youtubeUrl = "https://www.youtube.com/watch?v=";
@@ -37,7 +37,7 @@ const formatDate = (publishedAt: string) => {
   return date.toLocaleString("ja-JP");
 };
 
-const SearchResults = () => {
+const showResults = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchedResults, setSearchedResults] =
     useRecoilState(searchedVideoData);
@@ -46,9 +46,14 @@ const SearchResults = () => {
   const [prevPageTokens, setPrevPageTokens] = useState<string[]>([]);
 
   const router = useRouter();
+  const params = useParams();
+  const query: string = Array.isArray(params.slug)
+    ? params.slug.join(" ")
+    : params.slug;
+  console.log(params);
+  console.log(query);
   const { currentUser }: any = useAuth();
 
-  // エラーの原因！
   useEffect(() => {
     if (!currentUser) router.replace("/signin"); // ログインしていなければサインインページへ転
   }, [currentUser]);
@@ -66,7 +71,7 @@ const SearchResults = () => {
     const params = {
       key: API_KEY,
       part: "snippet",
-      q: searchTerm, //検索ワード
+      q: query, //検索ワード
       type: "video",
       maxResults: "50", //表示する動画数
       pageToken: pageToken || "", // 次50個の検索表示用
@@ -91,7 +96,12 @@ const SearchResults = () => {
     } catch (error) {
       console.error(error);
     }
+    console.log(params);
   };
+
+  useEffect(() => {
+    fetchVideos();
+  }, []);
 
   useEffect(() => {
     console.log(searchedResults);
@@ -105,6 +115,7 @@ const SearchResults = () => {
         behavior: "instant",
       });
     }
+    console.log("handleNextPage");
   };
 
   const handlePrevPage = () => {
@@ -129,84 +140,71 @@ const SearchResults = () => {
     console.log(videoData);
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleClick = () => {
-    // 新しい検索の際にリセット
-  };
-
   return (
-    <Stack gap="3rem">
-      <Box>
-        <SearchBar
-          value={searchTerm}
-          onChange={handleSearchChange}
-          onClick={handleClick}
-          label='動画を検索'
-        />
+    <>
+      <Box
+       sx={{
+        width: "70%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        mb: 6
+      }}
+      >
         <SearchIconAndFunction />
       </Box>
-
       <Box>
-        <Box height="15rem" sx={{ width: "100%" }}>
-          {Array.isArray(searchedResults) && searchedResults.length > 0 ? (
-            searchedResults?.map((item: Item, index: number) => (
-              <>
-                <Typography>検索結果</Typography>
-                <Box className="item" key={index}>
-                  <Link
-                    href={"searchResults/" + item.id.videoId + "/watchAndEdit"}
-                    onClick={() => SaveVideoDetails(item)}
-                  >
-                    <Box className="thumbnail">
-                      <img
-                        src={item.snippet?.thumbnails?.medium?.url}
-                        alt={item.snippet?.title}
-                      />
-                    </Box>
-                    <Box className="right">
-                      <Box className="title">
-                        <Typography>{item.snippet?.title}</Typography>
-                      </Box>
-                      <Box className="description">
-                        {item.snippet?.description}
-                      </Box>
-                      <Box className="channel">
-                        <Typography>{item.snippet?.channelTitle}</Typography>
-                      </Box>
-                      <Box className="time">
-                        {formatDate(item.snippet?.publishedAt)}
-                      </Box>
-                    </Box>
-                  </Link>
+        {searchedResults?.map((item: Item, index: number) => (
+          <>
+            <Box className="item" key={index} 
+            sx={{mb:2}}
+            >
+              <Link
+              sx={{ textDecoration: 'none' }}
+                href={"/watchAndEdit/" + item.id.videoId }
+                onClick={() => SaveVideoDetails(item)}
+              >
+                <Box className="thumbnail">
+                  <img
+                    src={item.snippet?.thumbnails?.medium?.url}
+                    alt={item.snippet?.title}
+                  />
                 </Box>
-              </>
-            ))
-          ) : (
-            <Typography>検索するとここに結果がでます</Typography>
-          )}
-          <Box>
-            <Button
-              variant="contained"
-              onClick={handlePrevPage}
-              disabled={prevPageTokens.length === 0}
-            >
-              前のページ
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleNextPage}
-              disabled={!nextPageToken}
-            >
-              次のページ
-            </Button>
-          </Box>
-        </Box>
+                <Box className="right">
+                  <Box className="title">
+                    <Typography>{item.snippet?.title}</Typography>
+                  </Box>
+                  <Box className="description">{item.snippet?.description}</Box>
+                  <Box className="channel">
+                    <Typography>{item.snippet?.channelTitle}</Typography>
+                  </Box>
+                  <Box className="time">
+                    {formatDate(item.snippet?.publishedAt)}
+                  </Box>
+                </Box>
+              </Link>
+            </Box>
+          </>
+        ))}
       </Box>
-    </Stack>
+      <Box>
+        <Button
+          variant="contained"
+          onClick={handlePrevPage}
+          disabled={prevPageTokens.length === 0}
+        >
+          前のページ
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleNextPage}
+          disabled={!nextPageToken}
+        >
+          次のページ
+        </Button>
+      </Box>
+    </>
   );
 };
 
-export default SearchResults;
+export default showResults;

@@ -4,21 +4,6 @@ import { useRouter } from "next/navigation";
 import { useRecoilState } from "recoil";
 import { videoDetails, searchedVideoData } from "@/app/states/videoDataState";
 import { Data, Item, Memo } from "@/types";
-import {
-  Button,
-  Stack,
-  TextField,
-  Typography,
-  Box,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  IconButton,
-  Link,
-} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchBar from "./elements/searchBar";
@@ -33,17 +18,18 @@ const SearchIconAndFunction = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const router = useRouter();
 
-  const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
+  const handleSearch = () => {
     // 検索ワードをクエリパラメータに追加して次のページへ遷移
-    router.push(`/results${searchTerm}`);
+    
+    router.push(`/search/results/${searchTerm}`);
+    console.log(searchTerm);
   };
 
   return (
     <SearchBar
       value={searchTerm}
       onChange={(e) => setSearchTerm(e.target.value)}
-      onClick={() => handleSearch}
+      onClick={handleSearch}
       label="動画を検索"
     />
   );

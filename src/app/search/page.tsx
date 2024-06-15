@@ -39,10 +39,13 @@ const page = () => {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          height:'80%'
+          mt: {
+            xs: 15,
+            md:30      
+          },
         }}
       >
-        <Box sx={{ width: "100%", textAlign: "center", mt: 20, mb: 5 }}>
+        <Box sx={{ width: "100%", textAlign: "center", mb: 3 }}>
           <Typography variant="h3">Memotube</Typography>
         </Box>
         <Box

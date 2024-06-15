@@ -24,7 +24,7 @@ const Header = () => {
 
   return (
     <>
-      <AppBar color="default" position="static">
+      <AppBar color="default" >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box
             display="flex"
@@ -60,7 +60,7 @@ const Header = () => {
                   <HomeIcon />
                 </IconButton>
               </Link>
-              <Link href={"/searchResults"}>
+              <Link href={"/search"}>
                 <IconButton
                   size="large"
                   edge="start"

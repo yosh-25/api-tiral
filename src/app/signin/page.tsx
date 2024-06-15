@@ -29,7 +29,7 @@ const login = () => {
   const [password, setPassword] = useState<string>('');
   const { currentUser }:any = useAuth();
 
-  if (currentUser) router.replace("/dashboard"); // ログインしていなければサインインページへ転
+  if (currentUser) router.replace("/mypage"); // ログインしていなければサインインページへ転
 
   const doSignin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -59,6 +59,7 @@ const login = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          minHeight: "80vh"
         }}
       >
         <Box

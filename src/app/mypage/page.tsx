@@ -27,6 +27,7 @@ import {
 } from "../../types";
 import CustomCard from "../components/elements/cards/CustomCardsForSettings";
 import MainButton from "../components/elements/buttons/mainButton";
+import Footer from "../components/Footer";
 
 function Mypage() {
   const router = useRouter();
@@ -238,6 +239,7 @@ function Mypage() {
           flexWrap: "wrap",
           justifyContent: "flex-start",
           gap: 3,
+          mb: 3,
           mt: {
             xs: '1em',
             md: '2em'}
@@ -263,6 +265,7 @@ function Mypage() {
           label="個人設定(Coming soon?)"
         />
       </Box>
+      
     </>
   );
 }

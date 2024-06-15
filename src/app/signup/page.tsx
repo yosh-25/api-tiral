@@ -39,7 +39,7 @@ const signup = () => {
       console.log("User signed up:", userCredential.user);
       setEmail("");
       setPassword("");
-      router.push("/dashboard");
+      router.push("/mypage");
     } catch (e) {
       if (e instanceof FirebaseError) {
         console.log(e);
