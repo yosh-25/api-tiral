@@ -52,18 +52,20 @@ export default function RootLayout({
             <ThemeProvider theme={theme}>
               <CssBaseline />
               {isNoHeaderPage? (null):(<Header/>)}
+     
               <Box
                 sx={{
                   marginTop: "50px",
                   marginRight: "auto",
                   marginLeft: "auto",
                   width: "70%",
-                  minHeight: '100vh',
+                  minHeight: "100vh",
                 }}
               >
-                {children}
+                {children}                
               </Box>
               <Footer/>
+             
             </ThemeProvider>
           </RecoilRoot>
         </AuthProvider>

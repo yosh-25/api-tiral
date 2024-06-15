@@ -6,33 +6,39 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
+        position: 'fixed',
+        bottom: '0',
+        height: '13vh',
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'center',
         padding: '20px',
         backgroundColor: '#001f3f',
         color: 'white',
-        mt: 4,
+        p: 2
+        // mt: 4,
       }}
     >
-      <Typography variant="h6" sx={{ mb: 1 }}>
+      <Typography variant="h6" sx={{ 
+        fontSize: {
+          xs: '0.9em',
+          md: '1.6em',
+          lg: '1.25em'
+        },
+        mb: 0.5 }}>
         Memotube
       </Typography>
-      {/* <Box sx={{ display: 'flex', gap: 2 }}>
-        <Link href="/about" color="inherit">
-          About Us
-        </Link>
-        <Link href="/contact" color="inherit">
-          Contact
-        </Link>
-        <Link href="/privacy" color="inherit">
-          Privacy Policy
-        </Link>
-        <Link href="/terms" color="inherit">
-          Terms of Service
-        </Link>
-      </Box> */}
-      <Typography variant="body2" sx={{ mt: 2 }}>
+      
+      <Typography variant="body2" 
+      sx={{ 
+        fontSize: {
+          xs: '0.8em',
+          md: '1.5em',
+          lg: '1.25em'
+        },
+        mt: 1 }}>
         © 2024 Memotube. All rights reserved.
       </Typography>
     </Box>

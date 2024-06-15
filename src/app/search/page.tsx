@@ -39,6 +39,7 @@ const page = () => {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          height:'80%'
         }}
       >
         <Box sx={{ width: "100%", textAlign: "center", mt: 20, mb: 5 }}>
