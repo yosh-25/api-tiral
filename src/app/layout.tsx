@@ -58,7 +58,9 @@ export default function RootLayout({
                   marginTop: "120px",
                   marginRight: "auto",
                   marginLeft: "auto",
-                  width: "70%",
+                  width: {
+                    xs: "100%",
+                    md: "70%"},
                   minHeight: "100vh"
                 }}
               >

@@ -16,11 +16,7 @@ import {
   where,
 } from "firebase/firestore";
 import { useRecoilState } from "recoil";
-import {
-  Button,
-  Typography,
-  Box,
-} from "@mui/material";
+import { Button, Typography, Box } from "@mui/material";
 import { Memo, MemoList } from "@/types";
 import YouTubePlayer from "@/app/components/YoutubePlayer";
 import NewMemo from "@/app/components/elements/lists/NewMemo";
@@ -191,9 +187,9 @@ const WatchAndEdit = () => {
     };
     fetchNewMemoList();
     setNewMemo({
-        ...newMemo,
-        content: '',
-    })
+      ...newMemo,
+      content: "",
+    });
   };
 
   // 説明加える
@@ -297,21 +293,39 @@ const WatchAndEdit = () => {
   };
 
   return (
-    <Box>
+    <Box
+    sx={{
+      width: {
+        lg: "90%"
+      },
+      mb: 5
+    }}
+    >
       <Box>
         <YouTubePlayer videoId={videoId} onReady={makeYTPlayer} />
       </Box>
-      <Box sx={{ mb: 4 }}>
+      <Box
+    sx={{
+      m: {
+        xs: 1,
+        sm: 0
+      }
+    }}
+    >
+      <Box sx={{ mt:2, mb: 4 }}>
         {memoMode ? (
           <NewMemo
             timeToShow={timeToShow}
             newMemo={newMemo}
             editNewMemo={editNewMemo}
             onSave={saveMemoToFirebaseAndfetchAll}
-            onCancel={() => {setMemoMode(!memoMode); setNewMemo({
+            onCancel={() => {
+              setMemoMode(!memoMode);
+              setNewMemo({
                 ...newMemo,
-                content: '',
-            })}}
+                content: "",
+              });
+            }}
           />
         ) : (
           <Box>
@@ -330,15 +344,16 @@ const WatchAndEdit = () => {
         )}
       </Box>
       <MemoListForWatchAndEdit
-        memoList={memoList||[]}
+        memoList={memoList || []}
         videoId={videoData.videoId}
         videoTitle={videoData.videoTitle}
         convertToSeconds={convertToSeconds}
         onDelete={deleteMemo}
         onEdit={(memo) => updateMemoContent(memo.id, memo.content)}
-        onUpdate={updateContent} 
+        onUpdate={updateContent}
         toggleEditMode={toggleEditMode}
       />
+      </Box>
     </Box>
   );
 };

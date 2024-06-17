@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button, TextField } from '@mui/material';
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button, TextField, Box } from '@mui/material';
 import { MemoList as MemoListType, Memo } from '@/types';
 
 interface MemoListProps {
@@ -42,7 +42,7 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                 <TableCell>
                   {!memo.isEditing ? (
                     <>
-                      <TableCell>{memo.content}</TableCell>
+                      <TableCell >{memo.content}</TableCell>
                       <TableCell>
                         <Button variant="outlined" onClick={() => toggleEditMode(memo.id)}>
                           編集
