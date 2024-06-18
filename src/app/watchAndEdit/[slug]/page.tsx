@@ -126,9 +126,12 @@ const WatchAndEdit = () => {
       setMemoList(memoList);
     };
     fetchMemoList();
+    console.log(memoList)
   }, []);
 
   const saveMemoToFirebaseAndfetchAll = async () => {
+    // メモ未記入時は無効化
+      if (newMemo.content.trim()) {
     // * 現在の日付を取得
     const CurrentDate = () => {
       const today = new Date();
@@ -190,6 +193,8 @@ const WatchAndEdit = () => {
       ...newMemo,
       content: "",
     });
+    console.log(newMemo);
+  }
   };
 
   // 説明加える
@@ -345,8 +350,7 @@ const WatchAndEdit = () => {
       </Box>
       <MemoListForWatchAndEdit
         memoList={memoList || []}
-        videoId={videoData.videoId}
-        videoTitle={videoData.videoTitle}
+        videoId={videoId}
         convertToSeconds={convertToSeconds}
         onDelete={deleteMemo}
         onEdit={(memo) => updateMemoContent(memo.id, memo.content)}

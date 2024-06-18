@@ -7,29 +7,13 @@ import { videoDetails, searchedVideoData } from "@/app/states/videoDataState";
 import { Data, Item, Memo } from "@/types";
 import {
   Button,
-  Stack,
-  TextField,
   Typography,
   Box,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  IconButton,
   Link,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
-import Autocomplete from "@mui/material/Autocomplete";
-import InputAdornment from "@mui/material/InputAdornment";
 import SearchIconAndFunction from "@/app/components/SearchIconAndFunction";
-import { SearchParamsContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
 
 const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search";
-const youtubeUrl = "https://www.youtube.com/watch?v=";
-const channelUrl = "https://www.youtube.com/channel/";
 const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 
 const formatDate = (publishedAt: string) => {
@@ -38,7 +22,6 @@ const formatDate = (publishedAt: string) => {
 };
 
 const showResults = () => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchedResults, setSearchedResults] =
     useRecoilState(searchedVideoData);
   const [videoData, setVideoData] = useRecoilState(videoDetails);
@@ -109,19 +92,27 @@ const showResults = () => {
 
   const handleNextPage = async () => {
     if (nextPageToken) {
+      // 現在の nextPageToken を prevPageTokens に追加
+      setPrevPageTokens((prevTokens) => [...prevTokens, nextPageToken]);
       await fetchVideos(nextPageToken);
       window.scroll({
         top: 0,
         behavior: "instant",
       });
     }
-    console.log("handleNextPage");
   };
 
-  const handlePrevPage = () => {
+  const handlePrevPage = async () => {
     if (prevPageTokens.length > 0) {
-      const lastPageToken = prevPageTokens.pop();
-      fetchVideos(lastPageToken);
+      // prevPageTokens から最後のページトークンを取り出す
+      const lastPageToken = prevPageTokens[prevPageTokens.length - 1];
+      // トークンリストを更新（最後のトークンを削除）
+      setPrevPageTokens((prevTokens) => prevTokens.slice(0, -1));
+      await fetchVideos(lastPageToken);
+      window.scroll({
+        top: 0,
+        behavior: "instant",
+      });
     }
   };
 

@@ -17,6 +17,7 @@ import {
   Link,
   Grid,
   Container,
+  Alert,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -26,6 +27,7 @@ const signup = () => {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   const doSignup = async (e: any) => {
     e.preventDefault();
@@ -42,7 +44,11 @@ const signup = () => {
       router.push("/mypage");
     } catch (e) {
       if (e instanceof FirebaseError) {
-        console.log(e);
+        if (e.code === "auth/email-already-in-use"){
+          setError("このアカウントは既に存在します。");
+        } else {
+          setError("サインアップ中にエラーが発生しました。もう一度お試しください。");
+        }
       }
     }
   };
@@ -99,6 +105,11 @@ const signup = () => {
               />
             </Grid>
           </Grid>
+          {error && ( // エラーメッセージを表示
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {error}
+            </Alert>
+          )}
           <MainButton
             fullWidth
             sx={{ mt: 3, mb: 2 }}

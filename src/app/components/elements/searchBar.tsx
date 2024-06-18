@@ -25,7 +25,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            <IconButton onClick={onClick}>
+            <IconButton 
+            onClick={onClick}
+            >
               <SearchIcon />
             </IconButton>
           </InputAdornment>

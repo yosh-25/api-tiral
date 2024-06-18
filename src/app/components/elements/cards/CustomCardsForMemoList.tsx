@@ -22,6 +22,11 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
   videoId,
   memos,
 }) => {
+
+  if(!memos || memos.length === 0){
+    return null;
+  }
+
   return (
     <Box
       key={videoId}
@@ -123,7 +128,7 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
         </Table>
       </TableContainer>
       {/* todo: リンク先後で編集 */}
-      <Link href="./searchResults">
+      <Link href={"./watchAndEdit/"+ videoId}>
         <MainButton sx={{ width: "100%" }}>
           この動画を見る/メモを編集する
         </MainButton>

@@ -13,7 +13,7 @@ export interface Memo {
   id: string;
   videoId: string;
   videoTitle: string;
-  videoThumbnail?: string;
+  videoThumbnail: string;
   createdTime: Timestamp;
   createdAt: string;
   content: string;

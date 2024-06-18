@@ -20,9 +20,10 @@ const SearchIconAndFunction = () => {
 
   const handleSearch = () => {
     // 検索ワードをクエリパラメータに追加して次のページへ遷移
-    
+    if (searchTerm.trim()) {
     router.push(`/search/results/${searchTerm}`);
     console.log(searchTerm);
+  }
   };
 
   return (

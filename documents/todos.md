@@ -43,18 +43,50 @@ memoListのPC画面仕上げる
 検索ページだけFooterのCSS変更する。
 
 6/17
-memo一覧からのデータ渡し
-メモ検索機能
-メモ一覧のデータ表示順
+✔最近メモを取った動画からのデータ渡し
+✔memo一覧からのデータ渡し
+✔メモ検索機能
+✔メモ一覧のデータ表示順
 
+6/18
 飛ぶと変なとこないか確認
+    ✔signup 既にアカウントがある場合
+
+todo: 
+マイページ
+検索ボタン（✔虫眼鏡、✔上のこのページでは消す）
+✔memo一覧のメモ表示順番
+pagenation
+未入力だとエラーが出るように設定
+（✔search, ✔searchResults, WatchAndEdit）今ここ
+CSS（pagenation, footerの文字サイズ）
+
+6/19 thursday
+業務フロー図
+
+6/20 Fri
+予約
+動画作成
+
+6/21 Sat
+MTG
+動画載せる、diploy
+履歴書、経歴書作成
+
+6/22 Sun
+
+
+動画取る、載せる
+diploy
+
+refactoring
+watchAndEditの修正
 エラー消去
 
-動画
 
-想定外を想定。
-メモなど記載がないと警告が出る。
-メモ一覧検索戻す
+by 7/2
+
+
 
 PC：設定なし
 タブレット：md 1024

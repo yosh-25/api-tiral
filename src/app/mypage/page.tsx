@@ -3,31 +3,21 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext";
 import { db } from "../../../lib/firebase";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, query, where } from "firebase/firestore";
 import {
   Box,
-  Button,
   Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Link,
-  IconButton,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
-import SettingsIcon from "@mui/icons-material/Settings";
 import {
   MemosByVideoId,
   LatestTimestampByVideoId,
   FetchedMemo,
 } from "../../types";
 import CustomCard from "../components/elements/cards/CustomCardsForSettings";
-import MainButton from "../components/elements/buttons/mainButton";
-import Footer from "../components/Footer";
+import RecentMemos from "../components/elements/lists/RecentMemos";
 
 function Mypage() {
   const router = useRouter();
@@ -44,7 +34,11 @@ function Mypage() {
   // マウント時、データ削除時、編集キャンセル時にfirebaseからデータ取得
   const fetchMemoList = async () => {
     try {
-      const memoSnapshot = await getDocs(collection(db, "memoList"));
+      const userMemos = query(
+        collection(db, "memoList"),
+        where("uid", "==", currentUser.uid)
+      );
+      const memoSnapshot = await getDocs(userMemos);
       const memos: FetchedMemo[] = memoSnapshot.docs.map((doc) => {
         const {
           videoId,
@@ -137,101 +131,17 @@ function Mypage() {
       <Typography variant="h4" sx={{ mb: 3 }}>
         最近メモを取った動画
       </Typography>
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "flex-start",
-          gap: 3,
-        }}
-      >
-        {sortedVideoIds.slice(0, 3).map((videoId) => {
-          const memos = memoListByVideoId[videoId] || [];
-          const memosToShow = memos.slice(0, 2);
 
-          return (
-            <Box
-              key={videoId}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: {
-                  xs: "100%", // モバイル (0px 以上): 幅100%
-                  md: "45%", // 中程度の画面 (900px 以上): 幅30%
-                  lg: "30%", //
-                },
-                mb: 2,
-                border: "1px solid #ccc",
-                padding: 2,
-                borderRadius: "8px",
-                boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-              }}
-            >
-              <Typography
-                variant="h6"
-                sx={{
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2, // 行数の制限を指定
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  lineHeight: "1.5em", // 行間の高さを設定
-                  height: "3em", // 2行分の高さを設定
-                  mb: 1,
-                }}
-              >
-                {memosToShow[0]?.videoTitle}
-              </Typography>
-              <Link
-                href={
-                  "searchResults/" + memosToShow[0]?.videoId + "/watchAndEdit"
-                }
-              >
-                <img
-                  src={memosToShow[0]?.videoThumbnail}
-                  alt="Thumbnail"
-                  style={{ width: "100%", borderRadius: "4px" }}
-                />
-              </Link>
-              <TableContainer
-                sx={{
-                  marginBottom: "10px",
-                  height: {
-                    lg: "8em",
-                  },
-                }}
-              >
-                <Table>
-                  <TableBody>
-                    {memosToShow.map((memo, uid) => (
-                      <TableRow key={uid}>
-                        <TableCell>{memo.createdAt}</TableCell>
-                        <TableCell>{memo.content}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center", // 水平方向の中央配置
-                  alignItems: "center",
-                }}
-              >
-                <Link href={"searchResults/" + videoId + "/watchAndEdit"}>
-                  <MainButton >
-                    メモを編集/動画を視聴
-                  </MainButton>
-                </Link>
-              </Box>
-              <Typography variant="body2" sx={{ textAlign: "right", mt: 2 }}>
-                {memos.length >= 2 ? "2" : "1"}/{memos.length}
-              </Typography>
-            </Box>
-          );
-        })}
-      </Box>
+      {Object.keys(memoListByVideoId).length === 0 ? (
+        <Typography variant="h6" sx={{ mb: 10 }}>
+          まだ登録されたメモがありません
+        </Typography>
+      ) : (
+        <RecentMemos
+          memoListByVideoId={memoListByVideoId}
+          sortedVideoIds={sortedVideoIds}
+        />
+      )}
 
       <Box
         sx={{
@@ -241,8 +151,9 @@ function Mypage() {
           gap: 3,
           mb: 3,
           mt: {
-            xs: '1em',
-            md: '2em'}
+            xs: "1em",
+            md: "2em",
+          },
         }}
       >
         <CustomCard
@@ -256,16 +167,15 @@ function Mypage() {
           label="メモ一覧を見る"
         />
         <CustomCard
-          href="/settings"
+          href="/search"
           icon={
             <>
-              <SettingsIcon />
+              <SearchIcon />
             </>
           }
-          label="個人設定(Coming soon?)"
+          label="検索ページへ"
         />
       </Box>
-      
     </>
   );
 }

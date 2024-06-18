@@ -1,30 +1,19 @@
-import {
-  AppBar,
-  Box,
-  IconButton,
-  Menu,
-  Toolbar,
-  Typography,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import { useAuth } from "../../../context/AuthContext";
-import { getAuth, signOut } from "firebase/auth";
-import ButtonToAddMemo from "./elements/buttons/buttonToAddMemo";
-import MainButton from "./elements/buttons/mainButton";
 import SigninOrOut from "./SigninOrOut";
-import SearchBar from "./elements/searchBar";
-import Search from "./SearchIconAndFunction";
 import Link from "next/link";
+import { usePathname } from 'next/navigation';
 
 const Header = () => {
-  const { currentUser }: any = useAuth();
-  // console.log(currentUser);
+  const { currentUser }:any = useAuth();
+  const pageWithoutIcon = ['/mypage'];
+  const currentPath = usePathname();
 
   return (
     <>
-      <AppBar color="default" >
+      <AppBar color="default">
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box
             display="flex"
@@ -60,7 +49,8 @@ const Header = () => {
                   <HomeIcon />
                 </IconButton>
               </Link>
-              <Link href={"/search"}>
+              {!pageWithoutIcon.includes(currentPath) && (
+                <Link href={"/search"}>
                 <IconButton
                   size="large"
                   edge="start"
@@ -71,11 +61,9 @@ const Header = () => {
                   <SearchIcon />
                 </IconButton>
               </Link>
+              )}              
             </Box>
           </Box>
-          {/* <Box sx={{width: '40%'}}>
-          <Search/>
-          </Box> */}
           <Box style={{ padding: "1rem 0" }}>
             <SigninOrOut />
           </Box>

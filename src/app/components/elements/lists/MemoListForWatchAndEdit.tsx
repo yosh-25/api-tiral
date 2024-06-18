@@ -16,7 +16,6 @@ interface MemoListProps {
 const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
   memoList,
   videoId,
-  videoTitle,
   convertToSeconds,
   onDelete,
   onEdit,
@@ -56,7 +55,7 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                         onChange={(e) => onUpdate(memo.id, e.target.value)}
                         size="small"
                       />
-                      <Button variant="contained" sx={{ ml: 1 }} onClick={() => onEdit(memo)}>
+                      <Button variant="outlined" sx={{ ml: 1 }} onClick={() => onEdit(memo)}>
                         保存
                       </Button>
                       <Button sx={{ ml: 1 }} onClick={() => toggleEditMode(memo.id)}>
