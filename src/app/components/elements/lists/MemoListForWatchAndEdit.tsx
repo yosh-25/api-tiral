@@ -5,11 +5,10 @@ import { MemoList as MemoListType, Memo } from '@/types';
 interface MemoListProps {
   memoList: MemoListType;
   videoId: string;
-  videoTitle: string;
   convertToSeconds: (time: string) => number;
   onDelete: (id: string) => void;
   onEdit: (memo: Memo) => void;
-  onUpdate: (id: string, content: string) => void;
+  onUpdate: (id: string, e: React.ChangeEvent<HTMLInputElement| HTMLTextAreaElement>) => void;
   toggleEditMode: (id: string) => void;
 }
 
@@ -52,7 +51,7 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                     <>
                       <TextField
                         value={memo.content}
-                        onChange={(e) => onUpdate(memo.id, e.target.value)}
+                        onChange={(e) => onUpdate(memo.id, e)}
                         size="small"
                       />
                       <Button variant="outlined" sx={{ ml: 1 }} onClick={() => onEdit(memo)}>

@@ -4,7 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "../../../../../context/AuthContext";
 import { useRecoilState } from "recoil";
 import { videoDetails, searchedVideoData } from "@/app/states/videoDataState";
-import { Data, Item, Memo } from "@/types";
+import { Item, Memo } from "@/types";
 import {
   Button,
   Typography,
@@ -33,12 +33,10 @@ const showResults = () => {
   const query: string = Array.isArray(params.slug)
     ? params.slug.join(" ")
     : params.slug;
-  console.log(params);
-  console.log(query);
   const { currentUser }: any = useAuth();
 
   useEffect(() => {
-    if (!currentUser) router.replace("/signin"); // ログインしていなければサインインページへ転
+    if (!currentUser) router.replace("/signin");
   }, [currentUser]);
 
   const fetchVideos = async (pageToken?: string) => {
@@ -47,18 +45,14 @@ const showResults = () => {
       return;
     }
 
-    let nextPageToken = null;
-    let prevPageToken = [];
-
-    //クエリ文字列を整理する
     const params = {
       key: API_KEY,
       part: "snippet",
-      q: query, //検索ワード
+      q: query,
       type: "video",
-      maxResults: "50", //表示する動画数
-      pageToken: pageToken || "", // 次50個の検索表示用
-      order: "relevance", //デフォルトの並び順
+      maxResults: "5",
+      pageToken: pageToken || '',
+      order: "relevance",
     };
     const queryParams = new URLSearchParams(params);
 
@@ -67,56 +61,45 @@ const showResults = () => {
         `${YOUTUBE_SEARCH_API_URI}?${queryParams.toString()}`
       );
       const result = await response.json();
+
       if (result.items) {
         setSearchedResults(result.items);
       }
       if (result.nextPageToken) {
         setNextPageToken(result.nextPageToken);
       }
-      if (pageToken) {
-        setPrevPageTokens((prevTokens) => [...prevTokens, pageToken]);
-      }
     } catch (error) {
       console.error(error);
     }
-    console.log(params);
   };
 
   useEffect(() => {
     fetchVideos();
-  }, []);
-
-  useEffect(() => {
-    console.log(searchedResults);
-  }, [searchedResults]);
+  }, [query]);
 
   const handleNextPage = async () => {
     if (nextPageToken) {
-      // 現在の nextPageToken を prevPageTokens に追加
-      setPrevPageTokens((prevTokens) => [...prevTokens, nextPageToken]);
+      setPrevPageTokens(prev => [...prev, nextPageToken]);
       await fetchVideos(nextPageToken);
+
       window.scroll({
-        top: 0,
-        behavior: "instant",
+        behavior: "smooth",
       });
     }
   };
 
   const handlePrevPage = async () => {
     if (prevPageTokens.length > 0) {
-      // prevPageTokens から最後のページトークンを取り出す
-      const lastPageToken = prevPageTokens[prevPageTokens.length - 1];
-      // トークンリストを更新（最後のトークンを削除）
-      setPrevPageTokens((prevTokens) => prevTokens.slice(0, -1));
-      await fetchVideos(lastPageToken);
+      const previousToken = prevPageTokens.pop()!;
+      setPrevPageTokens([...prevPageTokens]); // 配列を更新
+      await fetchVideos(previousToken);
       window.scroll({
-        top: 0,
-        behavior: "instant",
+        behavior: "smooth",
       });
     }
   };
 
-  const SaveVideoDetails = (item: Item) => {
+  const saveVideoDetails = (item: Item) => {
     const videoData: Memo = {
       id: "",
       videoId: item.id.videoId,
@@ -128,55 +111,20 @@ const showResults = () => {
       uid: currentUser.uid,
     };
     setVideoData(videoData);
-    console.log(videoData);
   };
 
   return (
     <>
       <Box
-       sx={{
-        width: "70%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        mb: 6
-      }}
+        sx={{
+          width: "70%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          mb: 6,
+        }}
       >
         <SearchIconAndFunction />
-      </Box>
-      <Box>
-        {searchedResults?.map((item: Item, index: number) => (
-          <>
-            <Box className="item" key={index} 
-            sx={{mb:2}}
-            >
-              <Link
-              sx={{ textDecoration: 'none' }}
-                href={"/watchAndEdit/" + item.id.videoId }
-                onClick={() => SaveVideoDetails(item)}
-              >
-                <Box className="thumbnail">
-                  <img
-                    src={item.snippet?.thumbnails?.medium?.url}
-                    alt={item.snippet?.title}
-                  />
-                </Box>
-                <Box className="right">
-                  <Box className="title">
-                    <Typography>{item.snippet?.title}</Typography>
-                  </Box>
-                  <Box className="description">{item.snippet?.description}</Box>
-                  <Box className="channel">
-                    <Typography>{item.snippet?.channelTitle}</Typography>
-                  </Box>
-                  <Box className="time">
-                    {formatDate(item.snippet?.publishedAt)}
-                  </Box>
-                </Box>
-              </Link>
-            </Box>
-          </>
-        ))}
       </Box>
       <Box>
         <Button
@@ -193,6 +141,38 @@ const showResults = () => {
         >
           次のページ
         </Button>
+      </Box>
+      <Box>
+        {searchedResults?.map((item: Item, index: number) => (
+          <Box className="item" key={index} sx={{ mb: 2 }}>
+            <Link
+              sx={{ textDecoration: "none" }}
+              href={"/watchAndEdit/" + item.id.videoId}
+              onClick={() => saveVideoDetails(item)}
+            >
+              <Box className="thumbnail">
+                <img
+                  src={item.snippet?.thumbnails?.medium?.url}
+                  alt={item.snippet?.title}
+                />
+              </Box>
+              <Box className="right">
+                <Box className="title">
+                  <Typography>{item.snippet?.title}</Typography>
+                </Box>
+                <Box className="description">
+                  {item.snippet?.description}
+                </Box>
+                <Box className="channel">
+                  <Typography>{item.snippet?.channelTitle}</Typography>
+                </Box>
+                <Box className="time">
+                  {formatDate(item.snippet?.publishedAt)}
+                </Box>
+              </Box>
+            </Link>
+          </Box>
+        ))}
       </Box>
     </>
   );

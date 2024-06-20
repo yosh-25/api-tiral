@@ -56,9 +56,11 @@ todo:
 マイページ
 検索ボタン（✔虫眼鏡、✔上のこのページでは消す）
 ✔memo一覧のメモ表示順番
-pagenation
+403 error
+wathandeditのデータの渡し　
 未入力だとエラーが出るように設定
-（✔search, ✔searchResults, WatchAndEdit）今ここ
+（✔search, ✔searchResults, WatchAndEdit）
+pagenation
 CSS（pagenation, footerの文字サイズ）
 
 6/19 thursday
@@ -81,6 +83,7 @@ diploy
 
 refactoring
 watchAndEditの修正
+any解消
 エラー消去
 
 
