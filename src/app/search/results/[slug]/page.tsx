@@ -99,7 +99,7 @@ const showResults = () => {
     }
   };
 
-  const saveVideoDetails = (item: Item) => {
+  const saveVideoData = (item: Item) => {
     const videoData: Memo = {
       id: "",
       videoId: item.id.videoId,
@@ -148,7 +148,7 @@ const showResults = () => {
             <Link
               sx={{ textDecoration: "none" }}
               href={"/watchAndEdit/" + item.id.videoId}
-              onClick={() => saveVideoDetails(item)}
+              onClick={() => saveVideoData(item)}
             >
               <Box className="thumbnail">
                 <img

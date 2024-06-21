@@ -14,6 +14,7 @@ import {
   deleteDoc,
   query,
   where,
+  limit,
 } from "firebase/firestore";
 import { useRecoilState } from "recoil";
 import { Button, Typography, Box } from "@mui/material";
@@ -198,16 +199,45 @@ const WatchAndEdit = () => {
   };
 
   // 説明加える
-  const editNewMemo = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const editNewMemo = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    let videoIdFromDb: string | null = null;
+    let videoTitleFromDb: string | null = null;
+    let videoThumbnailFromDb: string | null = null;
+  
+    try {
+      // Firestoreから同じ動画のメモがあるかどうか確認する
+      const q = query(
+        collection(db, "memoList"),
+        where("videoId", "==", videoId),
+        limit(1) // 同じ動画に対する複数のメモが存在する可能性が低いため、最初の一つだけを取得
+      );
+      const querySnapshot = await getDocs(q);
+      
+      // メモが既に存在する場合、そのデータを使用する
+      if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        const data = doc.data();
+        videoIdFromDb = data.videoId;
+        videoTitleFromDb = data.videoTitle;
+        videoThumbnailFromDb = data.videoThumbnail;
+      }
+  
+    } catch (error) {
+      console.error("Firestoreからメモを取得中にエラーが発生しました: ", error);
+    }
+
+    // 再トライ
     setNewMemo((memo) => ({
       ...memo,
-      videoId: videoData.videoId,
-      videoTitle: videoData.videoTitle,
-      videoThumbnail: videoData.videoThumbnail,
+      videoId: videoIdFromDb || videoId, // Firestoreに既存データがあればそれを使用
+      videoTitle: videoTitleFromDb || videoData.videoTitle,
+      videoThumbnail: videoThumbnailFromDb || videoData.videoThumbnail,
       content: e.target.value,
     }));
+  
     console.log(newMemo);
   };
+  
 
   // 経過時間を秒単位に変換する関数
   const convertToSeconds = (createdAt: string) => {
@@ -224,20 +254,6 @@ const WatchAndEdit = () => {
     }
   };
 
-  // 変更したメモ内容をバックエンドに保存
-  const updateMemoContent = async (id: string, newContent: string) => {
-    const docRef = doc(db, "memoList", id);
-    try {
-      await updateDoc(docRef, {
-        content: newContent,
-      });
-      console.log("変更が保存されました！");
-      setEditMode(!editMode);
-    } catch (error) {
-      console.log("エラーが発生しました。", error);
-    }
-  };
-
   // メモ内容をフロントエンドで変更
   const updateContent = (
     memoId: string,
@@ -250,6 +266,30 @@ const WatchAndEdit = () => {
       )
     );
   };
+
+  // 変更したメモ内容をバックエンドに保存
+  const updateMemoContent = async (id: string, newContent: string) => {
+    console.log(newContent);
+    if(!newContent || newContent.trim() === ''){
+      console.log("新しい内容が空です。変更は保存されませんでした。")
+      return
+    }
+    const docRef = doc(db, "memoList", id);
+    try {
+      await updateDoc(docRef, {
+        content: newContent,
+      });
+      console.log("変更が保存されました！");
+      setEditMode(!editMode);
+    } catch (error) {
+      console.log("エラーが発生しました。", error);
+    }
+  
+  };
+
+
+
+
 
   // 編集モード個別切り替え
   const toggleEditMode = (memoId: string) => {

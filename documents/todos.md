@@ -59,27 +59,36 @@ todo:
 403 error
 wathandeditのデータの渡し　
 未入力だとエラーが出るように設定
-（✔search, ✔searchResults, WatchAndEdit）
-pagenation
-CSS（pagenation, footerの文字サイズ）
 
-6/19 thursday
+
+6/21 Fri
 業務フロー図
 
-6/20 Fri
+6/22 Sat
+MTG
+
+未入力だとエラーが出るように設定
+（✔search, ✔searchResults, WatchAndEdit）←6/21今ここ recoil or firebaseからデータ取得
+CSS（pagenation, footerの文字サイズ）
+
+*コツコツ試すpagenation。土曜でも解決しないなら質問
 予約
 動画作成
-
-6/21 Sat
-MTG
 動画載せる、diploy
-履歴書、経歴書作成
 
 6/22 Sun
+履歴書、経歴書
 
 
-動画取る、載せる
-diploy
+6/23 Mon
+リファクタリング
+
+6/24 Tue
+リファクタリング
+履歴書、経歴書
+求人情報見る
+
+
 
 refactoring
 watchAndEditの修正
