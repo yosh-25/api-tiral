@@ -95,7 +95,9 @@ const WatchAndEdit = () => {
     setMemoMode(!memoMode);
   };
 
+  // ここでメモ系のデータもまとめてfetchさせる。
   useEffect(() => {
+    // 既存メモリストあれば取得
     const fetchMemoList = async () => {
       const q = query(
         collection(db, "memoList"),
@@ -126,13 +128,54 @@ const WatchAndEdit = () => {
       });
       setMemoList(memoList);
     };
+    // 新規メモ作成用の動画データを事前取得
+    const fetchVideoInfo = async () => {
+      let videoIdFromDb: string | null = null;
+      let videoTitleFromDb: string | null = null;
+      let videoThumbnailFromDb: string | null = null;
+ 
+      try {
+        // Firestoreから同じ動画のメモがあるかどうか確認する
+        const q = query(
+          collection(db, "memoList"),
+          where("videoId", "==", videoId),
+          limit(1) // 同じ動画に対する複数のメモが存在する可能性が低いため、最初の一つだけを取得
+        );
+        const querySnapshot = await getDocs(q);
+       // メモが既に存在する場合、そのデータを使用する
+       if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        const data = doc.data();
+        videoIdFromDb = data.videoId;
+        videoTitleFromDb = data.videoTitle;
+        videoThumbnailFromDb = data.videoThumbnail;
+      }
+  
+    } catch (error) {
+      console.error("Firestoreからメモを取得中にエラーが発生しました: ", error);
+    }
+
+    setNewMemo((memo) => ({
+      ...memo,
+      videoId: videoIdFromDb || videoId, // Firestoreに既存データがあればそれを使用
+      videoTitle: videoTitleFromDb || videoData.videoTitle,
+      videoThumbnail: videoThumbnailFromDb || videoData.videoThumbnail,
+    })); 
+    };
+
+
     fetchMemoList();
+    fetchVideoInfo();
     console.log(memoList)
+    console.log(newMemo);
   }, []);
 
   const saveMemoToFirebaseAndfetchAll = async () => {
     // メモ未記入時は無効化
-      if (newMemo.content.trim()) {
+      if (!newMemo.content.trim()) {
+        return
+       }
+
     // * 現在の日付を取得
     const CurrentDate = () => {
       const today = new Date();
@@ -195,48 +238,16 @@ const WatchAndEdit = () => {
       content: "",
     });
     console.log(newMemo);
-  }
   };
 
   // 説明加える
   const editNewMemo = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    let videoIdFromDb: string | null = null;
-    let videoTitleFromDb: string | null = null;
-    let videoThumbnailFromDb: string | null = null;
-  
-    try {
-      // Firestoreから同じ動画のメモがあるかどうか確認する
-      const q = query(
-        collection(db, "memoList"),
-        where("videoId", "==", videoId),
-        limit(1) // 同じ動画に対する複数のメモが存在する可能性が低いため、最初の一つだけを取得
-      );
-      const querySnapshot = await getDocs(q);
-      
-      // メモが既に存在する場合、そのデータを使用する
-      if (!querySnapshot.empty) {
-        const doc = querySnapshot.docs[0];
-        const data = doc.data();
-        videoIdFromDb = data.videoId;
-        videoTitleFromDb = data.videoTitle;
-        videoThumbnailFromDb = data.videoThumbnail;
-      }
-  
-    } catch (error) {
-      console.error("Firestoreからメモを取得中にエラーが発生しました: ", error);
-    }
-
-    // 再トライ
-    setNewMemo((memo) => ({
-      ...memo,
-      videoId: videoIdFromDb || videoId, // Firestoreに既存データがあればそれを使用
-      videoTitle: videoTitleFromDb || videoData.videoTitle,
-      videoThumbnail: videoThumbnailFromDb || videoData.videoThumbnail,
+    setNewMemo((newMemo) => ({
+      ...newMemo,
       content: e.target.value,
     }));
-  
     console.log(newMemo);
-  };
+    };
   
 
   // 経過時間を秒単位に変換する関数
@@ -283,13 +294,8 @@ const WatchAndEdit = () => {
       setEditMode(!editMode);
     } catch (error) {
       console.log("エラーが発生しました。", error);
-    }
-  
+    }  
   };
-
-
-
-
 
   // 編集モード個別切り替え
   const toggleEditMode = (memoId: string) => {

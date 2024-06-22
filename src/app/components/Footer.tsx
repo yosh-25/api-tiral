@@ -10,7 +10,6 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        // todo: searchページだけ
         position: isSearchPage? 'fixed': null,
         bottom: isSearchPage? '0' : null,
         height: isSearchPage? '10vh': null,
@@ -29,8 +28,7 @@ const Footer = () => {
       <Typography variant="h6" sx={{ 
         fontSize: {
           xs: '0.9em',
-          md: '1.6em',
-          lg: '1.25em'
+          md: '1.2em',
         },
         mb: 0.5 }}>
         Memotube
@@ -40,8 +38,7 @@ const Footer = () => {
       sx={{ 
         fontSize: {
           xs: '0.8em',
-          md: '1.5em',
-          lg: '1.25em'
+          md: '1.2em',
         },
         mt: 1 }}>
         © 2024 Memotube. All rights reserved.

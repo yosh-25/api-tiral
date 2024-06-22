@@ -1,6 +1,16 @@
-import React, { useState } from 'react';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button, TextField } from '@mui/material';
-import { MemoList as MemoListType, Memo } from '@/types';
+import React, { useState } from "react";
+import {
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Button,
+  TextField,
+} from "@mui/material";
+import { MemoList as MemoListType, Memo } from "@/types";
+import CommonButton from "@/app/components/elements/buttons/CommonButton";
 
 interface MemoListProps {
   memoList: MemoListType;
@@ -8,7 +18,10 @@ interface MemoListProps {
   convertToSeconds: (time: string) => number;
   onDelete: (id: string) => void;
   onEdit: (memo: Memo) => void;
-  onUpdate: (id: string, e: React.ChangeEvent<HTMLInputElement| HTMLTextAreaElement>) => void;
+  onUpdate: (
+    id: string,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   toggleEditMode: (id: string) => void;
 }
 
@@ -22,22 +35,26 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
   toggleEditMode,
 }) => {
   // 編集前のメモ内容を保存するための状態
-  const [originalMemoContent, setOriginalMemoContent] = useState<{ [key: string]: string }>({});
+  const [originalMemoContent, setOriginalMemoContent] = useState<{
+    [key: string]: string;
+  }>({});
 
   const handleEditToggle = (memo: Memo) => {
-    if (!memo.isEditing) {      
+    if (!memo.isEditing) {
       // 編集モードに入るときに、元の内容を保存する
       setOriginalMemoContent((prev) => ({ ...prev, [memo.id]: memo.content }));
     } else {
       // 編集モードをキャンセルする時に元の内容に戻す
-      onUpdate(memo.id, { target: { value: originalMemoContent[memo.id] } } as React.ChangeEvent<HTMLInputElement>);
+      onUpdate(memo.id, {
+        target: { value: originalMemoContent[memo.id] },
+      } as React.ChangeEvent<HTMLInputElement>);
     }
     toggleEditMode(memo.id);
   };
 
   const handleSave = (memo: Memo) => {
     // 内容が空または空白のみの場合、保存を無効にする
-    if (!memo.content || memo.content.trim() === '') {
+    if (!memo.content || memo.content.trim() === "") {
       console.log("メモ内容が空です。保存されませんでした。");
       return;
     }
@@ -45,65 +62,153 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
     toggleEditMode(memo.id);
   };
 
-  
-
   return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell width="20%">再生位置</TableCell>
-            <TableCell align="left">メモ</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {memoList
-            ?.filter((memo) => memo.videoId === videoId)
-            .sort((a, b) => convertToSeconds(a.createdAt) - convertToSeconds(b.createdAt))
-            .map((memo) => (
-              <TableRow key={memo.id}>
-                <TableCell>{memo.createdAt}</TableCell>
-                <TableCell>
+    <>
+      <TableContainer>
+        <Table sx={{ tableLayout: "fixed" }}>
+          <TableHead>
+            <TableRow>
+              <TableCell
+                sx={{
+                  width: {
+                    xs: "4%",
+                    md: "10%",
+                  },
+                  fontSize: {
+                    xs: "0.7em",
+                    md: "1em",
+                  },
+                }}
+              >
+                再生位置
+              </TableCell>
+              <TableCell
+                sx={{
+                  fontSize: {
+                    xs: "0.7em",
+                    md: "1em",
+                  },
+                  width: {
+                    xs: "12%",
+                    md: "30%",
+                  },
+                }}
+                align="left"
+              >
+                メモ
+              </TableCell>
+              <TableCell
+                sx={{
+                  width: "5%",
+                }}
+              ></TableCell>
+              <TableCell
+                sx={{
+                  width: "5%",
+                }}
+              ></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {memoList
+              ?.filter((memo) => memo.videoId === videoId)
+              .sort(
+                (a, b) =>
+                  convertToSeconds(a.createdAt) - convertToSeconds(b.createdAt)
+              )
+              .map((memo) => (
+                <TableRow key={memo.id}>
+                  <TableCell
+                    sx={{
+                      fontSize: {
+                        xs: "0.7em",
+                        md: "1em",
+                      },
+                    }}
+                  >
+                    {memo.createdAt}
+                  </TableCell>
                   {!memo.isEditing ? (
                     <>
-                      <TableCell>{memo.content}</TableCell>
-                      <TableCell>
-                        <Button variant="outlined" onClick={() => handleEditToggle(memo)}>
-                          編集
-                        </Button>
+                      <TableCell
+                        sx={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          fontSize: {
+                            xs: "0.7em",
+                            md: "1em",
+                          },
+                        }}
+                      >
+                        {memo.content}
+                      </TableCell>
+                      <TableCell
+                   
+                      >
+                        <CommonButton
+                          label="編集"
+                          onClick={() => handleEditToggle(memo)}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ pl: "0em" }}>
+                        <CommonButton
+                          onClick={() => onDelete(memo.id)}
+                          label="削除"
+                        />
                       </TableCell>
                     </>
                   ) : (
                     <>
-                      <TextField
-                        value={memo.content}
-                        onChange={(e) => onUpdate(memo.id, e)}
-                        size="small"
-                      />
-                      <Button
-                        variant="outlined"
-                        sx={{ ml: 1 }}
-                        onClick={() => handleSave(memo)}
+                      <TableCell
+                      sx={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        fontSize: {
+                          xs: "0.7em",
+                          md: "1em",
+                        },
+                        p: 0,
+                      }}
                       >
-                        保存
-                      </Button>
-                      <Button
-                        sx={{ ml: 1 }}
+                        <TextField
+                          value={memo.content}
+                          onChange={(e) => onUpdate(memo.id, e)}
+                          size="small"
+                          fullWidth
+                          sx={{
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            fontSize: {
+                              xs: "0.7em",
+                              md: "1em",
+                            },
+                            height: "100%",
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <CommonButton
+                          label="保存"
+                          onClick={() => handleSave(memo)}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ pl: "0em" }}>
+                      <CommonButton
+                        label="取消"
                         onClick={() => handleEditToggle(memo)}
-                      >
-                        キャンセル
-                      </Button>
+                      />
+                      </TableCell>
                     </>
                   )}
-                </TableCell>
-                <TableCell>
-                  <Button onClick={() => onDelete(memo.id)}>削除</Button>
-                </TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 };
 

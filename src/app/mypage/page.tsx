@@ -126,9 +126,27 @@ function Mypage() {
   return (
     <>
       <Box sx={{ width: "100%", textAlign: "center", mb: 5 }}>
-        <Typography variant="h3">マイページ</Typography>
+        <Typography variant="h3"
+        sx={{
+          fontSize: {
+            xs: '2em',
+            md: '3em'
+          }
+        }}
+        >マイページ</Typography>
       </Box>
-      <Typography variant="h4" sx={{ mb: 3 }}>
+      <Typography variant="h4" 
+      sx={{ 
+        mb: 3,
+        fontSize: {
+          xs: '1.3em',
+          md: '3em'
+        },
+        textAlign: {
+          xs: 'center',
+          md: 'left'
+        }
+        }}>
         最近メモを取った動画
       </Typography>
 

@@ -57,33 +57,32 @@ todo:
 検索ボタン（✔虫眼鏡、✔上のこのページでは消す）
 ✔memo一覧のメモ表示順番
 403 error
-wathandeditのデータの渡し　
-未入力だとエラーが出るように設定
-
+✔wathandeditのデータの渡し　
+✔✔未入力だとエラーが出るように設定
 
 6/21 Fri
-業務フロー図
+✔業務フロー図
+✔予約
 
 6/22 Sat
-MTG
+✔MTG
 
 未入力だとエラーが出るように設定
-（✔search, ✔searchResults, WatchAndEdit）←6/21今ここ recoil or firebaseからデータ取得
-CSS（pagenation, footerの文字サイズ）
-
+（✔search, ✔searchResults, ✔WatchAndEdit）←6/21今ここ recoil or firebaseからデータ取得
+CSSメモ編集部分そろえる←今ここ6/22、✔線を消す、✔footerの文字サイズ）, pagenatinoページ
 *コツコツ試すpagenation。土曜でも解決しないなら質問
-予約
+
 動画作成
 動画載せる、diploy
 
-6/22 Sun
+6/23 Sun
 履歴書、経歴書
 
 
-6/23 Mon
+6/24 Mon
 リファクタリング
 
-6/24 Tue
+6/25 Tue
 リファクタリング
 履歴書、経歴書
 求人情報見る
