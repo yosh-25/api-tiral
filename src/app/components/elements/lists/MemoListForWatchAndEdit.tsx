@@ -64,7 +64,8 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
 
   return (
     <>
-      <TableContainer>
+      <TableContainer sx={{
+        mb:{lg:'4em'}}}>
         <Table sx={{ tableLayout: "fixed" }}>
           <TableHead>
             <TableRow>
@@ -89,8 +90,9 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                     md: "1em",
                   },
                   width: {
-                    xs: "12%",
-                    md: "30%",
+                    xs: "15%",
+                    md: "20%",
+                    lg: "28%",
                   },
                 }}
                 align="left"
@@ -99,12 +101,18 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
               </TableCell>
               <TableCell
                 sx={{
-                  width: "5%",
+                  width: {
+                    xs: "6%",
+                    md: "5%",
+                  },
                 }}
               ></TableCell>
               <TableCell
                 sx={{
-                  width: "5%",
+                  width: {
+                    xs: "6%",
+                    md: "5%",
+                  },
                 }}
               ></TableCell>
             </TableRow>
@@ -124,6 +132,7 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                         xs: "0.7em",
                         md: "1em",
                       },
+                      height: "4.5em",
                     }}
                   >
                     {memo.createdAt}
@@ -144,14 +153,16 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                         {memo.content}
                       </TableCell>
                       <TableCell
-                   
+                        sx={{
+                          p: "0em",
+                        }}
                       >
                         <CommonButton
                           label="編集"
                           onClick={() => handleEditToggle(memo)}
                         />
                       </TableCell>
-                      <TableCell sx={{ pl: "0em" }}>
+                      <TableCell sx={{ p: "0em" }}>
                         <CommonButton
                           onClick={() => onDelete(memo.id)}
                           label="削除"
@@ -161,16 +172,9 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                   ) : (
                     <>
                       <TableCell
-                      sx={{
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        fontSize: {
-                          xs: "0.7em",
-                          md: "1em",
-                        },
-                        p: 0,
-                      }}
+                        sx={{
+                          p: 0,
+                        }}
                       >
                         <TextField
                           value={memo.content}
@@ -189,17 +193,17 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                           }}
                         />
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ p: "0em" }}>
                         <CommonButton
                           label="保存"
                           onClick={() => handleSave(memo)}
                         />
                       </TableCell>
-                      <TableCell sx={{ pl: "0em" }}>
-                      <CommonButton
-                        label="取消"
-                        onClick={() => handleEditToggle(memo)}
-                      />
+                      <TableCell sx={{ p: "0em" }}>
+                        <CommonButton
+                          label="取消"
+                          onClick={() => handleEditToggle(memo)}
+                        />
                       </TableCell>
                     </>
                   )}

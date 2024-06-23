@@ -352,7 +352,14 @@ const WatchAndEdit = () => {
       mb: 5
     }}
     >
-      <Box>
+      <Box 
+      sx={{
+        width: {
+          xs: '100%',
+          lg: '85%'
+        } 
+        
+        }}>
         <YouTubePlayer videoId={videoId} onReady={makeYTPlayer} />
       </Box>
       <Box

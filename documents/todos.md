@@ -69,7 +69,8 @@ todo:
 
 未入力だとエラーが出るように設定
 （✔search, ✔searchResults, ✔WatchAndEdit）←6/21今ここ recoil or firebaseからデータ取得
-CSSメモ編集部分そろえる←今ここ6/22、✔線を消す、✔footerの文字サイズ）, pagenatinoページ
+✔CSSメモ編集部分そろえる←今ここ6/22(ipad, sp用のボタン幅)、✔線を消す、✔footerの文字サイズ）, 
+CSS paginatinoページ
 *コツコツ試すpagenation。土曜でも解決しないなら質問
 
 動画作成
