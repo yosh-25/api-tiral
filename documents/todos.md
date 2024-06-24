@@ -69,15 +69,28 @@ todo:
 
 未入力だとエラーが出るように設定
 （✔search, ✔searchResults, ✔WatchAndEdit）←6/21今ここ recoil or firebaseからデータ取得
-✔CSSメモ編集部分そろえる←今ここ6/22(ipad, sp用のボタン幅)、✔線を消す、✔footerの文字サイズ）, 
-CSS paginatinoページ
-*コツコツ試すpagenation。土曜でも解決しないなら質問
+✔線を消す、✔footerの文字サイズ）, 
 
+6/23
+✔CSSメモ編集部分そろえる←今ここ6/22(ipad, sp用のボタン幅)
+
+6/24 AM
+✔my pageのメモ、noWrapとか
+CSS paginatinoページ
+
+https://developers.google.com/youtube/v3/docs/videos/list?hl=ja
+
+6/25
+*コツコツ試すpagenation。土曜でも解決しないなら質問
 動画作成
 動画載せる、diploy
+遷移図
 
-6/23 Sun
-履歴書、経歴書
+         whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+
+
 
 
 6/24 Mon

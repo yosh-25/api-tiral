@@ -22,8 +22,7 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
   videoId,
   memos,
 }) => {
-
-  if(!memos || memos.length === 0){
+  if (!memos || memos.length === 0) {
     return null;
   }
 
@@ -94,12 +93,18 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
       <TableContainer sx={{ mt: 2, overflowX: "auto" }}>
         <Table
           sx={{
+            tableLayout: "fixed",
             width: "100%",
           }}
         >
           <TableHead>
             <TableRow>
-              <TableCell sx={{ width: "1em", fontSize: "0.6em" }}>
+              <TableCell sx={{ width: 
+                {xs: '30%',
+                  md: "33%",
+                  lg:"23%"}, 
+                
+                fontSize: "0.6em" }}>
                 再生位置
               </TableCell>
               <TableCell sx={{ fontSize: "0.6em" }}>メモ</TableCell>
@@ -108,14 +113,12 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
           <TableBody>
             {memos.map((memo, index) => (
               <TableRow key={index}>
-                <TableCell sx={{ width: "25%", pl: 3 }}>
+                <TableCell sx={{ pl: 3 }}>
                   {memo.createdAt}
                 </TableCell>
                 <TableCell
                   sx={{
-                    display: "-webkit-box",
-                    WebkitLineClamp: 1, // 行数の制限を指定
-                    WebkitBoxOrient: "vertical",
+                    whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                   }}
@@ -128,7 +131,7 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
         </Table>
       </TableContainer>
       {/* todo: リンク先後で編集 */}
-      <Link href={"./watchAndEdit/"+ videoId}>
+      <Link href={"./watchAndEdit/" + videoId}>
         <MainButton sx={{ width: "100%" }}>
           この動画を見る/メモを編集する
         </MainButton>

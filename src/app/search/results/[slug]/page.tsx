@@ -142,9 +142,9 @@ const showResults = () => {
           次のページ
         </Button>
       </Box>
-      <Box>
+      <Box sx={{}}>
         {searchedResults?.map((item: Item, index: number) => (
-          <Box className="item" key={index} sx={{ mb: 2 }}>
+          <Box className="item" key={index} sx={{ mb: '2em',  }}>
             <Link
               sx={{ textDecoration: "none" }}
               href={"/watchAndEdit/" + item.id.videoId}
@@ -154,14 +154,12 @@ const showResults = () => {
                 <img
                   src={item.snippet?.thumbnails?.medium?.url}
                   alt={item.snippet?.title}
+                  width={'100%'}
                 />
               </Box>
-              <Box className="right">
-                <Box className="title">
+              <Box className="right" sx={{p:'0.6em'}}>
+                <Box className="title" >
                   <Typography>{item.snippet?.title}</Typography>
-                </Box>
-                <Box className="description">
-                  {item.snippet?.description}
                 </Box>
                 <Box className="channel">
                   <Typography>{item.snippet?.channelTitle}</Typography>

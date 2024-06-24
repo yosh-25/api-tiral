@@ -41,12 +41,23 @@ const page = () => {
           alignItems: "center",
           mt: {
             xs: 15,
-            md:30      
+            md: 30,
           },
         }}
       >
-        <Box sx={{ width: "100%", textAlign: "center", mb: 3 }}>
-          <Typography variant="h3">Memotube</Typography>
+        <Box sx={{ width: "100%", textAlign: "center", mb: "3em" }}>
+          <Typography
+            variant="h3"
+            sx={{
+              fontSize: {
+                xs: "2em",
+                md: "2.5em",
+                lg: "3em",
+              },
+            }}
+          >
+            Memotube
+          </Typography>
         </Box>
         <Box
           sx={{
