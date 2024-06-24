@@ -255,7 +255,7 @@ const Watch = ({ id }: { id: string }) => {
   // メモ内容をフロントエンドで変更
   const updateContent = (
     memoId: string,
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const newContent = e.target.value;
     setMemoList((previousMemoList) =>

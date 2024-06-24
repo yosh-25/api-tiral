@@ -1,5 +1,14 @@
 import React from "react";
-import { Box, Typography, Link, Table, TableBody, TableCell, TableContainer, TableRow } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material";
 import MainButton from "@/app/components/elements/buttons/mainButton";
 
 interface Memo {
@@ -22,11 +31,12 @@ interface Props {
   sortedVideoIds: string[];
 }
 
+const RecentMemos: React.FC<Props> = ({
+  memoListByVideoId,
+  sortedVideoIds,
+}) => {
+  console.log(memoListByVideoId);
 
-
-const RecentMemos: React.FC<Props> = ({ memoListByVideoId, sortedVideoIds }) => {
-  console.log(memoListByVideoId)
-  
   return (
     <Box
       sx={{
@@ -38,7 +48,9 @@ const RecentMemos: React.FC<Props> = ({ memoListByVideoId, sortedVideoIds }) => 
     >
       {sortedVideoIds.slice(0, 3).map((videoId) => {
         const memos = memoListByVideoId[videoId] || [];
-        const sortedMemos = memos.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+        const sortedMemos = memos.sort((a, b) =>
+          a.createdAt.localeCompare(b.createdAt)
+        );
         const memosToShow = sortedMemos.slice(0, 2);
 
         return (
@@ -89,12 +101,27 @@ const RecentMemos: React.FC<Props> = ({ memoListByVideoId, sortedVideoIds }) => 
                 },
               }}
             >
-              <Table>
+              <Table
+                sx={{
+                  tableLayout: "fixed",
+                  width: "100%",
+                }}
+              >
                 <TableBody>
                   {memosToShow.map((memo, uid) => (
                     <TableRow key={uid}>
-                      <TableCell>{memo.createdAt}</TableCell>
-                      <TableCell>{memo.content}</TableCell>
+                      <TableCell
+                      sx={{width:'25%',}}
+                      >{memo.createdAt}</TableCell>
+                      <TableCell
+                        sx={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {memo.content}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -108,9 +135,7 @@ const RecentMemos: React.FC<Props> = ({ memoListByVideoId, sortedVideoIds }) => 
               }}
             >
               <Link href={"watchAndEdit/" + memosToShow[0]?.videoId}>
-                <MainButton>
-                  メモを編集/動画を視聴
-                </MainButton>
+                <MainButton>メモを編集/動画を視聴</MainButton>
               </Link>
             </Box>
             <Typography variant="body2" sx={{ textAlign: "right", mt: 2 }}>

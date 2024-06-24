@@ -75,20 +75,22 @@ todo:
 ✔CSSメモ編集部分そろえる←今ここ6/22(ipad, sp用のボタン幅)
 
 6/24 AM
-✔my pageのメモ、noWrapとか
-CSS paginatinoページ
+✔メモ一覧のnoWrapとか
+✔CSS paginatinoページ
+✔mypageのnoWrap
+
 
 https://developers.google.com/youtube/v3/docs/videos/list?hl=ja
 
 6/25
+複雑なロジックがいらない部分でデータ削除や無駄を削除
 *コツコツ試すpagenation。土曜でも解決しないなら質問
+仕方ないのかの質問
+
 動画作成
 動画載せる、diploy
 遷移図
 
-         whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
 
 
 

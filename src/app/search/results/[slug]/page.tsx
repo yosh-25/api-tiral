@@ -5,12 +5,7 @@ import { useAuth } from "../../../../../context/AuthContext";
 import { useRecoilState } from "recoil";
 import { videoDetails, searchedVideoData } from "@/app/states/videoDataState";
 import { Item, Memo } from "@/types";
-import {
-  Button,
-  Typography,
-  Box,
-  Link,
-} from "@mui/material";
+import { Button, Typography, Box, Link } from "@mui/material";
 import SearchIconAndFunction from "@/app/components/SearchIconAndFunction";
 
 const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search";
@@ -26,7 +21,7 @@ const showResults = () => {
     useRecoilState(searchedVideoData);
   const [videoData, setVideoData] = useRecoilState(videoDetails);
   const [nextPageToken, setNextPageToken] = useState<string | null>(null);
-  const [prevPageTokens, setPrevPageTokens] = useState<string[]>([]);
+  const [prevPageToken, setPrevPageToken] = useState<string | null>(null);
 
   const router = useRouter();
   const params = useParams();
@@ -39,34 +34,30 @@ const showResults = () => {
     if (!currentUser) router.replace("/signin");
   }, [currentUser]);
 
-  const fetchVideos = async (pageToken?: string) => {
+  const apiKey = API_KEY;
+  const searchQuery = query;
+  const maxResults = 5;
+  const order = "relevance";
+
+  const fetchVideos = async () => {
     if (!API_KEY) {
       console.error("API_KEY is undefined");
       return;
     }
 
-    const params = {
-      key: API_KEY,
-      part: "snippet",
-      q: query,
-      type: "video",
-      maxResults: "5",
-      pageToken: pageToken || '',
-      order: "relevance",
-    };
-    const queryParams = new URLSearchParams(params);
-
     try {
       const response = await fetch(
-        `${YOUTUBE_SEARCH_API_URI}?${queryParams.toString()}`
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchQuery}&type=video&maxResults=${maxResults}&order=${order}&key=${apiKey}`
       );
       const result = await response.json();
 
       if (result.items) {
         setSearchedResults(result.items);
+        console.log(result);
       }
       if (result.nextPageToken) {
         setNextPageToken(result.nextPageToken);
+        console.log(result.nextPageToken);
       }
     } catch (error) {
       console.error(error);
@@ -78,24 +69,59 @@ const showResults = () => {
   }, [query]);
 
   const handleNextPage = async () => {
-    if (nextPageToken) {
-      setPrevPageTokens(prev => [...prev, nextPageToken]);
-      await fetchVideos(nextPageToken);
+    try {
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchQuery}&type=video&maxResults=${maxResults}&order=${order}&pageToken=${nextPageToken}&key=${apiKey}`
+      );
+      const result = await response.json();
 
       window.scroll({
         behavior: "smooth",
       });
+      if (result.items) {
+        setSearchedResults(result.items);
+        console.log(result);
+      }
+      if (result.nextPageToken) {
+        setNextPageToken(result.nextPageToken);
+        console.log(result.nextPageToken);
+      }
+      if (result.prevPageToken) {
+        setPrevPageToken(result.prevPageToken);
+        console.log(result.prevPageToken);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
   const handlePrevPage = async () => {
-    if (prevPageTokens.length > 0) {
-      const previousToken = prevPageTokens.pop()!;
-      setPrevPageTokens([...prevPageTokens]); // 配列を更新
-      await fetchVideos(previousToken);
+    try {
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchQuery}&type=video&maxResults=${maxResults}&order=${order}&pageToken=${prevPageToken}&key=${apiKey}`
+      );
+      const result = await response.json();
+
       window.scroll({
         behavior: "smooth",
       });
+
+      if (result.items) {
+        setSearchedResults(result.items);
+        console.log(result);
+      }
+      if (result.nextPageToken) {
+        setNextPageToken(result.nextPageToken);
+        console.log(result.nextPageToken);
+      }
+      if (result.prevPageToken) {
+        setPrevPageToken(result.prevPageToken);
+        console.log(result.prevPageToken);
+      } else {
+        setPrevPageToken(null);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -130,7 +156,7 @@ const showResults = () => {
         <Button
           variant="contained"
           onClick={handlePrevPage}
-          disabled={prevPageTokens.length === 0}
+          disabled={!prevPageToken}
         >
           前のページ
         </Button>
@@ -142,7 +168,8 @@ const showResults = () => {
           次のページ
         </Button>
       </Box>
-      <Box sx={{
+      <Box
+        sx={{
           display: "grid",
           gridTemplateColumns: {
             xs: "1fr", // 幅が狭いデバイスでは1カラム
@@ -151,9 +178,19 @@ const showResults = () => {
           },
           gap: 2, // カラム間の間隔を設定
           mt: 4,
-        }}>
+        }}
+      >
         {searchedResults?.map((item: Item, index: number) => (
-          <Box className="item" key={index} sx={{ mb: {sx:'1em', md: '2em'}, border: {md:'1px solid #ddd'}, borderRadius: '4px', p: {md:'1em'} }}>
+          <Box
+            className="item"
+            key={index}
+            sx={{
+              mb: { sx: "1em", md: "2em" },
+              border: { md: "1px solid #ddd" },
+              borderRadius: "4px",
+              p: { md: "1em" },
+            }}
+          >
             <Link
               sx={{ textDecoration: "none" }}
               href={"/watchAndEdit/" + item.id.videoId}
@@ -162,12 +199,12 @@ const showResults = () => {
               <Box className="thumbnail">
                 <img
                   src={item.snippet?.thumbnails?.medium?.url}
-                  alt={item.snippet?.title}                  
-                  width={'100%'}
+                  alt={item.snippet?.title}
+                  width={"100%"}
                 />
               </Box>
-              <Box className="right" sx={{p:'0.6em'}}>
-                <Box className="title" >
+              <Box className="right" sx={{ p: "0.6em" }}>
+                <Box className="title">
                   <Typography>{item.snippet?.title}</Typography>
                 </Box>
                 <Box className="channel">
