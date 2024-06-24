@@ -104,10 +104,10 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
                   md: "33%",
                   lg:"23%"}, 
                 
-                fontSize: "0.6em" }}>
+                fontSize: {xs:"0.6em", lg: '0.9em' }}}>
                 再生位置
               </TableCell>
-              <TableCell sx={{ fontSize: "0.6em" }}>メモ</TableCell>
+              <TableCell sx={{ fontSize: {xs:"0.6em", lg: '0.9em' } }}>メモ</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -142,9 +142,18 @@ const showResults = () => {
           次のページ
         </Button>
       </Box>
-      <Box sx={{}}>
+      <Box sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr", // 幅が狭いデバイスでは1カラム
+            md: "1fr 1fr", // 幅が中程度のデバイスでは2カラム
+            lg: "1fr 1fr 1fr", // PC画面（幅が広いデバイス）では3カラム
+          },
+          gap: 2, // カラム間の間隔を設定
+          mt: 4,
+        }}>
         {searchedResults?.map((item: Item, index: number) => (
-          <Box className="item" key={index} sx={{ mb: '2em',  }}>
+          <Box className="item" key={index} sx={{ mb: {sx:'1em', md: '2em'}, border: {md:'1px solid #ddd'}, borderRadius: '4px', p: {md:'1em'} }}>
             <Link
               sx={{ textDecoration: "none" }}
               href={"/watchAndEdit/" + item.id.videoId}
@@ -153,7 +162,7 @@ const showResults = () => {
               <Box className="thumbnail">
                 <img
                   src={item.snippet?.thumbnails?.medium?.url}
-                  alt={item.snippet?.title}
+                  alt={item.snippet?.title}                  
                   width={'100%'}
                 />
               </Box>
