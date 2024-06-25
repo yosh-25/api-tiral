@@ -34,7 +34,6 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
         flexDirection: "column",
         width: "80%",
         mb: 5,
-        // backgroundColor: "#e1f5fe",
         border: "0.5px solid lightgray",
         borderRadius: "8px",
         boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
@@ -60,15 +59,15 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
           alt="Thumbnail"
           sx={{
             width: {
-              xs: "100%", // xsおよびそれ以下の幅で全幅に
-              sm: "160px", // mdおよびそれ以上の幅で固定幅に
+              xs: "100%", 
+              sm: "160px", 
             },
             height: {
-              xs: "auto", // 高さを自動で調整
-              sm: "90px", // mdおよびそれ以上の幅で固定高さに
+              xs: "auto", 
+              sm: "90px", 
             },
             objectFit: "cover",
-            marginBottom: "16px", // サムネイルとタイトルの間にマージンを追加
+            marginBottom: "16px", 
           }}
         />
         <Typography
@@ -76,11 +75,11 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
           fontWeight="500"
           sx={{
             display: "-webkit-box",
-            WebkitLineClamp: 2, // 行数の制限を指定
+            WebkitLineClamp: 2, 
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            lineHeight: "1.5em", // 行間の高さを設定
+            lineHeight: "1.5em",
             height: { xs: "3em", md: "3em" },
             fontSize: { xs: "1.2em", md: "1.5em" },
             mr: { md: 2 },

@@ -7,6 +7,7 @@ import { videoDetails, searchedVideoData } from "@/app/states/videoDataState";
 import { Item, Memo } from "@/types";
 import { Button, Typography, Box, Link } from "@mui/material";
 import SearchIconAndFunction from "@/app/components/SearchIconAndFunction";
+import { Timestamp } from "firebase/firestore";
 
 const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 
@@ -131,7 +132,7 @@ const showResults = () => {
       videoId: item.id.videoId,
       videoThumbnail: item.snippet.thumbnails?.medium.url,
       videoTitle: item.snippet.title,
-      createdTime: '',
+      createdTime: Timestamp.now(),
       createdAt: "",
       content: "",
       uid: currentUser.uid,

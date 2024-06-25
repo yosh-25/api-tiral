@@ -7,7 +7,7 @@ import Link from "next/link";
 import { usePathname } from 'next/navigation';
 
 const Header = () => {
-  const { currentUser }:any = useAuth();
+  const { currentUser } = useAuth();
   const pageWithoutIcon = ['/mypage'];
   const currentPath = usePathname();
 

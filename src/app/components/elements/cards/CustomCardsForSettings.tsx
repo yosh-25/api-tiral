@@ -1,17 +1,14 @@
 import React, { ReactNode } from "react";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import lightBlue from "@mui/material/colors/lightBlue";
 
 type CustomCardProps = {
-  href: string; // href は string 型
-  icon: ReactNode; // icon は ReactNode 型
-  label: string; // label は string 型
+  href: string; 
+  icon: ReactNode; 
+  label: string; 
 };
-
 
 const CustomCard: React.FC<CustomCardProps> = ({ href, icon, label }) => {
   return (
@@ -21,8 +18,8 @@ const CustomCard: React.FC<CustomCardProps> = ({ href, icon, label }) => {
         flexDirection: "column",
         height: "50%",
         width: {
-          xs: "100%", // モバイル (0px 以上): 幅100%
-          md: "45%", // 中程度の画面 (900px 以上): 幅30%
+          xs: "100%", 
+          md: "45%", 
         },
         mb: 2,
         border: "1px solid #ccc",

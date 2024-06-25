@@ -2,9 +2,7 @@ import {
   Button as MuiButton,
   ButtonProps as MuiButtonProps,
 } from "@mui/material";
-import { ButtonHTMLAttributes, FC, ReactNode } from "react";
-
-// 参考　https://zenn.dev/nino_cast/books/43c539eb47caab/viewer/d432a6
+import { ReactNode } from "react";
 
 type Props = MuiButtonProps & {
   children: ReactNode;
@@ -16,7 +14,6 @@ const MainButton = ({ children, ...props }: Props) => {
       type="submit"
       variant="contained"
       sx={{
-        // width:'10rem',
         p: "0.6rem",
         backgroundColor: '#1976d2'
       }}

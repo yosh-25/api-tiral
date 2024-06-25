@@ -11,17 +11,11 @@ import {
   Typography,
   Avatar,
   TextField,
-  Button,
-  FormControlLabel,
-  Checkbox,
-  Link,
   Grid,
   Container,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Header from "../components/Header";
 import MainButton from "../components/elements/buttons/mainButton";
-
 
 const login = () => {
   const router = useRouter();

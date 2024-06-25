@@ -15,6 +15,7 @@ import {
   query,
   where,
   limit,
+  Timestamp,
 } from "firebase/firestore";
 import { useRecoilState } from "recoil";
 import { Button, Typography, Box } from "@mui/material";
@@ -32,7 +33,7 @@ const WatchAndEdit = () => {
     videoId: "",
     videoTitle: "",
     videoThumbnail: "",
-    createdTime: "",
+    createdTime: Timestamp.now(),
     createdAt: "",
     content: "",
     isEditing: false,
@@ -85,15 +86,10 @@ const WatchAndEdit = () => {
 
       // 秒は常に二桁で表示
       time += `${sec < 10 ? "0" + sec : sec}`;
-
       return time;
     };
     setTimeToShow(secToTime(currentTime));
   }, [currentTime]);
-
-  const backToPreviousUI = () => {
-    setMemoMode(!memoMode);
-  };
 
   // ここでメモ系のデータもまとめてfetchさせる。
   useEffect(() => {
@@ -133,7 +129,7 @@ const WatchAndEdit = () => {
       let videoIdFromDb: string | null = null;
       let videoTitleFromDb: string | null = null;
       let videoThumbnailFromDb: string | null = null;
- 
+
       try {
         // Firestoreから同じ動画のメモがあるかどうか確認する
         const q = query(
@@ -142,41 +138,39 @@ const WatchAndEdit = () => {
           limit(1) // 同じ動画に対する複数のメモが存在する可能性が低いため、最初の一つだけを取得
         );
         const querySnapshot = await getDocs(q);
-       // メモが既に存在する場合、そのデータを使用する
-       if (!querySnapshot.empty) {
-        const doc = querySnapshot.docs[0];
-        const data = doc.data();
-        videoIdFromDb = data.videoId;
-        videoTitleFromDb = data.videoTitle;
-        videoThumbnailFromDb = data.videoThumbnail;
+        // メモが既に存在する場合、そのデータを使用する
+        if (!querySnapshot.empty) {
+          const doc = querySnapshot.docs[0];
+          const data = doc.data();
+          videoIdFromDb = data.videoId;
+          videoTitleFromDb = data.videoTitle;
+          videoThumbnailFromDb = data.videoThumbnail;
+        }
+      } catch (error) {
+        console.error(
+          "Firestoreからメモを取得中にエラーが発生しました: ",
+          error
+        );
       }
-  
-    } catch (error) {
-      console.error("Firestoreからメモを取得中にエラーが発生しました: ", error);
-    }
 
-    setNewMemo((memo) => ({
-      ...memo,
-      videoId: videoIdFromDb || videoId, // Firestoreに既存データがあればそれを使用
-      videoTitle: videoTitleFromDb || videoData.videoTitle,
-      videoThumbnail: videoThumbnailFromDb || videoData.videoThumbnail,
-    })); 
+      setNewMemo((memo) => ({
+        ...memo,
+        videoId: videoIdFromDb || videoId, // Firestoreに既存データがあればそれを使用
+        videoTitle: videoTitleFromDb || videoData.videoTitle,
+        videoThumbnail: videoThumbnailFromDb || videoData.videoThumbnail,
+      }));
     };
-
-
     fetchMemoList();
     fetchVideoInfo();
-    console.log(memoList)
-    console.log(newMemo);
   }, []);
 
   const saveMemoToFirebaseAndfetchAll = async () => {
     // メモ未記入時は無効化
-      if (!newMemo.content.trim()) {
-        return
-       }
+    if (!newMemo.content.trim()) {
+      return;
+    }
 
-    // * 現在の日付を取得
+    // 現在の日付を取得
     const CurrentDate = () => {
       const today = new Date();
       const year = today.getFullYear();
@@ -237,7 +231,6 @@ const WatchAndEdit = () => {
       ...newMemo,
       content: "",
     });
-    console.log(newMemo);
   };
 
   // 説明加える
@@ -246,9 +239,7 @@ const WatchAndEdit = () => {
       ...newMemo,
       content: e.target.value,
     }));
-    console.log(newMemo);
-    };
-  
+  };
 
   // 経過時間を秒単位に変換する関数
   const convertToSeconds = (createdAt: string) => {
@@ -281,9 +272,9 @@ const WatchAndEdit = () => {
   // 変更したメモ内容をバックエンドに保存
   const updateMemoContent = async (id: string, newContent: string) => {
     console.log(newContent);
-    if(!newContent || newContent.trim() === ''){
-      console.log("新しい内容が空です。変更は保存されませんでした。")
-      return
+    if (!newContent || newContent.trim() === "") {
+      console.log("新しい内容が空です。変更は保存されませんでした。");
+      return;
     }
     const docRef = doc(db, "memoList", id);
     try {
@@ -294,7 +285,7 @@ const WatchAndEdit = () => {
       setEditMode(!editMode);
     } catch (error) {
       console.log("エラーが発生しました。", error);
-    }  
+    }
   };
 
   // 編集モード個別切り替え
@@ -345,74 +336,73 @@ const WatchAndEdit = () => {
 
   return (
     <Box
-    sx={{
-      width: {
-        lg: "90%"
-      },
-      mb: 5
-    }}
-    >
-      <Box 
       sx={{
         width: {
-          xs: '100%',
-          lg: '85%'
-        } 
-        
-        }}>
+          lg: "90%",
+        },
+        mb: 5,
+      }}
+    >
+      <Box
+        sx={{
+          width: {
+            xs: "100%",
+            lg: "85%",
+          },
+        }}
+      >
         <YouTubePlayer videoId={videoId} onReady={makeYTPlayer} />
       </Box>
       <Box
-    sx={{
-      m: {
-        xs: 1,
-        sm: 0
-      }
-    }}
-    >
-      <Box sx={{ mt:2, mb: 4 }}>
-        {memoMode ? (
-          <NewMemo
-            timeToShow={timeToShow}
-            newMemo={newMemo}
-            editNewMemo={editNewMemo}
-            onSave={saveMemoToFirebaseAndfetchAll}
-            onCancel={() => {
-              setMemoMode(!memoMode);
-              setNewMemo({
-                ...newMemo,
-                content: "",
-              });
-            }}
-          />
-        ) : (
-          <Box>
-            <Button
-              onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
-                setMemoMode(!memoMode)
-              }
-            >
-              <Typography
-                sx={{ border: 1, padding: "1rem", marginBottom: "1rem" }}
+        sx={{
+          m: {
+            xs: 1,
+            sm: 0,
+          },
+        }}
+      >
+        <Box sx={{ mt: 2, mb: 4 }}>
+          {memoMode ? (
+            <NewMemo
+              timeToShow={timeToShow}
+              newMemo={newMemo}
+              editNewMemo={editNewMemo}
+              onSave={saveMemoToFirebaseAndfetchAll}
+              onCancel={() => {
+                setMemoMode(!memoMode);
+                setNewMemo({
+                  ...newMemo,
+                  content: "",
+                });
+              }}
+            />
+          ) : (
+            <Box>
+              <Button
+                onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
+                  setMemoMode(!memoMode)
+                }
               >
-                {timeToShow}にメモを作成します
-              </Typography>
-            </Button>
-          </Box>
-        )}
-      </Box>
-      <MemoListForWatchAndEdit
-        memoList={memoList || []}
-        videoId={videoId}
-        convertToSeconds={convertToSeconds}
-        onDelete={deleteMemo}
-        onEdit={(memo) => updateMemoContent(memo.id, memo.content)}
-        onUpdate={updateContent}
-        toggleEditMode={toggleEditMode}
-      />
+                <Typography
+                  sx={{ border: 1, padding: "1rem", marginBottom: "1rem" }}
+                >
+                  {timeToShow}にメモを作成します
+                </Typography>
+              </Button>
+            </Box>
+          )}
+        </Box>
+        <MemoListForWatchAndEdit
+          memoList={memoList || []}
+          videoId={videoId}
+          convertToSeconds={convertToSeconds}
+          onDelete={deleteMemo}
+          onEdit={(memo) => updateMemoContent(memo.id, memo.content)}
+          onUpdate={updateContent}
+          toggleEditMode={toggleEditMode}
+        />
       </Box>
     </Box>
   );
 };
-
 export default WatchAndEdit;

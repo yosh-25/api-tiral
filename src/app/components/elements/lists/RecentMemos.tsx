@@ -10,21 +10,7 @@ import {
   TableRow,
 } from "@mui/material";
 import MainButton from "@/app/components/elements/buttons/mainButton";
-
-interface Memo {
-  id: string;
-  videoId: string;
-  videoThumbnail: string;
-  videoTitle: string;
-  createdTime: any;
-  createdAt: string;
-  content: string;
-  uid: string;
-}
-
-interface MemosByVideoId {
-  [videoId: string]: Memo[];
-}
+import { MemosByVideoId } from "@/types";
 
 interface Props {
   memoListByVideoId: MemosByVideoId;
@@ -35,7 +21,6 @@ const RecentMemos: React.FC<Props> = ({
   memoListByVideoId,
   sortedVideoIds,
 }) => {
-  console.log(memoListByVideoId);
 
   return (
     <Box

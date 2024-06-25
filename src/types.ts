@@ -1,5 +1,5 @@
 import { User } from "firebase/auth";
-import { firestore } from "firestore";
+import { Timestamp } from "firebase/firestore";
 
 export interface AuthContextType {
   currentUser: User | null;
@@ -17,7 +17,7 @@ export interface Memo {
   videoId: string;
   videoTitle: string;
   videoThumbnail: string | undefined;
-  createdTime: firestore.Timestamp;
+  createdTime: Timestamp;
   createdAt: string;
   content: string;
   isEditing?: boolean;
@@ -30,7 +30,7 @@ export interface FetchedMemo {
   id: string;
   videoId: string;
   videoTitle: string;
-  videoThumbnail: string;
+  videoThumbnail: string | undefined;
   createdTime: Timestamp;
   createdAt: string;
   content: string;
@@ -56,7 +56,6 @@ export interface Item {
         url: string;
       };
     };
-
     channelTitle: string;
     channelId: string;
   };
@@ -65,9 +64,3 @@ export interface Item {
 export interface PageApi {
   [videoId: string]: number;
 }
-
-
-
-
-
-

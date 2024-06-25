@@ -6,7 +6,6 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Button,
   TextField,
 } from "@mui/material";
 import { MemoList as MemoListType, Memo } from "@/types";

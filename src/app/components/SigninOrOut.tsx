@@ -1,11 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { Box, Typography } from '@mui/material';
-import { signInWithEmailAndPassword, getAuth, signOut } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 import { useAuth } from "../../../context/AuthContext";
-import {} from "firebase/auth";
-import ButtonToAddMemo from './elements/buttons/buttonToAddMemo';
 import MainButton from './elements/buttons/mainButton';
 import Link from "next/link";
 
