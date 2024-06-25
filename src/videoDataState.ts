@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { Data, Item, Memo } from '@/types';
+import { Item, Memo } from '@/types';
 
 const sessionStorageEffect = (key: string) => ({ setSelf, onSet }: any) => {
   if (typeof window === "undefined") return;
@@ -31,4 +31,3 @@ export const videoIdState = atom({
   key: 'videoId',
   default: ''
 });
-

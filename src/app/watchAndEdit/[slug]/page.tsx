@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { videoDetails } from "@/app/states/videoDataState";
+import { videoDetails } from "@/videoDataState";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "../../../../context/AuthContext";
 import { db } from "../../../../lib/firebase";

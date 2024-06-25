@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "../../../../../context/AuthContext";
 import { useRecoilState } from "recoil";
-import { videoDetails, searchedVideoData } from "@/app/states/videoDataState";
+import { videoDetails, searchedVideoData } from "@/videoDataState";
 import { Item, Memo } from "@/types";
 import { Button, Typography, Box, Link } from "@mui/material";
 import SearchIconAndFunction from "@/app/components/SearchIconAndFunction";

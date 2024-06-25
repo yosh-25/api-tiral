@@ -1,5 +1,4 @@
 "use client";
-
 import Head from "next/head";
 import type { Metadata } from "next";
 import { usePathname } from "next/navigation";
