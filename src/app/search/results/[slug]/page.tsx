@@ -8,7 +8,6 @@ import { Item, Memo } from "@/types";
 import { Button, Typography, Box, Link } from "@mui/material";
 import SearchIconAndFunction from "@/app/components/SearchIconAndFunction";
 
-const YOUTUBE_SEARCH_API_URI = "https://www.googleapis.com/youtube/v3/search";
 const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 
 const formatDate = (publishedAt: string) => {
@@ -78,6 +77,7 @@ const showResults = () => {
       window.scroll({
         behavior: "smooth",
       });
+
       if (result.items) {
         setSearchedResults(result.items);
         console.log(result);
@@ -131,7 +131,7 @@ const showResults = () => {
       videoId: item.id.videoId,
       videoThumbnail: item.snippet.thumbnails?.medium.url,
       videoTitle: item.snippet.title,
-      createdTime: "",
+      createdTime: '',
       createdAt: "",
       content: "",
       uid: currentUser.uid,

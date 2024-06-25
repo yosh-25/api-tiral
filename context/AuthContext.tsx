@@ -1,18 +1,26 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
-import { auth, db } from "../lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import React, { useContext, useState, useEffect, ReactNode} from "react";
+import { auth } from "../lib/firebase";
+import { User, onAuthStateChanged } from "firebase/auth";
+import { AuthContextType } from "../src/types"
 
 // コンテキストを作成
-const AuthContext = React.createContext();
+const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 
-export function useAuth() {
+export function useAuth(): AuthContextType {
   // useContextで作成したコンテキストを呼び出す
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 }
 
-export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export function AuthProvider({ children }: AuthProviderProps) {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   // 第2引数に[]を指定して、初回レンダリングのみ関数を実行させる

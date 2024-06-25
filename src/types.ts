@@ -1,6 +1,9 @@
-import { Timestamp } from "firebase/firestore";
-import { atom } from 'recoil';
+import { User } from "firebase/auth";
+import { firestore } from "firestore";
 
+export interface AuthContextType {
+  currentUser: User | null;
+}
 export interface Data {
   items?: Item[];
 }
@@ -13,8 +16,8 @@ export interface Memo {
   id: string;
   videoId: string;
   videoTitle: string;
-  videoThumbnail: string;
-  createdTime: Timestamp;
+  videoThumbnail: string | undefined;
+  createdTime: firestore.Timestamp;
   createdAt: string;
   content: string;
   isEditing?: boolean;
@@ -27,10 +30,11 @@ export interface FetchedMemo {
   id: string;
   videoId: string;
   videoTitle: string;
-  videoThumbnail?: string;
+  videoThumbnail: string;
   createdTime: Timestamp;
   createdAt: string;
   content: string;
+  uid: string
 }
 
 export interface TimestampsByVideoId {

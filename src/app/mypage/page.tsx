@@ -4,24 +4,17 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext";
 import { db } from "../../../lib/firebase";
 import { getDocs, collection, query, where } from "firebase/firestore";
-import {
-  Box,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
-import {
-  MemosByVideoId,
-  LatestTimestampByVideoId,
-  FetchedMemo,
-} from "../../types";
+import {MemosByVideoId, LatestTimestampByVideoId, FetchedMemo } from "../../types";
 import CustomCard from "../components/elements/cards/CustomCardsForSettings";
 import RecentMemos from "../components/elements/lists/RecentMemos";
 
 function Mypage() {
   const router = useRouter();
-  const { currentUser }: any = useAuth();
+  const { currentUser } = useAuth();
   const [memoListByVideoId, setMemoListByVideoId] = useState<MemosByVideoId>(
     {}
   );
@@ -29,14 +22,15 @@ function Mypage() {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [sortedVideoIds, setSortedVideoIds] = useState<string[]>([]);
 
-  if (!currentUser) router.replace("/signin"); // ログインしていなければサインインページへ転
+  // ログインしていなければサインインページへ
+  if (!currentUser) router.replace("/signin");
 
   // マウント時、データ削除時、編集キャンセル時にfirebaseからデータ取得
   const fetchMemoList = async () => {
     try {
       const userMemos = query(
         collection(db, "memoList"),
-        where("uid", "==", currentUser.uid)
+        where("uid", "==", currentUser?.uid)
       );
       const memoSnapshot = await getDocs(userMemos);
       const memos: FetchedMemo[] = memoSnapshot.docs.map((doc) => {
@@ -75,7 +69,6 @@ function Mypage() {
     } catch (error) {
       console.error("Error fetching memos:", error);
     }
-    console.log(memoListByVideoId);
   };
 
   useEffect(() => {
@@ -93,23 +86,19 @@ function Mypage() {
         )[0];
       latestCreatedTimes[videoId] = latestCreatedTime;
     });
-    console.log("Latest created times by videoId:", latestCreatedTimes);
     return latestCreatedTimes;
   };
 
   const sortVideoIdsByLatestTimestamp = (
     listOfLatestTimesByVideo: LatestTimestampByVideoId
   ): string[] => {
-    console.log("List of latest times by video:", listOfLatestTimesByVideo);
     const sortedVideoIds = Object.entries(listOfLatestTimesByVideo)
       .sort(([, timeA], [, timeB]) => {
         const dateA = timeA.toDate();
         const dateB = timeB.toDate();
-        console.log(`Comparing ${dateA} and ${dateB}`); // デバッグログ追加
         return dateB.getTime() - dateA.getTime();
       })
       .map(([videoId]) => videoId);
-    console.log("Sorted video IDs by latest timestamp:", sortedVideoIds);
     return sortedVideoIds;
   };
 
@@ -119,39 +108,44 @@ function Mypage() {
     const sortedVideoIds = sortVideoIdsByLatestTimestamp(
       listOfLatestTimesByVideo
     );
-    console.log("Setting sortedVideoIds:", sortedVideoIds);
     setSortedVideoIds(sortedVideoIds);
   }, [memoListByVideoId]);
 
   return (
     <>
       <Box sx={{ width: "100%", textAlign: "center", mb: 5 }}>
-        <Typography variant="h3"
-        sx={{
-          fontSize: {
-            xs: '2em',
-            md: '3em'
-          }
-        }}
-        >マイページ</Typography>
+        <Typography
+          variant="h3"
+          sx={{
+            fontSize: {
+              xs: "2em",
+              md: "3em",
+            },
+          }}
+        >
+          マイページ
+        </Typography>
       </Box>
-      <Typography variant="h4" 
-      sx={{ 
-        mb: 3,
-        fontSize: {
-          xs: '1.3em',
-          md: '3em'
-        },
-        textAlign: {
-          xs: 'center',
-          md: 'left'
-        }
-        }}>
+
+      <Typography
+        variant="h4"
+        sx={{
+          mb: 3,
+          fontSize: {
+            xs: "1.3em",
+            md: "3em",
+          },
+          textAlign: {
+            xs: "center",
+            md: "left",
+          },
+        }}
+      >
         最近メモを取った動画
       </Typography>
 
       {Object.keys(memoListByVideoId).length === 0 ? (
-        <Typography variant="h6" sx={{ mb: 10 }}>
+        <Typography variant="h6" sx={{ mb: 10, textAlign:{xs:'center', md: 'left'} }}>
           まだ登録されたメモがありません
         </Typography>
       ) : (
@@ -174,25 +168,11 @@ function Mypage() {
           },
         }}
       >
-        <CustomCard
-          href="/memoList"
-          icon={
-            <>
-              <OndemandVideoIcon />
-              <FormatListBulletedIcon />
-            </>
-          }
-          label="メモ一覧を見る"
-        />
-        <CustomCard
-          href="/search"
-          icon={
-            <>
-              <SearchIcon />
-            </>
-          }
-          label="検索ページへ"
-        />
+        <CustomCard href="/memoList" 
+        icon={<><OndemandVideoIcon/><FormatListBulletedIcon/></>}
+        label="メモ一覧を見る"/>
+
+        <CustomCard href="/search" icon={<><SearchIcon/></>}label="検索ページへ"/>
       </Box>
     </>
   );

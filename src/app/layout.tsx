@@ -1,25 +1,14 @@
 "use client";
 
+import Head from "next/head";
 import type { Metadata } from "next";
-import { usePathname } from 'next/navigation'
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
+import { usePathname } from "next/navigation";
 import { AuthProvider } from "../../context/AuthContext";
-// import RecoilProvider from './recoilProvider'
 import { RecoilRoot } from "recoil";
-import dynamic from "next/dynamic";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Header from "@/app/components/Header";
-
-import {
-  AppBar,
-  Box,
-  Toolbar,
-  Typography,
-  Button,
-  IconButton,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Box } from "@mui/material";
 import Footer from "./components/Footer";
 
 const metadata: Metadata = {
@@ -30,29 +19,32 @@ const metadata: Metadata = {
 
 const theme = createTheme();
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>)
-
-{
+}>) {
   const pathname = usePathname();
-  const pathsWithNoHeader = ['/signin','/signup', '/']
+  const pathsWithNoHeader = ["/signin", "/signup", "/"];
 
   const isNoHeaderPage = pathsWithNoHeader.includes(pathname);
 
+  const title = metadata.title ? String(metadata.title) : "";
+  const description = metadata.description ? String(metadata.description) : "";
 
   return (
-    <html lang="en">
+    <html lang="ja">
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+      </Head>
       <body>
         <AuthProvider>
           <RecoilRoot>
             <ThemeProvider theme={theme}>
               <CssBaseline />
-              {isNoHeaderPage? (null):(<Header/>)}
-     
+              {isNoHeaderPage ? null : <Header />}
+
               <Box
                 sx={{
                   marginTop: "120px",
@@ -60,15 +52,14 @@ export default function RootLayout({
                   marginLeft: "auto",
                   width: {
                     xs: "100%",
-                    md: "70%"},
-                  minHeight: "100vh"
+                    md: "70%",
+                  },
+                  minHeight: "100vh",
                 }}
               >
-                {children}  
+                {children}
               </Box>
-              <Footer/>             
-              
-             
+              <Footer />
             </ThemeProvider>
           </RecoilRoot>
         </AuthProvider>
