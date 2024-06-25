@@ -50,6 +50,7 @@ const ShowMemos = () => {
 
   useEffect(() => {
     const fetchMemoList = async () => {
+      if(!currentUser) return;
       const q = query(
         collection(db, "memoList"),
         where("uid", "==", currentUser.uid)
@@ -80,7 +81,7 @@ const ShowMemos = () => {
       setMemoList(memoList);
     };
     fetchMemoList();
-  }, []);
+  }, [currentUser]);
 
   const memosByVideoId = memoList?.reduce((acc, memo) => {
     if (!acc[memo.videoId]) {

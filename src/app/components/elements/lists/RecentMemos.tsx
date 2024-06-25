@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import MainButton from "@/app/components/elements/buttons/mainButton";
 import { MemosByVideoId } from "@/types";
+import Image from "next/image";
 
 interface Props {
   memoListByVideoId: MemosByVideoId;
@@ -21,7 +22,6 @@ const RecentMemos: React.FC<Props> = ({
   memoListByVideoId,
   sortedVideoIds,
 }) => {
-
   return (
     <Box
       sx={{
@@ -72,11 +72,13 @@ const RecentMemos: React.FC<Props> = ({
               {memosToShow[0]?.videoTitle}
             </Typography>
             <Link href={"watchAndEdit/" + memosToShow[0]?.videoId}>
-              <img
-                src={memosToShow[0]?.videoThumbnail}
-                alt="Thumbnail"
-                style={{ width: "100%", borderRadius: "4px" }}
-              />
+              {memosToShow[0]?.videoThumbnail && (
+                <Image
+                  src={memosToShow[0]?.videoThumbnail}
+                  alt="Thumbnail"
+                  style={{ width: "100%", borderRadius: "4px" }}
+                />
+              )}
             </Link>
             <TableContainer
               sx={{
@@ -95,9 +97,9 @@ const RecentMemos: React.FC<Props> = ({
                 <TableBody>
                   {memosToShow.map((memo, uid) => (
                     <TableRow key={uid}>
-                      <TableCell
-                      sx={{width:'25%',}}
-                      >{memo.createdAt}</TableCell>
+                      <TableCell sx={{ width: "25%" }}>
+                        {memo.createdAt}
+                      </TableCell>
                       <TableCell
                         sx={{
                           whiteSpace: "nowrap",

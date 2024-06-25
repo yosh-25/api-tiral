@@ -90,8 +90,7 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                   },
                   width: {
                     xs: "15%",
-                    md: "20%",
-                    lg: "28%",
+                    md: "19%",
                   },
                 }}
                 align="left"

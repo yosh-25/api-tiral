@@ -25,7 +25,7 @@ const CommonButton: FC<CommonButtonProps> = ({ label, onClick, sx }) => {
         py: {
             lg: '0.5em'
         },
-        width: 'full',
+        width: 'full !important',
         ...sx
       }}
     >
