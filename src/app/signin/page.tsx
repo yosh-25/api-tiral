@@ -123,4 +123,5 @@ const Signin = () => {
 };
 // ヘッダーを表示しないフラグを設定
 Signin.noHeader = true;
+
 export default Signin;
