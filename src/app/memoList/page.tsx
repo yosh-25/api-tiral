@@ -10,7 +10,7 @@ import BackspaceIcon from "@mui/icons-material/Backspace";
 import { MemoList, MemosByVideoId, LatestTimestampByVideoId } from "../../types";
 import CustomCardsForMemoList from "@/app/components/elements/cards/CustomCardsForMemoList";
 
-function showMemoList() {
+function ShowMemoList() {
   const router = useRouter();
   const { currentUser } = useAuth();
   const [memoListByVideoId, setMemoListByVideoId] = useState<MemosByVideoId>(
@@ -210,4 +210,4 @@ function showMemoList() {
     </Box>
   );
 }
-export default showMemoList;
+export default ShowMemoList;

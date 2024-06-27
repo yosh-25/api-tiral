@@ -21,21 +21,10 @@ export interface Memo {
   createdAt: string;
   content: string;
   isEditing?: boolean;
-  uid: string;
+  uid: string | undefined;
 }
 
 export type MemoList =Memo[];
-
-export interface FetchedMemo {
-  id: string;
-  videoId: string;
-  videoTitle: string;
-  videoThumbnail: string | undefined;
-  createdTime: Timestamp;
-  createdAt: string;
-  content: string;
-  uid: string
-}
 
 export interface TimestampsByVideoId {
   [videoId: string]: string[]

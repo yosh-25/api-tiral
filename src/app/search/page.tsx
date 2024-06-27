@@ -5,7 +5,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { Box, Typography } from "@mui/material";
 import SearchIconAndFunction from "../components/SearchIconAndFunction";
 
-const search = () => {
+const Search = () => {
   const router = useRouter();
   const { currentUser } = useAuth();
 
@@ -55,4 +55,4 @@ const search = () => {
   );
 };
 
-export default search;
+export default Search;

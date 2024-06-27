@@ -9,7 +9,7 @@ import { Box, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
-import {MemosByVideoId, LatestTimestampByVideoId, FetchedMemo } from "../../types";
+import {MemosByVideoId, LatestTimestampByVideoId, Memo } from "../../types";
 import CustomCard from "../components/elements/cards/CustomCardsForSettings";
 import RecentMemos from "../components/elements/lists/RecentMemos";
 
@@ -34,7 +34,7 @@ function Mypage() {
         where("uid", "==", currentUser?.uid)
       );
       const memoSnapshot = await getDocs(userMemos);
-      const memos: FetchedMemo[] = memoSnapshot.docs.map((doc) => {
+      const memos: Memo[] = memoSnapshot.docs.map((doc) => {
         const {
           videoId,
           videoTitle,

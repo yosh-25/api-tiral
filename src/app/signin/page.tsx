@@ -17,7 +17,7 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import MainButton from "../components/elements/buttons/mainButton";
 
-const login = () => {
+const Signin = () => {
   const router = useRouter();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -122,5 +122,5 @@ const login = () => {
   );
 };
 // ヘッダーを表示しないフラグを設定
-login.noHeader = true;
-export default login;
+Signin.noHeader = true;
+export default Signin;

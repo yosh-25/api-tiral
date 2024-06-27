@@ -23,7 +23,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MainButton from "../components/elements/buttons/mainButton";
 
-const signup = () => {
+const Signup = () => {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -132,4 +132,4 @@ const signup = () => {
   );
 };
 
-export default signup;
+export default Signup;

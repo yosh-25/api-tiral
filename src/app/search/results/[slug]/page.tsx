@@ -16,27 +16,24 @@ const formatDate = (publishedAt: string) => {
   return date.toLocaleString("ja-JP");
 };
 
-const showResults = () => {
-  const [searchedResults, setSearchedResults] =
-    useRecoilState(searchedVideoData);
+const ShowResults = () => {
+  const [searchedResults, setSearchedResults] = useState<Item[]>();
   const [videoData, setVideoData] = useRecoilState(videoDetails);
-  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
-  const [prevPageToken, setPrevPageToken] = useState<string | null>(null);
+  const [displayedResults, setDisplayedResults] = useState<Item[]>();
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const router = useRouter();
   const params = useParams();
-  const query: string = Array.isArray(params.slug)
-    ? params.slug.join(" ")
-    : params.slug;
-  const { currentUser }: any = useAuth();
+  const query: string = Array.isArray(params.slug) ? params.slug.join(" ") : params.slug;
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     if (!currentUser) router.replace("/signin");
-  }, [currentUser]);
+  }, [currentUser, router]);
 
   const apiKey = API_KEY;
   const searchQuery = query;
-  const maxResults = 5;
+  const maxResults = 24;
   const order = "relevance";
 
   const fetchVideos = async () => {
@@ -50,81 +47,39 @@ const showResults = () => {
         `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchQuery}&type=video&maxResults=${maxResults}&order=${order}&key=${apiKey}`
       );
       const result = await response.json();
-
-      if (result.items) {
-        setSearchedResults(result.items);
-        console.log(result);
-      }
-      if (result.nextPageToken) {
-        setNextPageToken(result.nextPageToken);
-        console.log(result.nextPageToken);
-      }
-    } catch (error) {
+      setSearchedResults(result.items);
+      console.log(result);
+    }   catch (error) {
       console.error(error);
-    }
+    }  
   };
 
   useEffect(() => {
     fetchVideos();
   }, [query]);
 
-  const handleNextPage = async () => {
-    try {
-      const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchQuery}&type=video&maxResults=${maxResults}&order=${order}&pageToken=${nextPageToken}&key=${apiKey}`
-      );
-      const result = await response.json();
+  useEffect(() => {
+    console.log(searchedResults);
+  }, [searchedResults]);
 
-      window.scroll({
-        behavior: "smooth",
-      });
+  useEffect(()=> {
+    const startIndex = (currentPage -1) * 6;
+    const endIndex = startIndex + 6;
+    setDisplayedResults(searchedResults?.slice(startIndex, endIndex));
+}, [searchedResults, currentPage]);
 
-      if (result.items) {
-        setSearchedResults(result.items);
-        console.log(result);
-      }
-      if (result.nextPageToken) {
-        setNextPageToken(result.nextPageToken);
-        console.log(result.nextPageToken);
-      }
-      if (result.prevPageToken) {
-        setPrevPageToken(result.prevPageToken);
-        console.log(result.prevPageToken);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+const handleNextPage = () => {
+  if(!searchedResults) return;
+  if ((currentPage * 5) < searchedResults.length) {
+    setCurrentPage(prevPage => prevPage + 1);
+  }
+};
 
-  const handlePrevPage = async () => {
-    try {
-      const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchQuery}&type=video&maxResults=${maxResults}&order=${order}&pageToken=${prevPageToken}&key=${apiKey}`
-      );
-      const result = await response.json();
-
-      window.scroll({
-        behavior: "smooth",
-      });
-
-      if (result.items) {
-        setSearchedResults(result.items);
-        console.log(result);
-      }
-      if (result.nextPageToken) {
-        setNextPageToken(result.nextPageToken);
-        console.log(result.nextPageToken);
-      }
-      if (result.prevPageToken) {
-        setPrevPageToken(result.prevPageToken);
-        console.log(result.prevPageToken);
-      } else {
-        setPrevPageToken(null);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+const handlePrevPage = () => {
+  if (currentPage > 1) {
+    setCurrentPage(prevPage => prevPage - 1);
+  }
+};
 
   const saveVideoData = (item: Item) => {
     const videoData: Memo = {
@@ -135,7 +90,7 @@ const showResults = () => {
       createdTime: Timestamp.now(),
       createdAt: "",
       content: "",
-      uid: currentUser.uid,
+      uid: currentUser?.uid,
     };
     setVideoData(videoData);
   };
@@ -153,22 +108,6 @@ const showResults = () => {
       >
         <SearchIconAndFunction />
       </Box>
-      <Box>
-        <Button
-          variant="contained"
-          onClick={handlePrevPage}
-          disabled={!prevPageToken}
-        >
-          前のページ
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleNextPage}
-          disabled={!nextPageToken}
-        >
-          次のページ
-        </Button>
-      </Box>
       <Box
         sx={{
           display: "grid",
@@ -181,7 +120,7 @@ const showResults = () => {
           mt: 4,
         }}
       >
-        {searchedResults?.map((item: Item, index: number) => (
+        {displayedResults?.map((item: Item, index: number) => (
           <Box
             className="item"
             key={index}
@@ -219,8 +158,25 @@ const showResults = () => {
           </Box>
         ))}
       </Box>
+      <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', mb:'2em'}}>
+        <Button
+          variant="contained"
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+        >
+          前のページ
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleNextPage}
+          disabled={currentPage * 6 >= (searchedResults?.length || 0)}
+          sx={{ml: '2em'}}
+        >
+          次のページ
+        </Button>
+      </Box>
     </>
   );
 };
 
-export default showResults;
+export default ShowResults;
