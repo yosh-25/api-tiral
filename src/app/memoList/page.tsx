@@ -62,6 +62,7 @@ function ShowMemoList() {
         memosGroupedByVideoId[videoId].push(memo);
       });
       setMemoListByVideoId(memosGroupedByVideoId);
+      setSearchQuery('');
     } catch (error) {
       console.error("Error fetching memos:", error);
     }

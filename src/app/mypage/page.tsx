@@ -134,7 +134,7 @@ function Mypage() {
           mb: 3,
           fontSize: {
             xs: "1.3em",
-            md: "3em",
+            md: "2em",
           },
           textAlign: {
             xs: "center",
