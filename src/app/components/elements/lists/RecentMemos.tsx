@@ -73,7 +73,7 @@ const RecentMemos: React.FC<Props> = ({
             </Typography>
             <Link href={"watchAndEdit/" + memosToShow[0]?.videoId}>
               {memosToShow[0]?.videoThumbnail && (
-                <image
+                <img
                   src={memosToShow[0]?.videoThumbnail}
                   alt="Thumbnail"
                   style={{ width: "100%", borderRadius: "4px" }}
