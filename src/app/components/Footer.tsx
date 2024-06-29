@@ -22,13 +22,15 @@ const Footer = () => {
         backgroundColor: '#001f3f',
         color: 'white',
         p: 2
-        // mt: 4,
       }}
     >
       <Typography variant="h6" sx={{ 
         fontSize: {
           xs: '0.9em',
           md: '1.2em',
+        },
+        mg: {
+          md:'' 
         },
         mb: 0.5 }}>
         Memotube

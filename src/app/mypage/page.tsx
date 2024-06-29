@@ -1,4 +1,3 @@
-// todo: memoの型エラー解消
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
