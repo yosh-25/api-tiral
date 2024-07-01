@@ -42,7 +42,10 @@ const Search = () => {
         </Box>
         <Box
           sx={{
-            width: "70%",
+            width: {
+              xs: "70%",
+              lg: '60%'
+            },
             display: "flex",
             justifyContent: "center",
             alignItems: "center",

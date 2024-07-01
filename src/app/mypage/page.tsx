@@ -8,7 +8,7 @@ import { Box, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
-import {MemosByVideoId, LatestTimestampByVideoId, Memo } from "../../types";
+import { MemosByVideoId, LatestTimestampByVideoId, Memo } from "../../types";
 import CustomCard from "../components/elements/cards/CustomCardsForSettings";
 import RecentMemos from "../components/elements/lists/RecentMemos";
 
@@ -145,7 +145,10 @@ function Mypage() {
       </Typography>
 
       {Object.keys(memoListByVideoId).length === 0 ? (
-        <Typography variant="h6" sx={{ mb: 10, textAlign:{xs:'center', md: 'left'} }}>
+        <Typography
+          variant="h6"
+          sx={{ mb: 10, textAlign: { xs: "center", md: "left" } }}
+        >
           まだ登録されたメモがありません
         </Typography>
       ) : (
@@ -168,11 +171,26 @@ function Mypage() {
           },
         }}
       >
-        <CustomCard href="/memoList" 
-        icon={<><OndemandVideoIcon/><FormatListBulletedIcon/></>}
-        label="メモ一覧を見る"/>
+        <CustomCard
+          href="/memoList"
+          icon={
+            <>
+              <OndemandVideoIcon />
+              <FormatListBulletedIcon />
+            </>
+          }
+          label="メモ一覧を見る"
+        />
 
-        <CustomCard href="/search" icon={<><SearchIcon/></>}label="検索ページへ"/>
+        <CustomCard
+          href="/search"
+          icon={
+            <>
+              <SearchIcon />
+            </>
+          }
+          label="検索ページへ"
+        />
       </Box>
     </>
   );

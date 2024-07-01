@@ -19,7 +19,7 @@ const CustomCard: React.FC<CustomCardProps> = ({ href, icon, label }) => {
         height: "50%",
         width: {
           xs: "100%", 
-          md: "45%", 
+          md: "48%", 
         },
         mb: 2,
         border: "1px solid #ccc",

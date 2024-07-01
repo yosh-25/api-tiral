@@ -46,7 +46,7 @@ export default function RootLayout({
 
               <Box
                 sx={{
-                  marginTop: "120px",
+                  marginTop: "10em",
                   marginRight: "auto",
                   marginLeft: "auto",
                   width: {
