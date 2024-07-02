@@ -1,12 +1,15 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { Stack, Typography, Box, useMediaQuery } from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import YouTube from "react-youtube";
 import Link from "next/link";
 import MainButton from "./components/elements/buttons/mainButton";
 import { useAuth } from "../../context/AuthContext";
+import CssBaseline from "@mui/material/CssBaseline";
 import theme from "@/theme";
+import Head from "next/head";
 
 export default function Home() {
   const router = useRouter();
@@ -40,27 +43,39 @@ export default function Home() {
   };
 
   return (
-    <>
+    <html lang="ja">
+    <Head>
+      <title>サインイン - Memotube</title>
+      <meta name="description" content="Memotubeへのサインインページです。" />
+    </Head>
+    <body>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          textAlign: "center",
+          marginTop: '4em'
         }}
       >
         <Stack alignItems="center" gap="2rem">
-          <Typography variant="h1" fontSize="3rem" fontWeight="750">
+          
+          <Typography variant="h1" fontSize="3rem" textAlign='center' fontWeight="750">
             Memotube
           </Typography>
 
-          <Typography variant="h2" fontSize="2rem" fontWeight="500">
-            Youtube動画を検索して、視聴しながら好きな箇所でメモが取れます。
+          <Box width='70%'>
+          <Typography variant="h2" fontWeight="500" mb='1em' sx={{fontSize:{xs:'1.3em', md:"2em"}}} >
+            Youtube動画を検索して、<br/>視聴しながら好きな箇所でメモが取れます。
           </Typography>
 
-          <Typography fontSize="1.5rem" fontWeight="500">
+          <Typography fontWeight="500" sx={{fontSize:{xs:'1.3em', md:"2em"}}}>
             動画をクリックして、このアプリの使い方を見てみましょう💡
           </Typography>
+          </Box>
           
           <YouTube videoId="CtMVk75abXg" opts={opts} onReady={makeYTPlayer} />
 
@@ -73,6 +88,8 @@ export default function Home() {
           </Link>
         </Stack>
       </Box>
-    </>
+      </ThemeProvider>
+      </body>
+    </html>
   );
 }
