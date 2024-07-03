@@ -92,7 +92,7 @@ export default function Home() {
           </Typography>
         </Box>
 
-        <YouTube videoId="CtMVk75abXg" opts={opts} onReady={makeYTPlayer} />
+        <YouTube videoId="GOebZ7Lh9z8" opts={opts} onReady={makeYTPlayer} />
 
         <Link href="/signup">
           <MainButton>初めての方はこちら</MainButton>
