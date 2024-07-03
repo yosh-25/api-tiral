@@ -44,75 +44,63 @@ export default function Home() {
   };
 
   return (
-    <html lang="ja">
-      <Head>
-        <title>サインイン - Memotube</title>
-        <meta name="description" content="Memotubeへのサインインページです。" />
-      </Head>
-      <body>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              textAlign: "center",
-              marginTop: "4em",
-              minHeight: "100vh",  
-            }}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+        minHeight: "100vh",
+      }}
+    >
+      <Stack alignItems="center" gap="2rem" mb= "3em">
+        <Typography
+          variant="h1"
+          fontSize="3rem"
+          textAlign="center"
+          fontWeight="750"
+          sx={{
+            fontSize:{
+              xs: '2em',
+              md: '3em'
+            }
+          }}
+          
+        >
+          Memotubeへようこそ
+        </Typography>
+
+        <Box width="70%">
+          <Typography
+            variant="h2"
+            fontWeight="500"
+            mb="1em"
+            sx={{ fontSize: { xs: "1.3em", md: "1.8em" } }}
           >
-            <Stack alignItems="center" gap="2rem" sx={{mb:{ lg:'3em'}}} >
-              <Typography
-                variant="h1"
-                fontSize="3rem"
-                textAlign="center"
-                fontWeight="750"
-              >
-                Memotube
-              </Typography>
+            Youtube動画を検索して、
+            <br />
+            視聴しながら好きな箇所でメモが取れます。
+          </Typography>
 
-              <Box width="70%">
-                <Typography
-                  variant="h2"
-                  fontWeight="500"
-                  mb="1em"
-                  sx={{ fontSize: { xs: "1.3em", md: "1.8em" } }}
-                >
-                  Youtube動画を検索して、
-                  <br />
-                  視聴しながら好きな箇所でメモが取れます。
-                </Typography>
+          <Typography
+            fontWeight="500"
+            sx={{ fontSize: { xs: "1.3em", md: "1.8em" } }}
+          >
+            動画をクリックして、
+            <br />
+            このアプリの使い方を見てみましょう💡
+          </Typography>
+        </Box>
 
-                <Typography
-                  fontWeight="500"
-                  sx={{ fontSize: { xs: "1.3em", md: "1.8em" } }}
-                >
-                  動画をクリックして、
-                  <br />
-                  このアプリの使い方を見てみましょう💡
-                </Typography>
-              </Box>
+        <YouTube videoId="CtMVk75abXg" opts={opts} onReady={makeYTPlayer} />
 
-              <YouTube
-                videoId="CtMVk75abXg"
-                opts={opts}
-                onReady={makeYTPlayer}
-              />
-              
-              <Link href="/signup">
-                <MainButton>初めての方はこちら</MainButton>
-              </Link>
-
-              <Link href="/signin">
-                <MainButton sx={{ width: "9rem" }}>ログイン</MainButton>
-              </Link>
-            </Stack>
-          </Box>
-          <Footer/>
-        </ThemeProvider>
-      </body>
-    </html>
+        <Link href="/signup">
+          <MainButton>初めての方はこちら</MainButton>
+        </Link>
+        <Link href="/signin">
+          <MainButton sx={{ width: "9rem" }}>ログイン</MainButton>
+        </Link>
+      </Stack>
+    </Box>
   );
 }

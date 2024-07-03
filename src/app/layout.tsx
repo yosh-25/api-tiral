@@ -1,7 +1,7 @@
 "use client";
 import Head from "next/head";
 import type { Metadata } from "next";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AuthProvider } from "../../context/AuthContext";
 import { RecoilRoot } from "recoil";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -24,9 +24,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const pathsWithNoHeader = ["/signin", "/signup", "/"];
-
+  const pathsWithNoHeader = ["/signin", "/signup"];
   const isNoHeaderPage = pathsWithNoHeader.includes(pathname);
+
+  // const pathsWithNoMarginTop = ["/"];
+  // const isNoMarginTopPage = pathsWithNoMarginTop.includes(pathname);
+
 
   const title = metadata.title ? String(metadata.title) : "";
   const description = metadata.description ? String(metadata.description) : "";
@@ -46,7 +49,7 @@ export default function RootLayout({
 
               <Box
                 sx={{
-                  marginTop: "10em",
+                  marginTop:  "10em",
                   marginRight: "auto",
                   marginLeft: "auto",
                   width: {

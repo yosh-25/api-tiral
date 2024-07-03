@@ -29,7 +29,9 @@ import Link from "next/link";
               </Box>
             ):(
               <Link href='./signin'>
-              <Typography suppressHydrationWarning={true}>会員登録/ログインはこちら</Typography>
+              <Typography suppressHydrationWarning={true} sx={{fontSize:{xs:'0.6em', md:'1em'}}}>
+              
+              会員登録/ログインはこちら</Typography>
               </Link>
             )}
          </>

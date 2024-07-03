@@ -8,7 +8,8 @@ import { usePathname } from 'next/navigation';
 
 const Header = () => {
   const { currentUser } = useAuth();
-  const pageWithoutIcon = ['/mypage', '/search', '/search/results'];
+  const pageWithoutSearchIcon = ['/','/mypage', '/search', '/search/results'];
+  const pageWithoutHomeIcon = ['/'];
   const currentPath = usePathname();
   const isSearchResultsPage = currentPath.startsWith('/search/results');
 
@@ -39,6 +40,7 @@ const Header = () => {
                 },
               }}
             >
+              {!pageWithoutHomeIcon.includes(currentPath) && (
               <Link href={"/mypage"}>
                 <IconButton
                   size="large"
@@ -50,7 +52,8 @@ const Header = () => {
                   <HomeIcon />
                 </IconButton>
               </Link>
-              {!pageWithoutIcon.includes(currentPath) && !isSearchResultsPage && (
+              )}
+              {!pageWithoutSearchIcon.includes(currentPath) && !isSearchResultsPage && (
                 <Link href={"/search"}>
                 <IconButton
                   size="large"
