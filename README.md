@@ -1,6 +1,7 @@
-# アプリ概要
+# <center>Memotube</center>
+<center>Youtube動画に対してメモが取れるアプリです。</center>
 - コンセプト  
-  Youtube動画に対してメモが取れるアプリ。
+  。
 
 - ターゲット  
   Youtube動画で学習している社会人

@@ -39,6 +39,7 @@ export default function RootLayout({
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       <body>
         <AuthProvider>
