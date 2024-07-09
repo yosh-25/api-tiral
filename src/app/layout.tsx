@@ -14,6 +14,9 @@ const metadata: Metadata = {
   title: "Memotube",
   description:
     "Youtubeで気になったシーンに対してメモが作成でき、後で見直しができるアプリです。",
+    icons: {
+      icon: '/favicon.ico',
+    },
 };
 
 const theme = createTheme();
@@ -39,7 +42,6 @@ export default function RootLayout({
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <body>
         <AuthProvider>
