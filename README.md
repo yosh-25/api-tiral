@@ -17,9 +17,7 @@ Youtube動画に対してメモが取れるアプリです。
   Youtubeのサイトではメモが取れず、Udemyのように動画へのメモが取れないため後で復習するのが難しい。
 
 - 以下動画でアプリの使い方イメージをご確認頂けます。
-  <center>
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/GOebZ7Lh9z8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-  </center>
+[Memotube](https://github.com/yosh-25/memotube/assets/131498137/775b39ca-4e72-4c15-9c36-0441cf60f8ae)
 
 ## 使用技術
 | 項目 | 内容 |
