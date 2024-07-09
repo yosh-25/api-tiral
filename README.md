@@ -1,9 +1,10 @@
-# <center>Memotube</center>
- <center>Youtube動画に対してメモが取れるアプリです。</center>  
-
+<center>
+# Memotube
+Youtube動画に対してメモが取れるアプリです。
+</center>  
 <center>
 <img src="https://github.com/yosh-25/memotube/assets/131498137/556c935c-45ba-4422-90f7-56aed2fc0f52" width="50%">
-</center>
+</center>  
 
 - ターゲット  
   Youtube動画で学習している社会人
