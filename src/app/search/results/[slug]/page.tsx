@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "../../../../../context/AuthContext";
 import { useRecoilState } from "recoil";
-import { videoDetails, searchedVideoData } from "@/videoDataState";
+import { videoDetails, searchedVideoData } from "@/atoms";
 import { Item, Memo } from "@/types";
 import { Button, Typography, Box, Link, CircularProgress } from "@mui/material";
 import SearchIconAndFunction from "@/app/components/SearchIconAndFunction";
@@ -25,7 +25,9 @@ const ShowResults = () => {
 
   const router = useRouter();
   const params = useParams();
-  const query: string = Array.isArray(params.slug) ? params.slug.join(" ") : params.slug;
+  const query: string = Array.isArray(params.slug)
+    ? params.slug.join(" ")
+    : params.slug;
   const { currentUser } = useAuth();
 
   useEffect(() => {
@@ -173,7 +175,14 @@ const ShowResults = () => {
               </Box>
             ))}
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mb: "2em" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              mb: "2em",
+            }}
+          >
             <Button
               variant="contained"
               onClick={handlePrevPage}
