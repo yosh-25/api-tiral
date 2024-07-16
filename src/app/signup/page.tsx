@@ -1,26 +1,18 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../lib/firebase";
+import { auth } from "@/lib/firebase";
 import { FirebaseError } from "@firebase/util";
-
 import {
   Box,
   Typography,
   Avatar,
   TextField,
-  Button,
-  FormControlLabel,
-  Checkbox,
-  Link,
   Grid,
-  Container,
   Alert,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MainButton from "../components/elements/buttons/mainButton";
 
 const Signup = () => {
@@ -29,7 +21,7 @@ const Signup = () => {
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
 
-  const doSignup = async (e: any) => {
+  const doSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -37,12 +29,13 @@ const Signup = () => {
         email,
         password
       );
-      // サインアップ成功時の処理
+      // 成功時の処理
       console.log("User signed up:", userCredential.user);
       setEmail("");
       setPassword("");
       router.push("/mypage");
     } catch (e) {
+      //失敗時の処理
       if (e instanceof FirebaseError) {
         if (e.code === "auth/email-already-in-use") {
           setError("このアカウントは既に存在します。");
@@ -56,10 +49,10 @@ const Signup = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Box sx={{maxWidth:{xs:"90%", md:"800px"},mx:"auto"}} >
       <Box
         sx={{
-          marginTop: 8,
+          mt: "64px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -67,20 +60,20 @@ const Signup = () => {
       >
         <Box
           sx={{
-            mb: "2rem",
+            mb: "32px",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={{ m: "8px", bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            新規登録
+            サインアップ
           </Typography>
         </Box>
-        <Box component="form" noValidate onSubmit={doSignup}>
+        <Box component="form" noValidate onSubmit={doSignup} sx={{ width: "90%" }}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
@@ -108,14 +101,14 @@ const Signup = () => {
             </Grid>
           </Grid>
           {error && ( // エラーメッセージを表示
-            <Alert severity="error" sx={{ mt: 2 }}>
+            <Alert severity="error" sx={{ mt: "16px" }}>
               {error}
             </Alert>
           )}
-          <MainButton fullWidth sx={{ mt: 3, mb: 2 }}>
-            新規登録
+          <MainButton fullWidth sx={{ mt: "35px", mb: "16px" }}>
+            サインアップ
           </MainButton>
-          <Grid container justifyContent="flex-end">
+          <Grid container justifyContent="center">
             <Grid item>
               <Box>
                 <span>
@@ -127,7 +120,7 @@ const Signup = () => {
           </Grid>
         </Box>
       </Box>
-    </Container>
+    </Box>
   );
 };
 

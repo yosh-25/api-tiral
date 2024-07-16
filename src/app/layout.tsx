@@ -14,9 +14,9 @@ const metadata: Metadata = {
   title: "Memotube",
   description:
     "Youtubeで気になったシーンに対してメモが作成でき、後で見直しができるアプリです。",
-    icons: {
-      icon: '/favicon.ico',
-    },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 const theme = createTheme();
@@ -26,7 +26,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   // "/signin", "/signup"ではheaderを表示しない
   const pathname = usePathname();
   const pathsWithNoHeader = ["/signin", "/signup"];
@@ -45,23 +44,24 @@ export default function RootLayout({
         <AuthProvider>
           <RecoilRoot>
             <ThemeProvider theme={theme}>
-              <CssBaseline/>
+              <CssBaseline />
               {isNoHeaderPage ? null : <Header />}
-
+              <Box sx={{mb:{ xs:"85px", md:'150px'}}}>
               <Box
                 sx={{
-                  mt:  "160px",
+                  mt: "160px",
                   mx: "auto",
                   width: {
                     xs: "100%",
                     md: "70%",
                   },
-                  minHeight: "100vh"
+                  minHeight: "100vh",
                 }}
               >
                 {children}
               </Box>
-              <Footer/>
+              <Footer />
+              </Box>
             </ThemeProvider>
           </RecoilRoot>
         </AuthProvider>

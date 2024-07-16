@@ -10,9 +10,9 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        position: isSearchPage? 'fixed': null,
-        bottom: isSearchPage? '0' : null,
-        height: isSearchPage? '10vh': null,
+        position: 'fixed',
+        bottom: '0',
+        height: { xs:"85px", md:'100px'},
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
