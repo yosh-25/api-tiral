@@ -30,10 +30,6 @@ export default function RootLayout({
   const pathsWithNoHeader = ["/signin", "/signup"];
   const isNoHeaderPage = pathsWithNoHeader.includes(pathname);
 
-  // const pathsWithNoMarginTop = ["/"];
-  // const isNoMarginTopPage = pathsWithNoMarginTop.includes(pathname);
-
-
   const title = metadata.title ? String(metadata.title) : "";
   const description = metadata.description ? String(metadata.description) : "";
 

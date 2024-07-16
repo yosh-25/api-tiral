@@ -14,8 +14,10 @@ const MainButton = ({ children, ...props }: Props) => {
       type="submit"
       variant="contained"
       sx={{
+        width: "9.5rem",
         p: "0.6rem",
-        backgroundColor: '#1976d2'
+        backgroundColor: "#1976d2",
+        fontWeight: "bold"
       }}
       {...props}
     >
