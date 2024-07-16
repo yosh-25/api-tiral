@@ -2,7 +2,7 @@
 import Head from "next/head";
 import type { Metadata } from "next";
 import { usePathname } from "next/navigation";
-import { AuthProvider } from "../../context/AuthContext";
+import { AuthProvider } from "@/context/AuthContext";
 import { RecoilRoot } from "recoil";
 import { Box } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";

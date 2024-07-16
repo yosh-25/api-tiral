@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signInWithEmailAndPassword, getAuth, signOut } from "firebase/auth";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import {} from "firebase/auth";
 import { FirebaseError } from "@firebase/util";
-import { auth } from "../../lib/firebase";
+import { auth } from "@/lib/firebase";
 import {
   Box,
   Typography,

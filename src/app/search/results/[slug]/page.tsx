@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { useAuth } from "../../../../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { useRecoilState } from "recoil";
 import { videoDetails, searchedVideoData } from "@/atoms";
 import { VideoItem, Memo } from "@/types/index";

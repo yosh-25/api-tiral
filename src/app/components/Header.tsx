@@ -1,7 +1,7 @@
 import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import SigninOrOut from "./SigninOrOut";
 import Link from "next/link";
 import { usePathname } from 'next/navigation';

@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { videoDetails } from "@/atoms";
 import { useRouter, useParams } from "next/navigation";
-import { useAuth } from "../../../../context/AuthContext";
-import { db } from "../../../lib/firebase";
+import { useAuth } from "@/context/AuthContext";
+import { db } from "@/lib/firebase";
 import {
   collection,
   addDoc,

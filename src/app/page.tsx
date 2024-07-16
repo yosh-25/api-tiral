@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import YouTube from "react-youtube";
 import Link from "next/link";
 import MainButton from "./components/elements/buttons/mainButton";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import theme from "@/theme";
 
 export default function Home() {

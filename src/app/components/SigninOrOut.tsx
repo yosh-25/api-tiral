@@ -3,7 +3,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { Box, Typography } from '@mui/material';
 import { getAuth, signOut } from "firebase/auth";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import MainButton from './elements/buttons/mainButton';
 import Link from "next/link";
 

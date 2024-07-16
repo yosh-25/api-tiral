@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { Box, Typography } from "@mui/material";
 import SearchIconAndFunction from "../components/SearchIconAndFunction";
 
