@@ -7,7 +7,7 @@ import { getDocs, collection, query, where } from "firebase/firestore";
 import { Box, TextField, Typography, IconButton, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import BackspaceIcon from "@mui/icons-material/Backspace";
-import { MemoList, MemosByVideoId, LatestTimestampByVideoId } from "../../types";
+import { MemoList, MemosByVideoId, LatestTimestampByVideoId } from "@/types/index";
 import CustomCardsForMemoList from "@/app/components/elements/cards/CustomCardsForMemoList";
 
 function ShowMemoList() {

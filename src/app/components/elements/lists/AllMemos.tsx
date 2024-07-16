@@ -11,7 +11,7 @@ import {
 import {
   Box,
 } from "@mui/material";
-import { MemoList, MemosByVideoId } from "@/types";
+import { MemoList, MemosByVideoId } from "@/types/index";
 import CustomCardsForMemoList from "../cards/CustomCardsForMemoList";
 
 const ShowMemos = () => {

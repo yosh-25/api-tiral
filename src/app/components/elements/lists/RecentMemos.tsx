@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@mui/material";
 import MainButton from "@/app/components/elements/buttons/mainButton";
-import { MemosByVideoId } from "@/types";
+import { MemosByVideoId } from "@/types/index";
 import Image from "next/image";
 
 interface Props {

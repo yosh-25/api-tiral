@@ -8,7 +8,7 @@ import { Box, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
-import { MemosByVideoId, LatestTimestampByVideoId, Memo } from "../../types";
+import { MemosByVideoId, LatestTimestampByVideoId, Memo } from "@/types/index";
 import CustomCard from "../components/elements/cards/CustomCardsForSettings";
 import RecentMemos from "../components/elements/lists/RecentMemos";
 

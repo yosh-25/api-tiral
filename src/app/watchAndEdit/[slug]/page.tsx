@@ -19,7 +19,7 @@ import {
 } from "firebase/firestore";
 import { useRecoilState } from "recoil";
 import { Button, Typography, Box } from "@mui/material";
-import { Memo, MemoList } from "@/types";
+import { Memo, MemoList } from "@/types/index";
 import YouTubePlayer from "@/app/components/YoutubePlayer";
 import NewMemo from "@/app/components/elements/lists/NewMemo";
 import MemoListForWatchAndEdit from "@/app/components/elements/lists/MemoListForWatchAndEdit";

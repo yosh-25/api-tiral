@@ -9,7 +9,7 @@ import {
   TableCell,
   TableBody,
 } from "@mui/material";
-import { Memo } from "@/types";
+import { Memo } from "@/types/index";
 import MainButton from "../buttons/mainButton";
 import Link from "next/link";
 

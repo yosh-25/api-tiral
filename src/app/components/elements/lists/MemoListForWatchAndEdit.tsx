@@ -8,7 +8,7 @@ import {
   TableBody,
   TextField,
 } from "@mui/material";
-import { MemoList as MemoListType, Memo } from "@/types";
+import { MemoList as MemoListType, Memo } from "@/types/index";
 import CommonButton from "@/app/components/elements/buttons/CommonButton";
 
 interface MemoListProps {

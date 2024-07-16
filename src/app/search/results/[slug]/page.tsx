@@ -4,7 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "../../../../../context/AuthContext";
 import { useRecoilState } from "recoil";
 import { videoDetails, searchedVideoData } from "@/atoms";
-import { Item, Memo } from "@/types";
+import { Item, Memo } from "@/types/index";
 import { Button, Typography, Box, Link, CircularProgress } from "@mui/material";
 import SearchIconAndFunction from "@/app/components/SearchIconAndFunction";
 import { Timestamp } from "firebase/firestore";

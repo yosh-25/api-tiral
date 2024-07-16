@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, TextField, Box, Typography } from '@mui/material';
-import { Memo } from '@/types';
+import { Memo } from '@/types/index';
 
 interface MemoFormProps {
   timeToShow: string;
