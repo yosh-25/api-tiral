@@ -22,6 +22,7 @@ interface MemoListProps {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   toggleEditMode: (id: string) => void;
+  editingMemoId: string | null;
 }
 
 const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
@@ -32,6 +33,7 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
   onUpdate,
   onEdit,
   toggleEditMode,
+  editingMemoId,
 }) => {
   // 編集前のメモ内容を保存するための状態
   const [originalMemoContent, setOriginalMemoContent] = useState<{
@@ -39,7 +41,7 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
   }>({});
 
   const handleEditToggle = (memo: Memo) => {
-    if (!memo.isEditing) {
+    if (editingMemoId !== memo.id) {
       // 編集モードに入るときに、元の内容を保存する
       setOriginalMemoContent((prev) => ({ ...prev, [memo.id]: memo.content }));
     } else {
@@ -62,82 +64,113 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
   };
 
   return (
-    <>
-      <TableContainer sx={{
-        mb:{lg:'4em'}}}>
-        <Table sx={{ tableLayout: "fixed" }}>
-          <TableHead>
-            <TableRow>
-              <TableCell
-                sx={{
-                  width: {
-                    xs: "4%",
-                    md: "10%",
-                  },
-                  fontSize: {
-                    xs: "0.7em",
-                    md: "1em",
-                  },
-                }}
-              >
-                再生位置
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontSize: {
-                    xs: "0.7em",
-                    md: "1em",
-                  },
-                  width: {
-                    xs: "15%",
-                    md: "19%",
-                  },
-                }}
-                align="left"
-              >
-                メモ
-              </TableCell>
-              <TableCell
-                sx={{
-                  width: {
-                    xs: "6%",
-                    md: "5%",
-                  },
-                }}
-              ></TableCell>
-              <TableCell
-                sx={{
-                  width: {
-                    xs: "6%",
-                    md: "5%",
-                  },
-                }}
-              ></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {memoList
-              ?.filter((memo) => memo.videoId === videoId)
-              .sort(
-                (a, b) =>
-                  convertToSeconds(a.createdAt) - convertToSeconds(b.createdAt)
-              )
-              .map((memo) => (
-                <TableRow key={memo.id}>
-                  <TableCell
-                    sx={{
-                      fontSize: {
-                        xs: "0.7em",
-                        md: "1em",
-                      },
-                      height: "4.5em",
-                    }}
-                  >
-                    {memo.createdAt}
-                  </TableCell>
-                  {!memo.isEditing ? (
-                    <>
-                      <TableCell
+    <TableContainer sx={{ mb: { lg: "4em" } }}>
+      <Table sx={{ tableLayout: "fixed" }}>
+        <TableHead>
+          <TableRow>
+            <TableCell
+              sx={{
+                width: {
+                  xs: "4%",
+                  md: "10%",
+                },
+                fontSize: {
+                  xs: "0.7em",
+                  md: "1em",
+                },
+              }}
+            >
+              再生位置
+            </TableCell>
+            <TableCell
+              sx={{
+                fontSize: {
+                  xs: "0.7em",
+                  md: "1em",
+                },
+                width: {
+                  xs: "15%",
+                  md: "19%",
+                },
+              }}
+              align="left"
+            >
+              メモ
+            </TableCell>
+            <TableCell
+              sx={{
+                width: {
+                  xs: "6%",
+                  md: "5%",
+                },
+              }}
+            ></TableCell>
+            <TableCell
+              sx={{
+                width: {
+                  xs: "6%",
+                  md: "5%",
+                },
+              }}
+            ></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {memoList
+            ?.filter((memo) => memo.videoId === videoId)
+            .sort(
+              (a, b) =>
+                convertToSeconds(a.createdAt) - convertToSeconds(b.createdAt)
+            )
+            .map((memo) => (
+              <TableRow key={memo.id}>
+                <TableCell
+                  sx={{
+                    fontSize: {
+                      xs: "0.7em",
+                      md: "1em",
+                    },
+                    height: "4.5em",
+                  }}
+                >
+                  {memo.createdAt}
+                </TableCell>
+                {editingMemoId !== memo.id ? (
+                  <>
+                    <TableCell
+                      sx={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        fontSize: {
+                          xs: "0.7em",
+                          md: "1em",
+                        },
+                      }}
+                    >
+                      {memo.content}
+                    </TableCell>
+                    <TableCell sx={{ p: "0em" }}>
+                      <CommonButton
+                        label="編集"
+                        onClick={() => handleEditToggle(memo)}
+                      />
+                    </TableCell>
+                    <TableCell sx={{ p: "0em" }}>
+                      <CommonButton
+                        onClick={() => onDelete(memo.id)}
+                        label="削除"
+                      />
+                    </TableCell>
+                  </>
+                ) : (
+                  <>
+                    <TableCell sx={{ p: 0 }}>
+                      <TextField
+                        value={memo.content}
+                        onChange={(e) => onUpdate(memo.id, e)}
+                        size="small"
+                        fullWidth
                         sx={{
                           whiteSpace: "nowrap",
                           overflow: "hidden",
@@ -146,71 +179,29 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                             xs: "0.7em",
                             md: "1em",
                           },
+                          height: "100%",
                         }}
-                      >
-                        {memo.content}
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          p: "0em",
-                        }}
-                      >
-                        <CommonButton
-                          label="編集"
-                          onClick={() => handleEditToggle(memo)}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ p: "0em" }}>
-                        <CommonButton
-                          onClick={() => onDelete(memo.id)}
-                          label="削除"
-                        />
-                      </TableCell>
-                    </>
-                  ) : (
-                    <>
-                      <TableCell
-                        sx={{
-                          p: 0,
-                        }}
-                      >
-                        <TextField
-                          value={memo.content}
-                          onChange={(e) => onUpdate(memo.id, e)}
-                          size="small"
-                          fullWidth
-                          sx={{
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            fontSize: {
-                              xs: "0.7em",
-                              md: "1em",
-                            },
-                            height: "100%",
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ p: "0em" }}>
-                        <CommonButton
-                          label="保存"
-                          onClick={() => handleSave(memo)}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ p: "0em" }}>
-                        <CommonButton
-                          label="取消"
-                          onClick={() => handleEditToggle(memo)}
-                        />
-                      </TableCell>
-                    </>
-                  )}
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+                      />
+                    </TableCell>
+                    <TableCell sx={{ p: "0em" }}>
+                      <CommonButton
+                        label="保存"
+                        onClick={() => handleSave(memo)}
+                      />
+                    </TableCell>
+                    <TableCell sx={{ p: "0em" }}>
+                      <CommonButton
+                        label="取消"
+                        onClick={() => handleEditToggle(memo)}
+                      />
+                    </TableCell>
+                  </>
+                )}
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
