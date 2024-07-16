@@ -4,7 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "../../../../../context/AuthContext";
 import { useRecoilState } from "recoil";
 import { videoDetails, searchedVideoData } from "@/atoms";
-import { Item, Memo } from "@/types/index";
+import { VideoItem, Memo } from "@/types/index";
 import { Button, Typography, Box, Link, CircularProgress } from "@mui/material";
 import SearchIconAndFunction from "@/app/components/SearchIconAndFunction";
 import { Timestamp } from "firebase/firestore";
@@ -17,9 +17,9 @@ const formatDate = (publishedAt: string) => {
 };
 
 const ShowResults = () => {
-  const [searchedResults, setSearchedResults] = useState<Item[]>();
+  const [searchedResults, setSearchedResults] = useState<VideoItem[]>();
   const [videoData, setVideoData] = useRecoilState(videoDetails);
-  const [displayedResults, setDisplayedResults] = useState<Item[]>();
+  const [displayedResults, setDisplayedResults] = useState<VideoItem[]>();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -85,7 +85,7 @@ const ShowResults = () => {
     }
   };
 
-  const saveVideoData = (item: Item) => {
+  const saveVideoData = (item: VideoItem) => {
     const videoData: Memo = {
       id: "",
       videoId: item.id.videoId,
@@ -137,7 +137,7 @@ const ShowResults = () => {
               mt: 4,
             }}
           >
-            {displayedResults?.map((item: Item, index: number) => (
+            {displayedResults?.map((item: VideoItem, index: number) => (
               <Box
                 className="item"
                 key={index}

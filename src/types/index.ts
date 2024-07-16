@@ -4,12 +4,21 @@ import { Timestamp } from "firebase/firestore";
 export interface AuthContextType {
   currentUser: User | null;
 }
-export interface Data {
-  items?: Item[];
-}
 
-export interface MemosByVideoId {
-  [videoId: string]: Memo[];
+export interface VideoItem {
+  id: { videoId: string };
+  snippet: {
+    title: string;
+    description: string;
+    publishedAt: string;
+    thumbnails?: {
+      medium: {
+        url: string;
+      };
+    };
+    channelTitle: string;
+    channelId: string;
+  };
 }
 
 export interface Memo {
@@ -24,32 +33,11 @@ export interface Memo {
   uid: string | undefined;
 }
 
-export type MemoList =Memo[];
-
-export interface TimestampsByVideoId {
-  [videoId: string]: string[]
-;}
-
-export interface LatestTimestampByVideoId {
-  [videoId: string]: Timestamp
-;}
-
-export interface Item {
-  id: { videoId: string },
-    snippet: {
-    title: string;
-    description: string;
-    publishedAt: string;
-    thumbnails?: {
-      medium: {
-        url: string;
-      };
-    };
-    channelTitle: string;
-    channelId: string;
-  };
+export type MemoList = Memo[];
+export interface MemosByVideoId {
+  [videoId: string]: Memo[];
 }
 
-export interface PageApi {
-  [videoId: string]: number;
+export interface LatestTimestampByVideoId {
+  [videoId: string]: Timestamp;
 }

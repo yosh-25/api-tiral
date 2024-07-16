@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { Item, Memo } from '@/types';
+import { VideoItem, Memo } from '@/types';
 
 const sessionStorageEffect = (key: string) => ({ setSelf, onSet }: any) => {
   if (typeof window === "undefined") return;
@@ -21,7 +21,7 @@ export const videoDetails = atom<Memo>({
   effects: [sessionStorageEffect("videoDetails")]
 });
 
-export const searchedVideoData = atom<Item[]>({
+export const searchedVideoData = atom<VideoItem[]>({
   key: 'searchedVideoData',  // 一意のキー
   default: [],     // 初期値は未定義または空のデータ構造
   effects: [sessionStorageEffect("searchedVideoData")]
