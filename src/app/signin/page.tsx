@@ -5,7 +5,7 @@ import { signInWithEmailAndPassword, getAuth, signOut } from "firebase/auth";
 import { useAuth } from "../../../context/AuthContext";
 import {} from "firebase/auth";
 import { FirebaseError } from "@firebase/util";
-import { auth } from "../../../lib/firebase";
+import { auth } from "../../lib/firebase";
 import {
   Box,
   Typography,
@@ -19,9 +19,9 @@ import MainButton from "../components/elements/buttons/mainButton";
 
 const Signin = () => {
   const router = useRouter();
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const { currentUser }:any = useAuth();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const { currentUser }: any = useAuth();
 
   if (currentUser) router.replace("/mypage"); // ログインしていなければサインインページへ転
 
@@ -53,7 +53,7 @@ const Signin = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          minHeight: "80vh"
+          minHeight: "80vh",
         }}
       >
         <Box
@@ -104,16 +104,17 @@ const Signin = () => {
           </MainButton>
           <Grid container justifyContent="flex-end">
             <Grid item>
-                <Box>
-                  <span>
+              <Box>
+                <span>
                   アカウントをお持ちでない場合は、
-                  <a href='./signup/'>こちら</a>からサインアップしてください
-                  </span>
-                </Box>
+                  <a href="./signup/">こちら</a>からサインアップしてください
+                </span>
+              </Box>
             </Grid>
           </Grid>
-          <Box sx={{mt: '1rem'}}>
-            Demo Email Addres: aaa@gmail.com<br/>
+          <Box sx={{ mt: "1rem" }}>
+            Demo Email Addres: aaa@gmail.com
+            <br />
             Demo Password: aaaaaa
           </Box>
         </Box>

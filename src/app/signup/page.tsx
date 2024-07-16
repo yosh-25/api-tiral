@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../../lib/firebase";
+import { auth } from "../../lib/firebase";
 import { FirebaseError } from "@firebase/util";
 
 import {
@@ -44,10 +44,12 @@ const Signup = () => {
       router.push("/mypage");
     } catch (e) {
       if (e instanceof FirebaseError) {
-        if (e.code === "auth/email-already-in-use"){
+        if (e.code === "auth/email-already-in-use") {
           setError("このアカウントは既に存在します。");
         } else {
-          setError("サインアップ中にエラーが発生しました。もう一度お試しください。");
+          setError(
+            "サインアップ中にエラーが発生しました。もう一度お試しください。"
+          );
         }
       }
     }
@@ -110,20 +112,17 @@ const Signup = () => {
               {error}
             </Alert>
           )}
-          <MainButton
-            fullWidth
-            sx={{ mt: 3, mb: 2 }}
-          >
+          <MainButton fullWidth sx={{ mt: 3, mb: 2 }}>
             新規登録
           </MainButton>
           <Grid container justifyContent="flex-end">
             <Grid item>
-            <Box>
-                  <span>
+              <Box>
+                <span>
                   既にアカウントをお持ちの方は
-                  <a href='./signin/'>こちら</a>からログイン
-                  </span>
-                </Box>
+                  <a href="./signin/">こちら</a>からログイン
+                </span>
+              </Box>
             </Grid>
           </Grid>
         </Box>

@@ -1,7 +1,7 @@
-import React, { useContext, useState, useEffect, ReactNode} from "react";
-import { auth } from "../lib/firebase";
+import React, { useContext, useState, useEffect, ReactNode } from "react";
+import { auth } from "../src/lib/firebase";
 import { User, onAuthStateChanged } from "firebase/auth";
-import { AuthContextType } from "../src/types"
+import { AuthContextType } from "../src/types";
 
 // コンテキストを作成
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);

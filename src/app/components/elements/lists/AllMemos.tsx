@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../../../context/AuthContext";
-import { db } from "../../../../../lib/firebase";
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
-import {
-  Box,
-} from "@mui/material";
+import { db } from "../../../../lib/firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { Box } from "@mui/material";
 import { MemoList, MemosByVideoId } from "@/types/index";
 import CustomCardsForMemoList from "../cards/CustomCardsForMemoList";
 
@@ -50,7 +43,7 @@ const ShowMemos = () => {
 
   useEffect(() => {
     const fetchMemoList = async () => {
-      if(!currentUser) return;
+      if (!currentUser) return;
       const q = query(
         collection(db, "memoList"),
         where("uid", "==", currentUser.uid)

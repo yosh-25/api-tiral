@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext";
-import { db } from "../../../lib/firebase";
+import { db } from "../../lib/firebase";
 import { getDocs, collection, query, where } from "firebase/firestore";
 import { Box, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";

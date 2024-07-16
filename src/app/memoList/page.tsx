@@ -2,12 +2,22 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext";
-import { db } from "../../../lib/firebase";
+import { db } from "../../lib/firebase";
 import { getDocs, collection, query, where } from "firebase/firestore";
-import { Box, TextField, Typography, IconButton, InputAdornment } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Typography,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import BackspaceIcon from "@mui/icons-material/Backspace";
-import { MemoList, MemosByVideoId, LatestTimestampByVideoId } from "@/types/index";
+import {
+  MemoList,
+  MemosByVideoId,
+  LatestTimestampByVideoId,
+} from "@/types/index";
 import CustomCardsForMemoList from "@/app/components/elements/cards/CustomCardsForMemoList";
 
 function ShowMemoList() {
@@ -21,7 +31,7 @@ function ShowMemoList() {
 
   if (!currentUser) router.replace("/signin"); // ログインしていなければサインインページへ転
 
-  // マウント時firebaseからデータ取得  
+  // マウント時firebaseからデータ取得
   const fetchMemoList = async () => {
     try {
       const q = query(
@@ -62,7 +72,7 @@ function ShowMemoList() {
         memosGroupedByVideoId[videoId].push(memo);
       });
       setMemoListByVideoId(memosGroupedByVideoId);
-      setSearchQuery('');
+      setSearchQuery("");
     } catch (error) {
       console.error("Error fetching memos:", error);
     }
@@ -199,14 +209,16 @@ function ShowMemoList() {
           alignItems: "center",
         }}
       >
-        {sortedVideoIds.map((videoId)=> (
-        memoListByVideoId && (
-        <CustomCardsForMemoList
-          key={videoId}
-          videoId={videoId}
-          memos={memoListByVideoId[videoId]}
-        />
-        )))}
+        {sortedVideoIds.map(
+          (videoId) =>
+            memoListByVideoId && (
+              <CustomCardsForMemoList
+                key={videoId}
+                videoId={videoId}
+                memos={memoListByVideoId[videoId]}
+              />
+            )
+        )}
       </Box>
     </Box>
   );
