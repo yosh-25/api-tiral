@@ -1,13 +1,14 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
+import { User } from "firebase/auth";
 import { useAuth } from "@/context/AuthContext";
 import { Box, Typography } from "@mui/material";
 import SearchIconAndFunction from "../components/SearchIconAndFunction";
 
 const Search = () => {
   const router = useRouter();
-  const { currentUser } = useAuth();
+  const { currentUser }: { currentUser: User | null } = useAuth();
 
   // ログインしていなければサインインページへ
   if (!currentUser) router.replace("/signin");
@@ -21,19 +22,19 @@ const Search = () => {
           justifyContent: "center",
           alignItems: "center",
           mt: {
-            xs: 15,
-            md: 30,
+            xs: "120px",
+            md: "240px",
           },
         }}
       >
-        <Box sx={{ width: "100%", textAlign: "center", mb: "3em" }}>
+        <Box sx={{ width: "100%", textAlign: "center", mb: "3rem" }}>
           <Typography
             variant="h3"
             sx={{
               fontSize: {
-                xs: "2em",
-                md: "2.5em",
-                lg: "3em",
+                xs: "2rem",
+                md: "2.5rem",
+                lg: "3rem",
               },
             }}
           >
@@ -44,11 +45,8 @@ const Search = () => {
           sx={{
             width: {
               xs: "70%",
-              lg: '60%'
+              lg: "60%",
             },
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
           }}
         >
           <SearchIconAndFunction />
