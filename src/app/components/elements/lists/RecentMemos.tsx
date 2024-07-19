@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import MainButton from "@/app/components/elements/buttons/mainButton";
 import { MemosByVideoId } from "@/types/index";
-import Image from "next/image";
 
 interface Props {
   memoListByVideoId: MemosByVideoId;
@@ -28,9 +27,10 @@ const RecentMemos: React.FC<Props> = ({
         display: "flex",
         flexWrap: "wrap",
         justifyContent: "flex-start",
-        gap: 3,
+        gap: "24px",
       }}
     >
+      {/* 直近でメモを取った動画3つ、その内のメモ2つを選択 */}
       {sortedVideoIds.slice(0, 3).map((videoId) => {
         const memos = memoListByVideoId[videoId] || [];
         const sortedMemos = memos.sort((a, b) =>
@@ -49,11 +49,11 @@ const RecentMemos: React.FC<Props> = ({
                 md: "45%",
                 lg: "30%",
               },
-              mb: 2,
+              p: "16px",
               border: "1px solid #ccc",
-              padding: 2,
               borderRadius: "8px",
               boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+              mb: "16px",
             }}
           >
             <Typography
@@ -64,9 +64,9 @@ const RecentMemos: React.FC<Props> = ({
                 WebkitBoxOrient: "vertical",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-                lineHeight: "1.5em",
-                height: "3em",
-                mb: 1,
+                lineHeight: "1.5rem",
+                height: "3rem",
+                mb: "16px",
               }}
             >
               {memosToShow[0]?.videoTitle}
@@ -82,10 +82,7 @@ const RecentMemos: React.FC<Props> = ({
             </Link>
             <TableContainer
               sx={{
-                marginBottom: "10px",
-                height: {
-                  lg: "8em",
-                },
+                mb: "16px",
               }}
             >
               <Table
@@ -117,17 +114,24 @@ const RecentMemos: React.FC<Props> = ({
             <Box
               sx={{
                 display: "flex",
+                flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              <Link href={"watchAndEdit/" + memosToShow[0]?.videoId}>
-                <MainButton>メモを編集/動画を視聴</MainButton>
-              </Link>
+              <Typography
+                variant="body2"
+                sx={{ textAlign: "right", mt: "3px", mb:"10px" }}
+              >
+                {memos.length >= 2 ? "2" : "1"}/{memos.length}
+              </Typography>
+
+              <Box>
+                <Link href={"watchAndEdit/" + memosToShow[0]?.videoId}>
+                  <MainButton>メモを編集/動画を視聴</MainButton>
+                </Link>
+              </Box>
             </Box>
-            <Typography variant="body2" sx={{ textAlign: "right", mt: 2 }}>
-              {memos.length >= 2 ? "2" : "1"}/{memos.length}
-            </Typography>
           </Box>
         );
       })}
