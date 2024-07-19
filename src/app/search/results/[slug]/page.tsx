@@ -3,42 +3,39 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useRecoilState } from "recoil";
-import { videoDetails, searchedVideoData } from "@/atoms";
+import { videoDetails } from "@/atoms";
 import { VideoItem, Memo } from "@/types/index";
 import { Button, Typography, Box, Link, CircularProgress } from "@mui/material";
 import SearchIconAndFunction from "@/app/components/SearchIconAndFunction";
-import { Timestamp } from "firebase/firestore";
-
-const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
-
-const formatDate = (publishedAt: string) => {
-  const date = new Date(publishedAt);
-  return date.toLocaleString("ja-JP");
-};
 
 const ShowResults = () => {
   const [searchedResults, setSearchedResults] = useState<VideoItem[]>();
-  const [videoData, setVideoData] = useRecoilState(videoDetails);
   const [displayedResults, setDisplayedResults] = useState<VideoItem[]>();
+  const [videoData, setVideoData] = useRecoilState(videoDetails);  
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
   const params = useParams();
-  const query: string = Array.isArray(params.slug)
-    ? params.slug.join(" ")
-    : params.slug;
   const { currentUser } = useAuth();
+  
+  const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 
   useEffect(() => {
     if (!currentUser) router.replace("/signin");
   }, [currentUser, router]);
 
+  //検索ワードの取得。複数の場合の処理も実施。 
+  const searchQuery: string = Array.isArray(params.slug)
+    ? params.slug.join(" ")
+    : params.slug;
+
+  //APIに関する情報 
   const apiKey = API_KEY;
-  const searchQuery = query;
   const maxResults = 24;
   const order = "relevance";
 
+  // APIを使っての動画検索
   const fetchVideos = async () => {
     if (!API_KEY) {
       console.error("API_KEY is undefined");
@@ -52,7 +49,6 @@ const ShowResults = () => {
       );
       const result = await response.json();
       setSearchedResults(result.items);
-      console.log(result);
     } catch (error) {
       console.error(error);
     } finally {
@@ -60,10 +56,18 @@ const ShowResults = () => {
     }
   };
 
+  // 新しい検索ワードで検索時にAPIからfetch
   useEffect(() => {
     fetchVideos();
-  }, [query]);
+  }, [searchQuery]);
 
+// APIから取得した時間情報を日本語表記に変換
+const formatDate = (publishedAt: string) => {
+  const date = new Date(publishedAt);
+  return date.toLocaleString("ja-JP");
+};
+
+  // ページネーションの処理
   useEffect(() => {
     const startIndex = (currentPage - 1) * 6;
     const endIndex = startIndex + 6;
@@ -85,13 +89,14 @@ const ShowResults = () => {
     }
   };
 
+  // 閲覧する動画に関するデータをrecoilで保存
   const saveVideoData = (item: VideoItem) => {
     const videoData: Memo = {
       id: "",
       videoId: item.id.videoId,
       videoThumbnail: item.snippet.thumbnails?.medium.url,
       videoTitle: item.snippet.title,
-      createdTime: Timestamp.now(),
+      createdTime: undefined,
       createdAt: "",
       content: "",
       uid: currentUser?.uid,
@@ -103,11 +108,12 @@ const ShowResults = () => {
     <>
       <Box
         sx={{
-          width: "70%",
+          width: { xs:"100%", sm:"70%"},
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          mb: 6,
+          mx: {xs:"auto", md:"0" },
+          mb: "48px",
         }}
       >
         <SearchIconAndFunction />
@@ -133,8 +139,8 @@ const ShowResults = () => {
                 md: "1fr 1fr",
                 lg: "1fr 1fr 1fr",
               },
-              gap: 2,
-              mt: 4,
+              gap: "16px",
+              mt: "32px",
             }}
           >
             {displayedResults?.map((item: VideoItem, index: number) => (
@@ -142,10 +148,10 @@ const ShowResults = () => {
                 className="item"
                 key={index}
                 sx={{
-                  mb: { sx: "1em", md: "2em" },
+                  mb: { sx: "32px", md: "32px" },
                   border: { md: "1px solid #ddd" },
                   borderRadius: "4px",
-                  p: { md: "1em" },
+                  p: { md: "16px" },
                 }}
               >
                 <Link
@@ -160,7 +166,7 @@ const ShowResults = () => {
                       width={"100%"}
                     />
                   </Box>
-                  <Box className="right" sx={{ p: "0.6em" }}>
+                  <Box className="right" sx={{ p: "9.6px" }}>
                     <Box className="title">
                       <Typography>{item.snippet?.title}</Typography>
                     </Box>
@@ -180,7 +186,6 @@ const ShowResults = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              mb: "2em",
             }}
           >
             <Button
@@ -194,7 +199,7 @@ const ShowResults = () => {
               variant="contained"
               onClick={handleNextPage}
               disabled={currentPage * 6 >= (searchedResults?.length || 0)}
-              sx={{ ml: "2em" }}
+              sx={{ ml: "32px" }}
             >
               次のページ
             </Button>

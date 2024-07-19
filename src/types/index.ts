@@ -26,7 +26,7 @@ export interface Memo {
   videoId: string;
   videoTitle: string;
   videoThumbnail: string | undefined;
-  createdTime: Timestamp;
+  createdTime: Timestamp | undefined;
   createdAt: string;
   content: string;
   isEditing?: boolean;

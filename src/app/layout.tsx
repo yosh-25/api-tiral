@@ -46,7 +46,7 @@ export default function RootLayout({
             <ThemeProvider theme={theme}>
               <CssBaseline />
               {isNoHeaderPage ? null : <Header />}
-              <Box sx={{mb:{ xs:"85px", md:'150px'}}}>
+              <Box sx={{mb:{ xs:"110px", sm:"130px"}}}>
               <Box
                 sx={{
                   mt: "160px",
@@ -59,9 +59,9 @@ export default function RootLayout({
                 }}
               >
                 {children}
+              </Box>              
               </Box>
-              <Footer />
-              </Box>
+              <Footer/>
             </ThemeProvider>
           </RecoilRoot>
         </AuthProvider>
