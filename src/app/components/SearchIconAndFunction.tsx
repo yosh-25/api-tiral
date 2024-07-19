@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import SearchBar from "./elements/searchBar";
+import { Box, IconButton, InputAdornment, TextField } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 
 const SearchIconAndFunction = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -9,17 +10,27 @@ const SearchIconAndFunction = () => {
   const handleSearch = () => {
     // 検索ワードをクエリパラメータに追加して次のページへ遷移
     if (searchTerm.trim()) {
-    router.push(`/search/results/${searchTerm}`);
-    console.log(searchTerm);
-  }
+      router.push(`/search/results/${searchTerm}`);
+    }
   };
 
   return (
-    <SearchBar
+    <TextField
+      type="text"
+      variant="outlined"
       value={searchTerm}
       onChange={(e) => setSearchTerm(e.target.value)}
-      onClick={handleSearch}
-      label="動画を検索"
+      placeholder="動画を検索"
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton onClick={handleSearch}>
+              <SearchIcon />
+            </IconButton>
+          </InputAdornment>
+        ),
+      }}
+      sx={{ m: 1, width: "100%" }}
     />
   );
 };
