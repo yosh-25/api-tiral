@@ -39,5 +39,5 @@ export interface MemosByVideoId {
 }
 
 export interface LatestTimestampByVideoId {
-  [videoId: string]: Timestamp;
+  [videoId: string]: Timestamp | undefined;
 }

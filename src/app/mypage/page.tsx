@@ -14,18 +14,16 @@ import RecentMemos from "../components/elements/lists/RecentMemos";
 
 function Mypage() {
   const router = useRouter();
-  const { currentUser } = useAuth();
   const [memoListByVideoId, setMemoListByVideoId] = useState<MemosByVideoId>(
     {}
   );
-  const [fetchTrigger, setFetchTrigger] = useState<boolean>(false);
-  const [editMode, setEditMode] = useState<boolean>(false);
   const [sortedVideoIds, setSortedVideoIds] = useState<string[]>([]);
 
   // ログインしていなければサインインページへ
+  const { currentUser } = useAuth();
   if (!currentUser) router.replace("/signin");
 
-  // マウント時、データ削除時、編集キャンセル時にfirebaseからデータ取得
+  // マウント時にfirebaseからデータ取得
   const fetchMemoList = async () => {
     try {
       const userMemos = query(
@@ -73,7 +71,7 @@ function Mypage() {
 
   useEffect(() => {
     fetchMemoList();
-  }, [fetchTrigger, editMode]);
+  }, []);
 
   // 各videoIdで直近のメモ作成日を抽出し、それを順番に並べ表示順を決める。
   const getLatestTime = (): LatestTimestampByVideoId => {
@@ -81,9 +79,11 @@ function Mypage() {
     Object.entries(memoListByVideoId).forEach(([videoId, memos]) => {
       const latestCreatedTime = memos
         .map((memo) => memo.createdTime)
-        .sort(
-          (a, b) => b.seconds - a.seconds || b.nanoseconds - a.nanoseconds
-        )[0];
+        .sort((a, b) => {
+          if (!b) return -1; // bがundefinedならaを優先
+          if (!a) return 1; // aがundefinedならbを優先
+          return b.seconds - a.seconds || b.nanoseconds - a.nanoseconds;
+        })[0];
       latestCreatedTimes[videoId] = latestCreatedTime;
     });
     return latestCreatedTimes;
@@ -94,8 +94,12 @@ function Mypage() {
   ): string[] => {
     const sortedVideoIds = Object.entries(listOfLatestTimesByVideo)
       .sort(([, timeA], [, timeB]) => {
-        const dateA = timeA.toDate();
-        const dateB = timeB.toDate();
+        if (!timeA && !timeB) return 0; // 両方ともundefinedの場合
+        if (!timeA) return 1; // timeAがundefinedの場合
+        if (!timeB) return -1; // timeBがundefinedの場合
+
+        const dateA = timeA?.toDate();
+        const dateB = timeB?.toDate();
         return dateB.getTime() - dateA.getTime();
       })
       .map(([videoId]) => videoId);
@@ -163,11 +167,11 @@ function Mypage() {
           display: "flex",
           flexWrap: "wrap",
           justifyContent: "flex-start",
-          gap: 3,
-          mb: 3,
+          gap: "24px",
+          mb: "24px",
           mt: {
-            xs: "1em",
-            md: "2em",
+            xs: "1rem",
+            md: "2rem",
           },
         }}
       >
