@@ -13,23 +13,24 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import BackspaceIcon from "@mui/icons-material/Backspace";
+import CustomCardsForMemoList from "@/app/components/elements/cards/CustomCardsForMemoList";
 import {
   MemoList,
   MemosByVideoId,
   LatestTimestampByVideoId,
 } from "@/types/index";
-import CustomCardsForMemoList from "@/app/components/elements/cards/CustomCardsForMemoList";
 
 function ShowMemoList() {
   const router = useRouter();
-  const { currentUser } = useAuth();
   const [memoListByVideoId, setMemoListByVideoId] = useState<MemosByVideoId>(
     {}
   );
   const [sortedVideoIds, setSortedVideoIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  if (!currentUser) router.replace("/signin"); // ログインしていなければサインインページへ転
+  // ログインしていなければサインインページへ遷移
+  const { currentUser } = useAuth();
+  if (!currentUser) router.replace("/signin");
 
   // マウント時firebaseからデータ取得
   const fetchMemoList = async () => {
@@ -40,25 +41,16 @@ function ShowMemoList() {
       );
       const querySnapshot = await getDocs(q);
       const memos: MemoList = querySnapshot.docs.map((doc) => {
-        const {
-          videoId,
-          videoTitle,
-          videoThumbnail,
-          createdTime,
-          createdAt,
-          content,
-          uid,
-        } = doc.data();
-
+        const data = doc.data();
         return {
           id: doc.id,
-          videoId,
-          videoTitle,
-          videoThumbnail: videoThumbnail,
-          createdTime,
-          createdAt,
-          content,
-          uid,
+          videoId: data.videoId,
+          videoTitle: data.videoTitle,
+          videoThumbnail: data.videoThumbnail,
+          createdTime: data.createdTime,
+          createdAt: data.createdAt,
+          content: data.content,
+          uid: data.uid,
         };
       });
 
@@ -88,9 +80,11 @@ function ShowMemoList() {
     Object.entries(memoListByVideoId).forEach(([videoId, memos]) => {
       const latestCreatedTime = memos
         .map((memo) => memo.createdTime)
-        .sort(
-          (a, b) => b.seconds - a.seconds || b.nanoseconds - a.nanoseconds
-        )[0];
+        .sort((a, b) => {
+          if (!b) return -1; // bがundefinedならaを優先
+          if (!a) return 1; // aがundefinedならbを優先
+          return b.seconds - a.seconds || b.nanoseconds - a.nanoseconds;
+        })[0];
       latestCreatedTimes[videoId] = latestCreatedTime;
     });
     return latestCreatedTimes;
@@ -101,15 +95,18 @@ function ShowMemoList() {
   ): string[] => {
     const sortedVideoIds = Object.entries(listOfLatestTimesByVideo)
       .sort(([, timeA], [, timeB]) => {
-        const dateA = timeA.toDate();
-        const dateB = timeB.toDate();
+        if (!timeA && !timeB) return 0; // 両方ともundefinedの場合
+        if (!timeA) return 1; // timeAがundefinedの場合
+        if (!timeB) return -1; // timeBがundefinedの場合
+
+        const dateA = timeA?.toDate();
+        const dateB = timeB?.toDate();
         return dateB.getTime() - dateA.getTime();
       })
       .map(([videoId]) => videoId);
     return sortedVideoIds;
   };
 
-  // メモリストをソートして状態を更新する
   useEffect(() => {
     const listOfLatestTimesByVideo = getLatestTime();
     const sortedVideoIds = sortVideoIdsByLatestTimestamp(
@@ -155,14 +152,14 @@ function ShowMemoList() {
         }}
       >
         <Typography
-          variant="h3"
+          variant="h1"
           sx={{
             fontSize: {
-              xs: "2em",
-              md: "3em",
+              xs: "2rem",
+              md: "3rem",
             },
             textAlign: "center",
-            mb: "1em",
+            mb: "16px",
           }}
         >
           メモ一覧
@@ -182,7 +179,7 @@ function ShowMemoList() {
             variant="outlined"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            sx={{ mb: 4, width: "20em" }}
+            sx={{ mb: "32px", width: "20rem" }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">

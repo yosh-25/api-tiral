@@ -26,6 +26,10 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
     return null;
   }
 
+  const sortedMemos = memos.sort((a, b) =>
+    a.createdAt.localeCompare(b.createdAt)
+  );
+
   return (
     <Box
       key={videoId}
@@ -110,7 +114,7 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {memos.map((memo, index) => (
+          {sortedMemos.map((memo, index) => (
               <TableRow key={index}>
                 <TableCell sx={{ pl: 3 }}>
                   {memo.createdAt}

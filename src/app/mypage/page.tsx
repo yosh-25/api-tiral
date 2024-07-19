@@ -8,7 +8,7 @@ import { Box, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
-import { MemosByVideoId, LatestTimestampByVideoId, Memo } from "@/types/index";
+import { MemosByVideoId, LatestTimestampByVideoId, MemoList, Memo } from "@/types/index";
 import CustomCard from "../components/elements/cards/CustomCardsForSettings";
 import RecentMemos from "../components/elements/lists/RecentMemos";
 
@@ -31,26 +31,17 @@ function Mypage() {
         where("uid", "==", currentUser?.uid)
       );
       const memoSnapshot = await getDocs(userMemos);
-      const memos: Memo[] = memoSnapshot.docs.map((doc) => {
-        const {
-          videoId,
-          videoTitle,
-          videoThumbnail,
-          createdTime,
-          createdAt,
-          content,
-          uid,
-        } = doc.data();
-
+      const memos: MemoList = memoSnapshot.docs.map((doc) => {
+        const data = doc.data();
         return {
           id: doc.id,
-          videoId,
-          videoThumbnail,
-          videoTitle,
-          createdTime,
-          createdAt,
-          content,
-          uid,
+          videoId: data.videoId,
+          videoTitle: data.videoTitle,
+          videoThumbnail: data.videoThumbnail,
+          createdTime: data.createdTime,
+          createdAt: data.createdAt,
+          content: data.content,
+          uid: data.uid,
         };
       });
 
