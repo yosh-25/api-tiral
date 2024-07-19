@@ -1,13 +1,13 @@
 import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
-import { useAuth } from "@/context/AuthContext";
-import SigninOrOut from "./AuthAction";
+import AuthAction from "./AuthAction";
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
 
 const Header = () => {
-  const { currentUser } = useAuth();
+
+  // ページ別でヘッダー内容を微調整する定数
   const pageWithoutSearchIcon = ['/','/mypage', '/search', '/search/results'];
   const pageWithoutHomeIcon = ['/'];
   const currentPath = usePathname();
@@ -22,8 +22,8 @@ const Header = () => {
             alignItems="center"
             sx={{
               ml: {
-                xs: 2,
-                md: 5,
+                xs: "16px",
+                md: "40px",
               },
             }}
           >
@@ -35,11 +35,12 @@ const Header = () => {
                 alignItems: "center",
                 width: "100%",
                 ml: {
-                  xs: 4,
-                  md: 8,
+                  xs: "32px",
+                  md: "64px",
                 },
               }}
             >
+              {/* '/'ではhomeアイコンを非表示 */}
               {!pageWithoutHomeIcon.includes(currentPath) && (
               <Link href={"/mypage"}>
                 <IconButton
@@ -47,12 +48,13 @@ const Header = () => {
                   edge="start"
                   color="inherit"
                   aria-label="menu"
-                  sx={{ mr: 2 }}
+                  sx={{ mr: "16px" }}
                 >
                   <HomeIcon />
                 </IconButton>
               </Link>
               )}
+              {/* '/mypage', '/search', '/search/results'では検索アイコン非表示 */}
               {!pageWithoutSearchIcon.includes(currentPath) && !isSearchResultsPage && (
                 <Link href={"/search"}>
                 <IconButton
@@ -60,7 +62,7 @@ const Header = () => {
                   edge="start"
                   color="inherit"
                   aria-label="menu"
-                  sx={{ mr: 2 }}
+                  sx={{ mr: "16px" }}
                 >
                   <SearchIcon />
                 </IconButton>
@@ -68,8 +70,8 @@ const Header = () => {
               )}              
             </Box>
           </Box>
-          <Box style={{ padding: "1rem 0" }}>
-            <SigninOrOut />
+          <Box style={{ padding: "16px 0" }}>
+            <AuthAction />
           </Box>
         </Toolbar>
       </AppBar>

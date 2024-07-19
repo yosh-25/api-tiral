@@ -1,11 +1,7 @@
 import React from 'react';
-import { Box, Typography, Link } from '@mui/material';
-import { usePathname } from 'next/navigation';
+import { Box, Typography } from '@mui/material';
 
 const Footer = () => {
-  const pathname = usePathname();
-  const isSearchPage = pathname === '/search';
-
   return (
     <Box
       component="footer"
@@ -21,26 +17,23 @@ const Footer = () => {
         padding: '20px',
         backgroundColor: '#001f3f',
         color: 'white',
-        p: 2
+        p: "16px"
       }}
     >
       <Typography variant="h6" sx={{ 
         fontSize: {
-          xs: '0.9em',
-          md: '1.2em',
+          xs: '0.9rem',
+          md: '1.2rem'
         },
-        mg: {
-          md:'' 
-        },
-        mb: 0.5 }}>
+        mb: "4px" }}>
         Memotube
       </Typography>
       
       <Typography variant="body2" 
       sx={{ 
         fontSize: {
-          xs: '0.8em',
-          md: '1.2em',
+          xs: '0.8rem',
+          md: '1.2rem',
         },
         mt: 1 }}>
         © 2024 Memotube. All rights reserved.
