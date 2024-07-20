@@ -9,7 +9,7 @@ import {
   TextField,
 } from "@mui/material";
 import { MemoList as MemoListType, Memo } from "@/types/index";
-import CommonButton from "@/app/components/elements/buttons/CommonButton";
+import ButtonForMemoEditing from "@/app/components/elements/buttons/CommonButton";
 
 interface MemoListProps {
   memoList: MemoListType;
@@ -35,6 +35,7 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
   toggleEditMode,
   editingMemoId,
 }) => {
+
   // 編集前のメモ内容を保存するための状態
   const [originalMemoContent, setOriginalMemoContent] = useState<{
     [key: string]: string;
@@ -75,8 +76,8 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                   md: "10%",
                 },
                 fontSize: {
-                  xs: "0.7em",
-                  md: "1em",
+                  xs: "0.7rem",
+                  md: "1rem",
                 },
               }}
             >
@@ -85,8 +86,8 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
             <TableCell
               sx={{
                 fontSize: {
-                  xs: "0.7em",
-                  md: "1em",
+                  xs: "0.7rem",
+                  md: "1rem",
                 },
                 width: {
                   xs: "15%",
@@ -127,10 +128,10 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                 <TableCell
                   sx={{
                     fontSize: {
-                      xs: "0.7em",
-                      md: "1em",
+                      xs: "0.7rem",
+                      md: "1rem",
                     },
-                    height: "4.5em",
+                    height: "72px"
                   }}
                 >
                   {memo.createdAt}
@@ -143,21 +144,21 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         fontSize: {
-                          xs: "0.7em",
-                          md: "1em",
+                          xs: "0.7rem",
+                          md: "1rem",
                         },
                       }}
                     >
                       {memo.content}
                     </TableCell>
-                    <TableCell sx={{ p: "0em" }}>
-                      <CommonButton
+                    <TableCell sx={{ p: "0px" }}>
+                      <ButtonForMemoEditing
                         label="編集"
                         onClick={() => handleEditToggle(memo)}
                       />
                     </TableCell>
-                    <TableCell sx={{ p: "0em" }}>
-                      <CommonButton
+                    <TableCell sx={{ p: "0px" }}>
+                      <ButtonForMemoEditing
                         onClick={() => onDelete(memo.id)}
                         label="削除"
                       />
@@ -170,27 +171,27 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                         value={memo.content}
                         onChange={(e) => onUpdate(memo.id, e)}
                         size="small"
-                        fullWidth
                         sx={{
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           fontSize: {
-                            xs: "0.7em",
-                            md: "1em",
+                            xs: "0.7rem",
+                            md: "1rem",
                           },
+                          width: "95%",
                           height: "100%",
                         }}
                       />
                     </TableCell>
-                    <TableCell sx={{ p: "0em" }}>
-                      <CommonButton
+                    <TableCell sx={{ p: "0px" }}>
+                      <ButtonForMemoEditing
                         label="保存"
                         onClick={() => handleSave(memo)}
                       />
                     </TableCell>
-                    <TableCell sx={{ p: "0em" }}>
-                      <CommonButton
+                    <TableCell sx={{ p: "0px" }}>
+                      <ButtonForMemoEditing
                         label="取消"
                         onClick={() => handleEditToggle(memo)}
                       />
@@ -204,5 +205,4 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
     </TableContainer>
   );
 };
-
 export default MemoListForWatchAndEdit;

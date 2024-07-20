@@ -3,13 +3,12 @@ import React, { FC } from 'react';
 import { Button, SxProps } from '@mui/material';
 import { Theme } from '@mui/system';
 
-interface CommonButtonProps {
+interface ButtonForMemoEditingProps {
   label: string;
   onClick: () => void;
-  sx?: SxProps<Theme>; // sx プロパティは MUI のスタイルオブジェクト
 }
 
-const CommonButton: FC<CommonButtonProps> = ({ label, onClick, sx }) => {
+const ButtonForMemoEditing: FC<ButtonForMemoEditingProps> = ({ label, onClick }) => {
   return (
     <Button
       variant="outlined"
@@ -20,13 +19,17 @@ const CommonButton: FC<CommonButtonProps> = ({ label, onClick, sx }) => {
           md: "0.875em",
         },
         px: {
-            lg: '2.7em'
+            sm: "20px",
+            lg: '20px'
         },
         py: {
-            lg: '0.5em'
+            lg: '8px'
         },
-        width: 'full !important',
-        ...sx
+        width: {
+          xs: "auto",
+          sm: "100px", 
+          md: "80px",
+        },
       }}
     >
       {label}
@@ -34,4 +37,4 @@ const CommonButton: FC<CommonButtonProps> = ({ label, onClick, sx }) => {
   );
 };
 
-export default CommonButton;
+export default ButtonForMemoEditing;

@@ -39,7 +39,7 @@ const WatchAndEdit = () => {
   const [videoData] = useRecoilState(videoDetails);
   const [memoMode, setMemoMode] = useState<boolean>(false);
   const [fetchTrigger, setFetchTrigger] = useState<boolean>(false);
-  const [editingMemoId, setEditingMemoId] = useState<string | null>(null); // 編集状態のステート
+  const [editingMemoId, setEditingMemoId] = useState<string | null>(null);
 
   const router = useRouter();
   const params = useParams();
