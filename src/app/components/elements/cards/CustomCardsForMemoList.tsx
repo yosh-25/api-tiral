@@ -36,8 +36,8 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
       sx={{
         display: "flex",
         flexDirection: "column",
-        width: "80%",
-        mb: 5,
+        width: { xs: "100%", sm: "80%" },
+        mb: "40px",
         border: "0.5px solid lightgray",
         borderRadius: "8px",
         boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
@@ -46,10 +46,7 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
       <Box
         sx={{
           display: "flex",
-          flexDirection: {
-            xs: "column", // xsおよびそれ以下の幅で縦方向に
-            sm: "row", // mdおよびそれ以上の幅で横方向に
-          },
+          flexDirection: "column",
           justifyContent: {
             xs: "center",
             sm: "start",
@@ -63,15 +60,15 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
           alt="Thumbnail"
           sx={{
             width: {
-              xs: "100%", 
-              sm: "160px", 
+              xs: "100%",
+              sm: "160px",
             },
             height: {
-              xs: "auto", 
-              sm: "90px", 
+              xs: "auto",
+              sm: "90px",
             },
             objectFit: "cover",
-            marginBottom: "16px", 
+            mb: "16px",
           }}
         />
         <Typography
@@ -79,21 +76,20 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
           fontWeight="500"
           sx={{
             display: "-webkit-box",
-            WebkitLineClamp: 2, 
+            WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
             textOverflow: "ellipsis",
             lineHeight: "1.5em",
             height: { xs: "3em", md: "3em" },
-            fontSize: { xs: "1.2em", md: "1.5em" },
-            mr: { md: 2 },
+            fontSize: { xs: "1.2rem", md: "1.5rem" },
             ml: { xs: "1em", md: "2em" },
           }}
         >
           {memos[0].videoTitle}
         </Typography>
       </Box>
-      <TableContainer sx={{ mt: 2, overflowX: "auto" }}>
+      <TableContainer sx={{ mt: "16px", mb:"10px", overflowX: "auto" }}>
         <Table
           sx={{
             tableLayout: "fixed",
@@ -102,25 +98,30 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
         >
           <TableHead>
             <TableRow>
-              <TableCell sx={{ width: 
-                {xs: '30%',
-                  md: "33%",
-                  lg:"23%"}, 
-                
-                fontSize: {xs:"0.6em", lg: '0.9em' }}}>
+              <TableCell
+                sx={{
+                  width: { xs: "30%", md: "33%", lg: "23%" },
+                  fontSize: { xs: "0.8rem", md: "0.9rem" },
+                }}
+              >
                 再生位置
               </TableCell>
-              <TableCell sx={{ fontSize: {xs:"0.6em", lg: '0.9em' } }}>メモ</TableCell>
+              <TableCell sx={{ fontSize: { xs: "0.8rem", md: "0.9rem" } }}>
+                メモ
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-          {sortedMemos.map((memo, index) => (
+            {sortedMemos.map((memo, index) => (
               <TableRow key={index}>
-                <TableCell sx={{ pl: 3 }}>
+                <TableCell
+                  sx={{ fontSize: { xs: "0.8rem", md: "0.9rem" }, pl: "24px" }}
+                >
                   {memo.createdAt}
                 </TableCell>
                 <TableCell
                   sx={{
+                    fontSize: { xs: "0.8rem", md: "0.9rem" },
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -133,9 +134,8 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
           </TableBody>
         </Table>
       </TableContainer>
-      {/* todo: リンク先後で編集 */}
       <Link href={"./watchAndEdit/" + videoId}>
-        <MainButton sx={{ width: "100%" }}>
+        <MainButton sx={{ width: "100%", height:"3.5em" }}>
           この動画を見る/メモを編集する
         </MainButton>
       </Link>

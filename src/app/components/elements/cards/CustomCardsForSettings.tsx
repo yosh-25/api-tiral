@@ -21,7 +21,6 @@ const CustomCard: React.FC<CustomCardProps> = ({ href, icon, label }) => {
           xs: "100%", 
           md: "48%", 
         },
-        mb: 2,
         border: "1px solid #ccc",
         borderRadius: "8px",
         boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
@@ -52,7 +51,7 @@ const CustomCard: React.FC<CustomCardProps> = ({ href, icon, label }) => {
             aria-label="menu"
             sx={{
               height: "8em",
-              mr: 2,
+              mx: "auto",
               padding: "20px",
               "&:hover": {
                 backgroundColor: "transparent",

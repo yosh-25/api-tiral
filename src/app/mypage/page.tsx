@@ -142,7 +142,7 @@ function Mypage() {
       {Object.keys(memoListByVideoId).length === 0 ? (
         <Typography
           variant="h6"
-          sx={{ mb: 10, textAlign: { xs: "center", md: "left" } }}
+          sx={{ mb: "16px", textAlign: { xs: "center", md: "left" } }}
         >
           まだ登録されたメモがありません
         </Typography>
@@ -159,10 +159,9 @@ function Mypage() {
           flexWrap: "wrap",
           justifyContent: "flex-start",
           gap: "24px",
-          mb: "24px",
           mt: {
-            xs: "1rem",
-            md: "2rem",
+            xs: "16px",
+            md: "24px"
           },
         }}
       >
