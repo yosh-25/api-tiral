@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button, TextField, Box, Typography } from '@mui/material';
-import { Memo } from '@/types/index';
+import React from "react";
+import { Button, TextField, Box, Typography } from "@mui/material";
+import { Memo } from "@/types/index";
 
 interface MemoFormProps {
   timeToShow: string;
@@ -10,18 +10,31 @@ interface MemoFormProps {
   onCancel: () => void;
 }
 
-const NewMemo: React.FC<MemoFormProps> = ({ timeToShow, newMemo, editNewMemo, onSave, onCancel }) => {
+const NewMemo: React.FC<MemoFormProps> = ({
+  timeToShow,
+  newMemo,
+  editNewMemo,
+  onSave,
+  onCancel,
+}) => {
   return (
-    <Box sx={{ width: "70%" }}>
-      <Box display="flex" alignItems="center" paddingTop="0.5rem" paddingBottom="0.5rem" marginTop="0.5rem" sx={{ border: 1 }}>
+    <Box sx={{ width: { xs: "90%", sm:"70%"} }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          mt: "8px",
+          py: { xs:"5px", sm:"9px"},
+          pl: "32px",
+          ml:{xs:"16px", md:"0px"},
+          border: 1,
+          fontSize: "1rem"
+        }}
+      >
         <Typography
           sx={{
-            paddingBottom: "0.3rem",
-            paddingLeft: "1rem",
-            paddingRight: "1rem",
-            marginLeft: "1rem",
+            mr: "1rem",
             fontWeight: "bold",
-            fontSize: "1rem",
             whiteSpace: "nowrap",
           }}
         >
@@ -38,8 +51,13 @@ const NewMemo: React.FC<MemoFormProps> = ({ timeToShow, newMemo, editNewMemo, on
           sx={{ width: "100%" }}
         />
       </Box>
-      <Box display="flex" justifyContent="flex-end" sx={{ mt: 0.8 }}>
-        <Box marginRight="1rem">
+      <Box
+      sx={{ 
+        display: "flex",
+        justifyContent: "flex-end",
+        mt: "16px"
+         }}>
+        <Box sx={{mr: "1rem"}}>
           <Button sx={{ border: 1, width: "100%" }} onClick={onCancel}>
             キャンセル
           </Button>
