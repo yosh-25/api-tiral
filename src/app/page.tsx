@@ -66,7 +66,7 @@ export default function Home() {
           sx={{
             fontWeight: 500,
             fontSize: { xs: "1.3rem", md: "1.8rem" },
-            mb:"25px"
+            mb: "25px",
           }}
         >
           Youtube動画を検索して、
@@ -76,10 +76,10 @@ export default function Home() {
 
         <Typography
           variant="h2"
-          sx={{ 
-            fontWeight:500,
+          sx={{
+            fontWeight: 500,
             fontSize: { xs: "1.3rem", md: "1.8rem" },
-            mb:"25px"
+            mb: "25px",
           }}
         >
           動画をクリックして、
@@ -90,19 +90,21 @@ export default function Home() {
 
       <YouTube videoId="GOebZ7Lh9z8" opts={opts} />
 
-      <Box
-      sx={{mt:"40px"}}
-      >
-      <Link href="/signup">
-        <MainButton>初めての方はこちら</MainButton>
-      </Link>
-      </Box>
-      <Box
-      sx={{mt:"40px", mb:"40px"}}
-      >
-      <Link href="/signin">
-        <MainButton>ログイン</MainButton>
-      </Link>
+      <Box sx={{ width: "100%" }}>
+        <Box sx={{ mt: "40px" }}>
+          <Link href="/signup">
+            <MainButton sx={{ width: { xs: "70%", sm: "30%" } }}>
+              初めての方はこちら
+            </MainButton>
+          </Link>
+        </Box>
+        <Box sx={{ mt: "40px", mb: "40px" }}>
+          <Link href="/signin">
+            <MainButton sx={{ width: { xs: "70%", sm: "30%" } }}>
+              ログイン
+            </MainButton>
+          </Link>
+        </Box>
       </Box>
     </Box>
   );

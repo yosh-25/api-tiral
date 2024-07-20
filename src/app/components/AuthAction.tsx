@@ -28,7 +28,9 @@ const AuthAction = () => {
     <>
       {currentUser ? (
         <Box suppressHydrationWarning={true}>
-          <MainButton onClick={doLogout}>ログアウト </MainButton>
+          <MainButton 
+          sx={{width: { xs:"100px", sm:"120px"}, p: { xs:"7px", sm:"10px"}}}
+          onClick={doLogout}>ログアウト </MainButton>
         </Box>
       ) : (
         <Link href="./signin">

@@ -4,14 +4,7 @@ import { useRouter } from "next/navigation";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { FirebaseError } from "@firebase/util";
-import {
-  Box,
-  Typography,
-  Avatar,
-  TextField,
-  Grid,
-  Alert,
-} from "@mui/material";
+import { Box, Typography, Avatar, TextField, Grid, Alert } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import MainButton from "../components/elements/buttons/mainButton";
 
@@ -49,7 +42,7 @@ const Signup = () => {
   };
 
   return (
-    <Box sx={{maxWidth:{xs:"90%", md:"800px"},mx:"auto"}} >
+    <Box sx={{ maxWidth: { xs: "90%", md: "800px" }, mx: "auto" }}>
       <Box
         sx={{
           mt: "64px",
@@ -73,7 +66,12 @@ const Signup = () => {
             サインアップ
           </Typography>
         </Box>
-        <Box component="form" noValidate onSubmit={doSignup} sx={{ width: "90%" }}>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={doSignup}
+          sx={{ width: "90%" }}
+        >
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
@@ -105,9 +103,11 @@ const Signup = () => {
               {error}
             </Alert>
           )}
-          <MainButton fullWidth sx={{ mt: "35px", mb: "16px" }}>
+          <Box sx={{display:"flex", justifyContent:"center", alignItems:"center"}} >
+          <MainButton  sx={{ width:{xs:"100%", sm:"50%"}, mt: "35px", mb: "16px" }}>
             サインアップ
           </MainButton>
+          </Box>
           <Grid container justifyContent="center">
             <Grid item>
               <Box>

@@ -26,7 +26,7 @@ const Signin = () => {
   const { currentUser }: { currentUser: User | null } = useAuth();
 
   // ログインしていなければサインインページへ遷移
-  if (currentUser) router.replace("/mypage"); 
+  if (currentUser) router.replace("/mypage");
 
   const doSignin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -49,7 +49,9 @@ const Signin = () => {
         } else if (e.code === "auth/user-not-found") {
           setError("ユーザーが見つかりません。");
         } else {
-          setError("サインイン中にエラーが発生しました。もう一度お試しください。");
+          setError(
+            "サインイン中にエラーが発生しました。もう一度お試しください。"
+          );
         }
         console.log(e);
       }
@@ -57,7 +59,7 @@ const Signin = () => {
   };
 
   return (
-    <Box sx={{maxWidth:{xs:"90%", md:"800px"},mx:"auto"}} >
+    <Box sx={{ maxWidth: { xs: "90%", md: "800px" }, mx: "auto" }}>
       <Box
         sx={{
           mt: "64px",
@@ -81,7 +83,12 @@ const Signin = () => {
             サインイン
           </Typography>
         </Box>
-        <Box component="form" noValidate onSubmit={doSignin} sx={{ width: "90%" }}>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={doSignin}
+          sx={{ width: "90%" }}
+        >
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
@@ -114,9 +121,11 @@ const Signin = () => {
               {error}
             </Alert>
           )}
-          <MainButton fullWidth sx={{ mt: "35px", mb: "16px" }}>
-            ログイン
+          <Box sx={{display:"flex", justifyContent:"center", alignItems:"center"}}>
+          <MainButton  sx={{ width:{xs:"100%", sm:"50%"}, mt: "35px", mb: "16px" }}>
+            サインイン
           </MainButton>
+          </Box>
           <Grid container justifyContent="center" spacing={3}>
             <Grid item>
               <Box>
@@ -127,12 +136,11 @@ const Signin = () => {
               </Box>
             </Grid>
             <Grid item sx={{ mt: "1rem" }}>
-            Demo Email Addres: aaa@gmail.com
-            <br />
-            Demo Password: aaaaaa
+              Demo Email Addres: aaa@gmail.com
+              <br />
+              Demo Password: aaaaaa
+            </Grid>
           </Grid>
-          </Grid>
-          
         </Box>
       </Box>
     </Box>

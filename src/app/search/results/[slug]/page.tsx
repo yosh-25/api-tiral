@@ -11,26 +11,26 @@ import SearchIconAndFunction from "@/app/components/SearchIconAndFunction";
 const ShowResults = () => {
   const [searchedResults, setSearchedResults] = useState<VideoItem[]>();
   const [displayedResults, setDisplayedResults] = useState<VideoItem[]>();
-  const [videoData, setVideoData] = useRecoilState(videoDetails);  
+  const [videoData, setVideoData] = useRecoilState(videoDetails);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
   const params = useParams();
   const { currentUser } = useAuth();
-  
+
   const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 
   useEffect(() => {
     if (!currentUser) router.replace("/signin");
   }, [currentUser, router]);
 
-  //検索ワードの取得。複数の場合の処理も実施。 
+  //検索ワードの取得。複数の場合の処理も実施。
   const searchQuery: string = Array.isArray(params.slug)
     ? params.slug.join(" ")
     : params.slug;
 
-  //APIに関する情報 
+  //APIに関する情報
   const apiKey = API_KEY;
   const maxResults = 24;
   const order = "relevance";
@@ -61,11 +61,11 @@ const ShowResults = () => {
     fetchVideos();
   }, [searchQuery]);
 
-// APIから取得した時間情報を日本語表記に変換
-const formatDate = (publishedAt: string) => {
-  const date = new Date(publishedAt);
-  return date.toLocaleString("ja-JP");
-};
+  // APIから取得した時間情報を日本語表記に変換
+  const formatDate = (publishedAt: string) => {
+    const date = new Date(publishedAt);
+    return date.toLocaleString("ja-JP");
+  };
 
   // ページネーションの処理
   useEffect(() => {
@@ -108,11 +108,11 @@ const formatDate = (publishedAt: string) => {
     <>
       <Box
         sx={{
-          width: { xs:"100%", sm:"70%"},
+          width: { xs: "100%", sm: "70%" },
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          mx: {xs:"auto", md:"0" },
+          mx: { xs: "auto", md: "0" },
           mb: "48px",
         }}
       >

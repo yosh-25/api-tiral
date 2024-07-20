@@ -46,22 +46,22 @@ export default function RootLayout({
             <ThemeProvider theme={theme}>
               <CssBaseline />
               {isNoHeaderPage ? null : <Header />}
-              <Box sx={{mb:{ xs:"110px", sm:"130px"}}}>
-              <Box
-                sx={{
-                  mt: "160px",
-                  mx: "auto",
-                  width: {
-                    xs: "100%",
-                    md: "70%",
-                  },
-                  minHeight: "100vh",
-                }}
-              >
-                {children}
-              </Box>              
+              <Box sx={{ mb: { xs: "110px", sm: "130px" } }}>
+                <Box
+                  sx={{
+                    mt: "160px",
+                    mx: "auto",
+                    width: {
+                      xs: "100%",
+                      md: "70%",
+                    },
+                    minHeight: "100vh",
+                  }}
+                >
+                  {children}
+                </Box>
               </Box>
-              <Footer/>
+              <Footer />
             </ThemeProvider>
           </RecoilRoot>
         </AuthProvider>

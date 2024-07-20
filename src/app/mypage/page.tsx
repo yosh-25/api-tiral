@@ -8,7 +8,12 @@ import { Box, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
-import { MemosByVideoId, LatestTimestampByVideoId, MemoList, Memo } from "@/types/index";
+import {
+  MemosByVideoId,
+  LatestTimestampByVideoId,
+  MemoList,
+  Memo,
+} from "@/types/index";
 import CustomCard from "../components/elements/cards/CustomCardsForSettings";
 import RecentMemos from "../components/elements/lists/RecentMemos";
 
@@ -161,7 +166,7 @@ function Mypage() {
           gap: "24px",
           mt: {
             xs: "16px",
-            md: "24px"
+            md: "24px",
           },
         }}
       >

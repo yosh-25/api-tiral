@@ -121,14 +121,14 @@ const RecentMemos: React.FC<Props> = ({
             >
               <Typography
                 variant="body2"
-                sx={{ textAlign: "right", mt: "3px", mb:"10px" }}
+                sx={{ textAlign: "right", mt: "3px", mb: "10px" }}
               >
                 {memos.length >= 2 ? "2" : "1"}/{memos.length}
               </Typography>
 
               <Box>
                 <Link href={"watchAndEdit/" + memosToShow[0]?.videoId}>
-                  <MainButton>メモを編集/動画を視聴</MainButton>
+                  <MainButton sx={{width:"190px", p:"11px"}} >メモを編集/動画を視聴</MainButton>
                 </Link>
               </Box>
             </Box>

@@ -9,7 +9,7 @@ import {
   TextField,
 } from "@mui/material";
 import { MemoList as MemoListType, Memo } from "@/types/index";
-import ButtonForMemoEditing from "@/app/components/elements/buttons/CommonButton";
+import ButtonForMemoEditing from "@/app/components/elements/buttons/ButtonForMemoEditing";
 
 interface MemoListProps {
   memoList: MemoListType;
@@ -35,7 +35,6 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
   toggleEditMode,
   editingMemoId,
 }) => {
-
   // 編集前のメモ内容を保存するための状態
   const [originalMemoContent, setOriginalMemoContent] = useState<{
     [key: string]: string;
@@ -128,10 +127,10 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                 <TableCell
                   sx={{
                     fontSize: {
-                      xs: "0.7rem",
+                      xs: "0.9rem",
                       md: "1rem",
                     },
-                    height: "72px"
+                    height: "72px",
                   }}
                 >
                   {memo.createdAt}
@@ -144,7 +143,7 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         fontSize: {
-                          xs: "0.7rem",
+                          xs: "1rem",
                           md: "1rem",
                         },
                       }}

@@ -8,7 +8,7 @@ interface YouTubePlayerProps {
 }
 
 const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId, onReady }) => {
-  const opts: YouTubeProps['opts'] = {
+  const opts: YouTubeProps["opts"] = {
     width: "100%",
     height: "100%",
   };
@@ -27,7 +27,13 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId, onReady }) => {
         videoId={videoId}
         opts={opts}
         onReady={onReady}
-        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+        }}
       />
     </Box>
   );

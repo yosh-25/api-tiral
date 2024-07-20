@@ -157,7 +157,7 @@ const WatchAndEdit = () => {
             <Box>
               <Button onClick={() => setMemoMode(!memoMode)}>
                 <Typography
-                  sx={{ border: 1, p: { xs:"10px", sm:"16px"}, mb: "16px" }}
+                  sx={{ border: 1, p: { xs: "10px", sm: "16px" }, mb: "16px" }}
                 >
                   {timeToShow}にメモを作成します
                 </Typography>

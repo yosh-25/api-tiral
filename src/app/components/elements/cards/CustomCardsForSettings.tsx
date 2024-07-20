@@ -5,9 +5,9 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 
 type CustomCardProps = {
-  href: string; 
-  icon: ReactNode; 
-  label: string; 
+  href: string;
+  icon: ReactNode;
+  label: string;
 };
 
 const CustomCard: React.FC<CustomCardProps> = ({ href, icon, label }) => {
@@ -18,8 +18,8 @@ const CustomCard: React.FC<CustomCardProps> = ({ href, icon, label }) => {
         flexDirection: "column",
         height: "50%",
         width: {
-          xs: "100%", 
-          md: "48%", 
+          xs: "100%",
+          md: "48%",
         },
         border: "1px solid #ccc",
         borderRadius: "8px",

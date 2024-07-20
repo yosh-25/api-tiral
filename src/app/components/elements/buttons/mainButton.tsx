@@ -15,9 +15,8 @@ const MainButton = ({ children, ...props }: Props) => {
       variant="contained"
       sx={{
         width: "9.5rem",
-        p: "0.6rem",
+        p: "9.6px",
         backgroundColor: "#1976d2",
-        fontWeight: "bold"
       }}
       {...props}
     >

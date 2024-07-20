@@ -18,17 +18,17 @@ const NewMemo: React.FC<MemoFormProps> = ({
   onCancel,
 }) => {
   return (
-    <Box sx={{ width: { xs: "90%", sm:"70%"} }}>
+    <Box sx={{ width: { xs: "90%", sm: "70%" } }}>
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
           mt: "8px",
-          py: { xs:"5px", sm:"9px"},
+          py: { xs: "5px", sm: "9px" },
           pl: "32px",
-          ml:{xs:"16px", md:"0px"},
+          ml: { xs: "16px", md: "0px" },
           border: 1,
-          fontSize: "1rem"
+          fontSize: "1rem",
         }}
       >
         <Typography
@@ -52,12 +52,13 @@ const NewMemo: React.FC<MemoFormProps> = ({
         />
       </Box>
       <Box
-      sx={{ 
-        display: "flex",
-        justifyContent: "flex-end",
-        mt: "16px"
-         }}>
-        <Box sx={{mr: "1rem"}}>
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          mt: "16px",
+        }}
+      >
+        <Box sx={{ mr: "1rem" }}>
           <Button sx={{ border: 1, width: "100%" }} onClick={onCancel}>
             キャンセル
           </Button>

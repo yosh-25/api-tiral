@@ -61,11 +61,11 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
           sx={{
             width: {
               xs: "100%",
-              sm: "160px",
+              sm: "240px",
             },
             height: {
               xs: "auto",
-              sm: "90px",
+              sm: "140px",
             },
             objectFit: "cover",
             mb: "16px",
@@ -78,6 +78,7 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
+            textAlign: "center",
             overflow: "hidden",
             textOverflow: "ellipsis",
             lineHeight: "1.5em",
@@ -89,7 +90,7 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
           {memos[0].videoTitle}
         </Typography>
       </Box>
-      <TableContainer sx={{ mt: "16px", mb:"10px", overflowX: "auto" }}>
+      <TableContainer sx={{ mt: "16px", mb: "10px", overflowX: "auto" }}>
         <Table
           sx={{
             tableLayout: "fixed",
@@ -134,11 +135,13 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
           </TableBody>
         </Table>
       </TableContainer>
+      <Box sx={{display:"flex", justifyContent:"center", alignItems:"center", mb:"10px"}}>
       <Link href={"./watchAndEdit/" + videoId}>
-        <MainButton sx={{ width: "100%", height:"3.5em" }}>
-          この動画を見る/メモを編集する
+        <MainButton sx={{ width: "270px", p: "8px", lineHeight: "20px" }}>
+          この動画を見る/<br/>メモを編集する
         </MainButton>
       </Link>
+      </Box>
     </Box>
   );
 };

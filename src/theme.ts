@@ -1,13 +1,13 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
-    components: {
-        MuiTextField: {
-            defaultProps: {
-                variant: "outlined"
-            }
-        }
-    }
+  components: {
+    MuiTextField: {
+      defaultProps: {
+        variant: "outlined",
+      },
+    },
+  },
 });
 
 export default theme;
