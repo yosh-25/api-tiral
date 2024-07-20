@@ -5,7 +5,7 @@ Youtube動画に対してメモが取れるアプリです。
 <img src="https://github.com/yosh-25/memotube/assets/131498137/40402c31-81d1-4f67-8b88-780c9770ad5c" width="50%">  
 
 ## アプリURL
-- https://memotube-q593bmswz-yoshi-okadas-projects.vercel.app  
+- [https://memotube-q593bmswz-yoshi-okadas-projects.vercel.app](https://memotube.vercel.app/)  
 (リンク先にデモアカウントとパスワードを準備しております。)
 
 ## Memotubeについて
