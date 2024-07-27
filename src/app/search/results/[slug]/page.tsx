@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { videoDetails } from "@/atoms";
 import { VideoItem, Memo } from "@/types/index";
 import { Button, Typography, Box, Link, CircularProgress } from "@mui/material";
@@ -11,7 +11,7 @@ import SearchIconAndFunction from "@/app/components/SearchIconAndFunction";
 const ShowResults = () => {
   const [searchedResults, setSearchedResults] = useState<VideoItem[]>();
   const [displayedResults, setDisplayedResults] = useState<VideoItem[]>();
-  const [videoData, setVideoData] = useRecoilState(videoDetails);
+  const setVideoData = useSetRecoilState(videoDetails);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -20,6 +20,8 @@ const ShowResults = () => {
   const { currentUser } = useAuth();
 
   const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
+
+console.log(searchedResults);
 
   useEffect(() => {
     if (!currentUser) router.replace("/signin");

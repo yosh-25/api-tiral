@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { useRouter } from "next/navigation";
 import { Box, Typography } from "@mui/material";
 import { getAuth, signOut } from "firebase/auth";
 import { useAuth } from "@/context/AuthContext";
@@ -9,7 +8,6 @@ import Link from "next/link";
 import { AuthContextType } from "@/types";
 
 const AuthAction = () => {
-  const router = useRouter();
   const { currentUser }: AuthContextType = useAuth();
   const auth = getAuth();
 
@@ -18,7 +16,6 @@ const AuthAction = () => {
     signOut(auth)
       .then(() => {
         console.log("ログアウト完了！");
-        router.push("/signin");
       })
       .catch((error) => {
         console.log(error);

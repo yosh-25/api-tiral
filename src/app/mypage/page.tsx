@@ -12,7 +12,6 @@ import {
   MemosByVideoId,
   LatestTimestampByVideoId,
   MemoList,
-  Memo,
 } from "@/types/index";
 import CustomCard from "../components/elements/cards/CustomCardsForSettings";
 import RecentMemos from "../components/elements/lists/RecentMemos";
@@ -23,10 +22,14 @@ function Mypage() {
     {}
   );
   const [sortedVideoIds, setSortedVideoIds] = useState<string[]>([]);
+  const { currentUser } = useAuth();
 
   // ログインしていなければサインインページへ
-  const { currentUser } = useAuth();
-  if (!currentUser) router.replace("/signin");
+  useEffect(() => {
+    if (!currentUser) {
+      router.replace("/signin");
+    }
+  }, [currentUser]);
 
   // マウント時にfirebaseからデータ取得
   const fetchMemoList = async () => {
