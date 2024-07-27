@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { videoDetails } from "@/atoms";
 import { VideoItem, Memo } from "@/types/index";
 import { Button, Typography, Box, Link, CircularProgress } from "@mui/material";
@@ -20,8 +20,6 @@ const ShowResults = () => {
   const { currentUser } = useAuth();
 
   const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
-
-console.log(searchedResults);
 
   useEffect(() => {
     if (!currentUser) router.replace("/signin");
