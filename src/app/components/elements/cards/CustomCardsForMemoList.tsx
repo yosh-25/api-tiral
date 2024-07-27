@@ -84,7 +84,7 @@ const CustomCardsForMemoList: React.FC<CustomCardsForMemoListProps> = ({
             lineHeight: "1.5em",
             height: { xs: "3em", md: "3em" },
             fontSize: { xs: "1.2rem", md: "1.5rem" },
-            ml: { xs: "1em", md: "2em" },
+            mx: { xs: "1em", md: "2em" },
           }}
         >
           {memos[0].videoTitle}
