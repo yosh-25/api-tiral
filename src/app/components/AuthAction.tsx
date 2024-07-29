@@ -13,21 +13,24 @@ const AuthAction = () => {
 
   // ログアウト処理
   const doLogout = () => {
-    signOut(auth)
-      .then(() => {
-        console.log("ログアウト完了！");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    signOut(auth).catch((error) => {
+      console.error(error);
+    });
   };
+
   return (
     <>
       {currentUser ? (
         <Box suppressHydrationWarning={true}>
-          <MainButton 
-          sx={{width: { xs:"100px", sm:"120px"}, p: { xs:"7px", sm:"10px"}}}
-          onClick={doLogout}>ログアウト </MainButton>
+          <MainButton
+            sx={{
+              width: { xs: "100px", sm: "120px" },
+              p: { xs: "7px", sm: "10px" },
+            }}
+            onClick={doLogout}
+          >
+            ログアウト{" "}
+          </MainButton>
         </Box>
       ) : (
         <Link href="./signin">

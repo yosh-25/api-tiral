@@ -37,15 +37,12 @@ const Signin = () => {
         password
       );
       // サインイン成功時の処理
-      console.log("User signed in:", userCredential);
       setEmail("");
       setPassword("");
     } catch (e) {
       //失敗時の処理
       if (e instanceof FirebaseError) {
-        if (e.code === "auth/wrong-password") {
-          setError("パスワードが正しくありません。");
-        } else if (e.code === "auth/invalid-email") {
+        if (e.code === "auth/invalid-email") {
           setError("有効なメールアドレスを入力してください。");
         } else if (e.code === "auth/user-not-found") {
           setError("該当するユーザーが見つかりませんでした。");

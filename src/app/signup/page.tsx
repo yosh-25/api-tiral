@@ -23,7 +23,6 @@ const Signup = () => {
         password
       );
       // 成功時の処理
-      console.log("User signed up:", userCredential.user);
       setEmail("");
       setPassword("");
       router.push("/mypage");
