@@ -1,20 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { signInWithEmailAndPassword, getAuth, signOut } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "@/context/AuthContext";
 import { User } from "firebase/auth";
 import { FirebaseError } from "@firebase/util";
 import { auth } from "@/lib/firebase";
-import {
-  Box,
-  Typography,
-  Avatar,
-  TextField,
-  Grid,
-  Container,
-  Alert,
-} from "@mui/material";
+import { Box, Typography, Avatar, TextField, Grid, Alert } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import MainButton from "../components/elements/buttons/mainButton";
 
@@ -25,11 +17,18 @@ const Signin = () => {
   const [error, setError] = useState<string>("");
   const { currentUser }: { currentUser: User | null } = useAuth();
 
-  // ログインしていなければサインインページへ遷移
-  if (currentUser) router.replace("/mypage");
+  useEffect(() => {
+    if (currentUser) {
+      router.replace("/mypage");
+    }
+  }, [currentUser]);
 
   const doSignin = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    if (currentUser) {
+      router.replace("/mypage");
+    }
 
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -38,22 +37,22 @@ const Signin = () => {
         password
       );
       // サインイン成功時の処理
-      console.log("User signed in:", userCredential);
       setEmail("");
       setPassword("");
     } catch (e) {
       //失敗時の処理
       if (e instanceof FirebaseError) {
-        if (e.code === "auth/wrong-password") {
-          setError("パスワードが間違っています。");
+        if (e.code === "auth/invalid-email") {
+          setError("有効なメールアドレスを入力してください。");
         } else if (e.code === "auth/user-not-found") {
-          setError("ユーザーが見つかりません。");
+          setError("該当するユーザーが見つかりませんでした。");
+        } else if (e.code === "auth/too-many-requests") {
+          setError("エラーが発生しました。後ほどもう一度実行してください。");
         } else {
           setError(
             "サインイン中にエラーが発生しました。もう一度お試しください。"
           );
         }
-        console.log(e);
       }
     }
   };
@@ -121,10 +120,18 @@ const Signin = () => {
               {error}
             </Alert>
           )}
-          <Box sx={{display:"flex", justifyContent:"center", alignItems:"center"}}>
-          <MainButton  sx={{ width:{xs:"100%", sm:"50%"}, mt: "35px", mb: "16px" }}>
-            サインイン
-          </MainButton>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <MainButton
+              sx={{ width: { xs: "100%", sm: "50%" }, mt: "35px", mb: "16px" }}
+            >
+              サインイン
+            </MainButton>
           </Box>
           <Grid container justifyContent="center" spacing={3}>
             <Grid item>

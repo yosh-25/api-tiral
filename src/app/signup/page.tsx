@@ -23,7 +23,6 @@ const Signup = () => {
         password
       );
       // 成功時の処理
-      console.log("User signed up:", userCredential.user);
       setEmail("");
       setPassword("");
       router.push("/mypage");
@@ -32,6 +31,10 @@ const Signup = () => {
       if (e instanceof FirebaseError) {
         if (e.code === "auth/email-already-in-use") {
           setError("このアカウントは既に存在します。");
+        } else if (e.code === "auth/invalid-email") {
+          setError("有効なメールアドレスを入力してください。");
+        } else if (e.code === "auth/weak-password") {
+          setError("パスワードは６文字以上にしてください");
         } else {
           setError(
             "サインアップ中にエラーが発生しました。もう一度お試しください。"
@@ -103,10 +106,18 @@ const Signup = () => {
               {error}
             </Alert>
           )}
-          <Box sx={{display:"flex", justifyContent:"center", alignItems:"center"}} >
-          <MainButton  sx={{ width:{xs:"100%", sm:"50%"}, mt: "35px", mb: "16px" }}>
-            サインアップ
-          </MainButton>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <MainButton
+              sx={{ width: { xs: "100%", sm: "50%" }, mt: "35px", mb: "16px" }}
+            >
+              サインアップ
+            </MainButton>
           </Box>
           <Grid container justifyContent="center">
             <Grid item>

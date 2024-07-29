@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { videoDetails } from "@/atoms";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { Button, Typography, Box } from "@mui/material";
 import { Timestamp } from "firebase/firestore";
 import { User } from "firebase/auth";
@@ -36,7 +36,7 @@ const WatchAndEdit = () => {
     uid: "",
   });
   const [memoList, setMemoList] = useState<MemoList>();
-  const [videoData] = useRecoilState(videoDetails);
+  const videoData = useRecoilValue(videoDetails);
   const [memoMode, setMemoMode] = useState<boolean>(false);
   const [fetchTrigger, setFetchTrigger] = useState<boolean>(false);
   const [editingMemoId, setEditingMemoId] = useState<string | null>(null);

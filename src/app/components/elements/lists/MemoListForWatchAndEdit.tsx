@@ -55,10 +55,7 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
 
   const handleSave = (memo: Memo) => {
     // 内容が空または空白のみの場合、保存を無効にする
-    if (!memo.content || memo.content.trim() === "") {
-      console.log("メモ内容が空です。保存されませんでした。");
-      return;
-    }
+    if (!memo.content || memo.content.trim() === "") return;
     onEdit(memo);
     toggleEditMode(memo.id);
   };

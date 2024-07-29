@@ -1,16 +1,20 @@
-import { atom } from "recoil";
+import { atom, AtomEffect, DefaultValue } from "recoil";
 import { VideoItem, Memo } from "@/types";
 
 const sessionStorageEffect =
-  (key: string) =>
-  ({ setSelf, onSet }: any) => {
+  <T>(key: string): AtomEffect<T>=>
+  ({ setSelf, onSet }) => {
+    // サーバーサイド環境ではセッションストレージを使用しない
     if (typeof window === "undefined") return;
+
+    // セッションストレージから保存された値を取得、設定
     const savedValue = sessionStorage.getItem(key);
     if (savedValue != null) {
       setSelf(JSON.parse(savedValue));
     }
 
-    onSet((newValue: any, _: any, isReset: boolean) => {
+    // atomの値が変更されたときのコールバックを設定
+    onSet((newValue: T, _: T | DefaultValue, isReset: boolean) => {
       isReset
         ? sessionStorage.removeItem(key)
         : sessionStorage.setItem(key, JSON.stringify(newValue));
@@ -24,12 +28,12 @@ export const videoDetails = atom<Memo>({
 });
 
 export const searchedVideoData = atom<VideoItem[]>({
-  key: "searchedVideoData", // 一意のキー
-  default: [], // 初期値は未定義または空のデータ構造
+  key: "searchedVideoData",
+  default: [],
   effects: [sessionStorageEffect("searchedVideoData")],
 });
 
-export const videoIdState = atom({
+export const videoIdState = atom<string>({
   key: "videoId",
   default: "",
 });
