@@ -17,11 +17,13 @@ import CustomCard from "../components/elements/cards/CustomCardsForSettings";
 import RecentMemos from "../components/elements/lists/RecentMemos";
 
 function Mypage() {
-  const router = useRouter();
   const [memoListByVideoId, setMemoListByVideoId] = useState<MemosByVideoId>(
     {}
   );
   const [sortedVideoIds, setSortedVideoIds] = useState<string[]>([]);
+  const [error, setError] = useState<string>();
+
+  const router = useRouter();
   const { currentUser } = useAuth();
 
   // ログインしていなければサインインページへ
@@ -64,7 +66,7 @@ function Mypage() {
       });
       setMemoListByVideoId(memosGroupedByVideoId);
     } catch (error) {
-      console.error("Error fetching memos:", error);
+      setError("メモの取得に問題が発生しました。再度お試しください。");
     }
   };
 
@@ -147,7 +149,15 @@ function Mypage() {
         最近メモを取った動画
       </Typography>
 
-      {Object.keys(memoListByVideoId).length === 0 ? (
+      {error ? (
+        <Typography
+          variant="h6"
+          color="error"
+          sx={{ mb: "16px", textAlign: { xs: "center", md: "left" } }}
+        >
+          {error}
+        </Typography>
+      ) : Object.keys(memoListByVideoId).length === 0 ? (
         <Typography
           variant="h6"
           sx={{ mb: "16px", textAlign: { xs: "center", md: "left" } }}
