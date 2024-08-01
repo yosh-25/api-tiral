@@ -37,7 +37,7 @@ const ShowResults = () => {
   const order = "relevance";
 
   // エラーメッセージの設定
-  const errorMessage = "検索に問題が発生しました。再度お試しください。";
+  const errorMessage = "検索に問題が発生しました。もう一度お試しください。";
 
   // APIを使っての動画検索
   const fetchVideos = async () => {

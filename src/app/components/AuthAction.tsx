@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { Box, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { Alert, Box, Snackbar, Typography } from "@mui/material";
 import { getAuth, signOut } from "firebase/auth";
 import { useAuth } from "@/context/AuthContext";
 import MainButton from "./elements/buttons/mainButton";
@@ -8,14 +8,26 @@ import Link from "next/link";
 import { AuthContextType } from "@/types";
 
 const AuthAction = () => {
+  const [open, setOpen] = useState<boolean>(false);
   const { currentUser }: AuthContextType = useAuth();
   const auth = getAuth();
 
   // ログアウト処理
   const doLogout = () => {
-    signOut(auth).catch((error) => {
-      console.error(error);
+    signOut(auth).catch(() => {
+      setOpen(true);
     });
+  };
+
+  // エラーメッセージを閉じる（メッセージ枠外のクリックは無効）
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   return (
@@ -42,6 +54,17 @@ const AuthAction = () => {
           </Typography>
         </Link>
       )}
+      {/* ログアウトエラー時に画面上部にメッセージ表示 */}
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          ログアウトに失敗しました。もう一度お試しください。
+        </Alert>
+      </Snackbar>
     </>
   );
 };

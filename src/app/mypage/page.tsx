@@ -66,7 +66,7 @@ function Mypage() {
       });
       setMemoListByVideoId(memosGroupedByVideoId);
     } catch (error) {
-      setError("メモの取得に問題が発生しました。再度お試しください。");
+      setError("メモの取得に問題が発生しました。もう一度お試しください。");
     }
   };
 
