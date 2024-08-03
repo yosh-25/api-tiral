@@ -65,7 +65,7 @@ function Mypage() {
         memosGroupedByVideoId[videoId].push(memo);
       });
       setMemoListByVideoId(memosGroupedByVideoId);
-    } catch (error) {
+    } catch (e) {
       setError("メモの取得に問題が発生しました。もう一度お試しください。");
     }
   };
@@ -149,11 +149,17 @@ function Mypage() {
         最近メモを取った動画
       </Typography>
 
+      {/* メモ取得失敗時はエラーメッセージを表示する。 */}
       {error ? (
         <Typography
           variant="h6"
           color="error"
-          sx={{ mb: "16px", textAlign: { xs: "center", md: "left" } }}
+          sx={{
+            width: "80%",
+            mx: { xs: "auto", md: "0" },
+            mb: "16px",
+            textAlign: { xs: "center", md: "left" },
+          }}
         >
           {error}
         </Typography>

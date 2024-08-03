@@ -13,10 +13,13 @@ const AuthAction = () => {
   const auth = getAuth();
 
   // ログアウト処理
-  const doLogout = () => {
-    signOut(auth).catch(() => {
+  const doLogout = () => {    
+    try {
+      signOut(auth)
+    }catch(e) {
+      // エラーがある場合は、UI上にエラーメッセージを表示する。
       setOpen(true);
-    });
+    };
   };
 
   // エラーメッセージを閉じる（メッセージ枠外のクリックは無効）
@@ -54,7 +57,8 @@ const AuthAction = () => {
           </Typography>
         </Link>
       )}
-      {/* ログアウトエラー時に画面上部にメッセージ表示 */}
+      
+      {/* ログアウト失敗時はエラーメッセージを表示する。 */}
       <Snackbar
         open={open}
         autoHideDuration={6000}

@@ -59,7 +59,7 @@ const ShowResults = () => {
       }
 
       setSearchedResults(result.items);
-    } catch (error) {
+    } catch (e) {
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -128,11 +128,12 @@ const ShowResults = () => {
         }}
       >
         <SearchIconAndFunction />
-        {/* APIからfetch時にエラーがある場合は表示 */}
+
+        {/* APIからfetch失敗時はエラーメッセージを表示する。 */}
         {error && (
           <Box
             sx={{
-              width: "100%",
+              width: "80%",
               display: "flex",
               justifyContent: "flex-start",
             }}

@@ -101,7 +101,9 @@ const Signup = () => {
               />
             </Grid>
           </Grid>
-          {error && ( // エラーメッセージを表示
+          
+          {/* サインアップ失敗時はエラーメッセージを表示する。 */}
+          {error && (
             <Alert severity="error" sx={{ mt: "16px" }}>
               {error}
             </Alert>

@@ -27,6 +27,7 @@ function ShowMemoList() {
   );
   const [sortedVideoIds, setSortedVideoIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [error, setError] = useState<string>();
 
   // ログインしていなければサインインページへ遷移
   const { currentUser } = useAuth();
@@ -65,8 +66,8 @@ function ShowMemoList() {
       });
       setMemoListByVideoId(memosGroupedByVideoId);
       setSearchQuery("");
-    } catch (error) {
-      console.error("Error fetching memos:", error);
+    } catch (e) {
+      setError("メモの取得に問題が発生しました。もう一度お試しください。");
     }
   };
 
@@ -198,25 +199,37 @@ function ShowMemoList() {
           />
         </Box>
       </Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {sortedVideoIds.map(
-          (videoId) =>
-            memoListByVideoId && (
-              <CustomCardsForMemoList
-                key={videoId}
-                videoId={videoId}
-                memos={memoListByVideoId[videoId]}
-              />
-            )
-        )}
-      </Box>
+      
+      {/* メモ取得失敗時はエラーメッセージを表示する。 */}
+      {error ? (
+        <Typography
+          variant="h6"
+          color="error"
+          sx={{ width: "80%", mb: "16px", textAlign: "center" }}
+        >
+          {error}
+        </Typography>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {sortedVideoIds.map(
+            (videoId) =>
+              memoListByVideoId && (
+                <CustomCardsForMemoList
+                  key={videoId}
+                  videoId={videoId}
+                  memos={memoListByVideoId[videoId]}
+                />
+              )
+          )}
+        </Box>
+      )}
     </Box>
   );
 }
