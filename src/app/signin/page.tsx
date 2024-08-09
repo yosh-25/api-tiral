@@ -115,6 +115,8 @@ const Signin = () => {
               />
             </Grid>
           </Grid>
+          
+          {/* サインイン失敗時はエラーメッセージを表示する。 */}
           {error && (
             <Alert severity="error" sx={{ mt: "16px" }}>
               {error}

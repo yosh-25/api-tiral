@@ -14,6 +14,7 @@ const ShowResults = () => {
   const setVideoData = useSetRecoilState(videoDetails);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
 
   const router = useRouter();
   const params = useParams();
@@ -35,10 +36,13 @@ const ShowResults = () => {
   const maxResults = 24;
   const order = "relevance";
 
+  // エラーメッセージの設定
+  const errorMessage = "検索に問題が発生しました。もう一度お試しください。";
+
   // APIを使っての動画検索
   const fetchVideos = async () => {
     if (!API_KEY) {
-      console.error("API_KEY is undefined");
+      setError(errorMessage);
       return;
     }
 
@@ -48,9 +52,15 @@ const ShowResults = () => {
         `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchQuery}&type=video&maxResults=${maxResults}&order=${order}&key=${apiKey}`
       );
       const result = await response.json();
+
+      // APIリクエストが失敗した場合エラー表示
+      if (!response.ok) {
+        setError(errorMessage);
+      }
+
       setSearchedResults(result.items);
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -110,6 +120,7 @@ const ShowResults = () => {
         sx={{
           width: { xs: "100%", sm: "70%" },
           display: "flex",
+          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
           mx: { xs: "auto", md: "0" },
@@ -117,7 +128,21 @@ const ShowResults = () => {
         }}
       >
         <SearchIconAndFunction />
+
+        {/* APIからfetch失敗時はエラーメッセージを表示する。 */}
+        {error && (
+          <Box
+            sx={{
+              width: "80%",
+              display: "flex",
+              justifyContent: "flex-start",
+            }}
+          >
+            <Typography color="error">{error}</Typography>
+          </Box>
+        )}
       </Box>
+
       {loading ? (
         <Box
           sx={{
