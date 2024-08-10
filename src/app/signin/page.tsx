@@ -149,6 +149,12 @@ const Signin = () => {
               <br />
               Demo Password: aaaaaa
             </Grid>
+            {/* デモアカウントのパスワード等検討 */}
+            {/* <Grid item sx={{ mt: "1rem" }}>
+              Demo Email Addres: 2xa5ri7llkc_@gmail.com
+              <br />
+              Demo Password: z1zHAVL1
+            </Grid> */}
           </Grid>
         </Box>
       </Box>
