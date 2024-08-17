@@ -115,7 +115,7 @@ const Signin = () => {
               />
             </Grid>
           </Grid>
-          
+
           {/* サインイン失敗時はエラーメッセージを表示する。 */}
           {error && (
             <Alert severity="error" sx={{ mt: "16px" }}>
@@ -145,16 +145,10 @@ const Signin = () => {
               </Box>
             </Grid>
             <Grid item sx={{ mt: "1rem" }}>
-              Demo Email Addres: aaa@gmail.com
-              <br />
-              Demo Password: aaaaaa
-            </Grid>
-            {/* デモアカウントのパスワード等検討 */}
-            {/* <Grid item sx={{ mt: "1rem" }}>
               Demo Email Addres: 2xa5ri7llkc_@gmail.com
               <br />
               Demo Password: z1zHAVL1
-            </Grid> */}
+            </Grid>
           </Grid>
         </Box>
       </Box>
