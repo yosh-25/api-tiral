@@ -187,6 +187,7 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                             xs: "0.7rem",
                             md: "1rem",
                           },
+                          pl: "13px",
                           width: "95%",
                           height: "100%",
                         }}
