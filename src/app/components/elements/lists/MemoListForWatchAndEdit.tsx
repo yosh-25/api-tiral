@@ -75,8 +75,8 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                   xs: "0.7rem",
                   md: "1rem",
                 },
-                pr: {
-                  xs: "0px",
+                px: {
+                  xs: "8px",
                   sm: "16px"
                 }
               }}
@@ -94,7 +94,7 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                   md: "19%",
                 },
                 pl: {
-                  xs: "20px",
+                  xs: "16px",
                   md: "16px"
                 }
               }}
@@ -134,6 +134,10 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                     fontSize: {
                       xs: "0.85rem",
                       md: "1rem",
+                    },
+                    px: {
+                      xs: "8px",
+                      sm: "16px"
                     },
                     height: "72px",
                   }}
