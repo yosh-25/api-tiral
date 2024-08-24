@@ -145,9 +145,9 @@ const Signin = () => {
               </Box>
             </Grid>
             <Grid item sx={{ mt: "1rem" }}>
-              Demo Email Addres: 2xa5ri7llkc_@gmail.com
+              Demo Email Addres: demo12345@gmail.com
               <br />
-              Demo Password: z1zHAVL1
+              Demo Password: Password1
             </Grid>
           </Grid>
         </Box>
