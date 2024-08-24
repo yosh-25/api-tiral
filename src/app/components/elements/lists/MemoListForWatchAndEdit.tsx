@@ -75,9 +75,13 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                   xs: "0.7rem",
                   md: "1rem",
                 },
+                px: {
+                  xs: "8px",
+                  sm: "16px"
+                }
               }}
             >
-              再生位置
+              時間
             </TableCell>
             <TableCell
               sx={{
@@ -89,6 +93,10 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                   xs: "15%",
                   md: "19%",
                 },
+                pl: {
+                  xs: "16px",
+                  md: "16px"
+                }
               }}
               align="left"
             >
@@ -124,8 +132,12 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                 <TableCell
                   sx={{
                     fontSize: {
-                      xs: "0.9rem",
+                      xs: "0.85rem",
                       md: "1rem",
+                    },
+                    px: {
+                      xs: "8px",
+                      sm: "16px"
                     },
                     height: "72px",
                   }}
@@ -143,6 +155,10 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                           xs: "1rem",
                           md: "1rem",
                         },
+                        pl: {
+                          xs: "20px",
+                          md: "16px"
+                        }
                       }}
                     >
                       {memo.content}
@@ -175,6 +191,7 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                             xs: "0.7rem",
                             md: "1rem",
                           },
+                          pl: "13px",
                           width: "95%",
                           height: "100%",
                         }}
