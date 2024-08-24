@@ -1,20 +1,28 @@
 const nextConfig = {
   reactStrictMode: true,
-  // ⬇追加
+  
+  // ⬇ CORS（クロスオリジンリソースシェアリング）のヘッダーを設定
   async headers() {
     return [
       {
-        "source": "/(.*)",
-        "headers": [
-          { "key": "Access-Control-Allow-Credentials", "value": "true" },
-          { "key": "Access-Control-Allow-Origin", "value": "*" },
-          { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
-          { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
-        ]
-      }
-    ]
+        source: "/(.*)",
+        headers: [
+          { key: "Access-Control-Allow-Credentials", value: "true" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value:
+              "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+          },
+        ],
+      },
+    ];
   },
-  // ⬆追加
-}
+  // ⬆ CORSのヘッダー設定
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
