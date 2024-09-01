@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { MemoList as MemoListType, Memo } from "@/types/index";
 import ButtonForMemoEditing from "@/app/components/elements/buttons/ButtonForMemoEditing";
+import Link from "next/link";
 
 interface MemoListProps {
   memoList: MemoListType;
@@ -23,6 +24,7 @@ interface MemoListProps {
   ) => void;
   toggleEditMode: (id: string) => void;
   editingMemoId: string | null;
+  ytPlayer: YT.Player | undefined;
 }
 
 const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
@@ -34,6 +36,7 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
   onEdit,
   toggleEditMode,
   editingMemoId,
+  ytPlayer,
 }) => {
   // 編集前のメモ内容を保存するための状態
   const [originalMemoContent, setOriginalMemoContent] = useState<{
@@ -60,6 +63,18 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
     toggleEditMode(memo.id);
   };
 
+  // createdAtを秒数のみの表記に変換
+  const convertTimeStringToSeconds = (timeString: string): number => {
+    const [minutes, seconds] = timeString.split(":").map(Number);
+    return minutes * 60 + seconds;
+  };
+
+  // クリックしてメモの秒数から動画を再生する。
+  const moveToTimestamp = (memo: Memo) => {
+    const seconds = convertTimeStringToSeconds(memo.createdAt);
+    ytPlayer?.seekTo(seconds, true);
+  };
+
   return (
     <TableContainer sx={{ mb: { lg: "4em" } }}>
       <Table sx={{ tableLayout: "fixed" }}>
@@ -77,8 +92,8 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                 },
                 px: {
                   xs: "8px",
-                  sm: "16px"
-                }
+                  sm: "16px",
+                },
               }}
             >
               時間
@@ -95,8 +110,8 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                 },
                 pl: {
                   xs: "16px",
-                  md: "16px"
-                }
+                  md: "16px",
+                },
               }}
               align="left"
             >
@@ -137,12 +152,14 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                     },
                     px: {
                       xs: "8px",
-                      sm: "16px"
+                      sm: "16px",
                     },
                     height: "72px",
                   }}
                 >
-                  {memo.createdAt}
+                  <Link href="#" onClick={() => moveToTimestamp(memo)}>
+                    {memo.createdAt}
+                  </Link>
                 </TableCell>
                 {editingMemoId !== memo.id ? (
                   <>
@@ -157,8 +174,8 @@ const MemoListForWatchAndEdit: React.FC<MemoListProps> = ({
                         },
                         pl: {
                           xs: "20px",
-                          md: "16px"
-                        }
+                          md: "16px",
+                        },
                       }}
                     >
                       {memo.content}
