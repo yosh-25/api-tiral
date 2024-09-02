@@ -174,6 +174,7 @@ const WatchAndEdit = () => {
           onUpdate={updateContent}
           toggleEditMode={toggleEditMode}
           editingMemoId={editingMemoId}
+          ytPlayer={YTPlayer}
         />
       </Box>
     </Box>
