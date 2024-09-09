@@ -153,7 +153,7 @@ function ShowMemoList() {
         }}
       >
         <Typography
-          variant="h1"
+          variant="h3"
           sx={{
             fontSize: {
               xs: "2rem",
